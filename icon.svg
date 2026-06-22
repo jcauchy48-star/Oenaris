@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cave a vin">
+  <rect width="512" height="512" rx="112" fill="#8d223d"/>
+  <path fill="#f8f3ef" d="M186 88h140c-6 58-40 82-40 142v110c0 32 22 49 54 52v32H172v-32c32-3 54-20 54-52V230c0-60-34-84-40-142Z"/>
+  <path fill="#ba8f33" d="M216 120h80c-11 39-39 68-40 108-1-40-29-69-40-108Z"/>
+  <path fill="#66172c" d="M242 248h28v113h-28z"/>
+  <path fill="#201c1d" opacity=".2" d="M180 392h152v32H180z"/>
+</svg>

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#8d223d">
+    <meta name="description" content="Mini application de gestion de cave a vin installable et utilisable hors ligne.">
+    <title>Cave a vin</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Gestion de cave</p>
+          <h1>Cave a vin</h1>
+        </div>
+        <div class="top-actions">
+          <button class="ghost-action" id="exportButton" type="button">Exporter</button>
+          <button class="ghost-action" id="importButton" type="button">Importer</button>
+          <button class="ghost-action install-action" id="installButton" type="button" hidden>Installer</button>
+          <button class="primary-action" id="openFormButton" type="button">Ajouter une bouteille</button>
+          <input id="importFileInput" type="file" accept="application/json,.json" hidden>
+        </div>
+      </header>
+
+      <section class="stats-grid" aria-label="Résumé de la cave">
+        <article>
+          <span>Bouteilles</span>
+          <strong id="statBottles">0</strong>
+        </article>
+        <article>
+          <span>Références</span>
+          <strong id="statRefs">0</strong>
+        </article>
+        <article>
+          <span>Valeur estimée</span>
+          <strong id="statValue">0 €</strong>
+        </article>
+        <article>
+          <span>A boire bientôt</span>
+          <strong id="statReady">0</strong>
+        </article>
+      </section>
+
+      <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+
+      <section class="toolbar" aria-label="Filtres">
+        <label class="search-field">
+          <span>Recherche</span>
+          <input id="searchInput" type="search" placeholder="Domaine, cuvée, région...">
+        </label>
+        <label>
+          <span>Couleur</span>
+          <select id="colorFilter">
+            <option value="all">Toutes</option>
+            <option value="Rouge">Rouge</option>
+            <option value="Blanc">Blanc</option>
+            <option value="Rosé">Rosé</option>
+            <option value="Effervescent">Effervescent</option>
+            <option value="Liquoreux">Liquoreux</option>
+          </select>
+        </label>
+        <label>
+          <span>Tri</span>
+          <select id="sortSelect">
+            <option value="drinkWindow">Fenêtre de dégustation</option>
+            <option value="name">Nom</option>
+            <option value="quantity">Quantité</option>
+            <option value="value">Valeur</option>
+            <option value="vintage">Millésime</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="content-layout">
+        <div class="inventory-panel">
+          <div class="panel-heading">
+            <h2>Inventaire</h2>
+            <span id="resultCount">0 résultat</span>
+          </div>
+          <div class="wine-list" id="wineList"></div>
+          <div class="empty-state" id="emptyState" hidden>
+            <h3>Aucune bouteille trouvée</h3>
+            <p>Ajoute une référence ou ajuste les filtres pour retrouver tes bouteilles.</p>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <h2>À surveiller</h2>
+          <div id="watchList" class="watch-list"></div>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="wineDialog">
+      <form id="wineForm" method="dialog">
+        <div class="dialog-heading">
+          <h2 id="dialogTitle">Ajouter une bouteille</h2>
+          <button class="icon-button" id="closeDialogButton" type="button" aria-label="Fermer">×</button>
+        </div>
+        <input id="wineId" type="hidden">
+
+        <div class="form-grid">
+          <label>
+            Domaine
+            <input id="domainInput" name="domain" required placeholder="Domaine Tempier">
+          </label>
+          <label>
+            Cuvée
+            <input id="cuveeInput" name="cuvee" required placeholder="La Migoua">
+          </label>
+          <label>
+            Couleur
+            <select id="wineColorInput" name="color">
+              <option>Rouge</option>
+              <option>Blanc</option>
+              <option>Rosé</option>
+              <option>Effervescent</option>
+              <option>Liquoreux</option>
+            </select>
+          </label>
+          <label>
+            Région
+            <input id="regionInput" name="region" required placeholder="Bourgogne">
+          </label>
+          <label>
+            Appellation
+            <input id="appellationInput" name="appellation" placeholder="Pauillac">
+          </label>
+          <label>
+            Millésime
+            <input id="vintageInput" name="vintage" type="number" min="1900" max="2100" required>
+          </label>
+          <label>
+            Quantité
+            <input id="quantityInput" name="quantity" type="number" min="1" required>
+          </label>
+          <label>
+            Prix unitaire (€)
+            <input id="priceInput" name="price" type="number" min="0" step="0.01">
+          </label>
+          <label>
+            À boire à partir de
+            <input id="drinkFromInput" name="drinkFrom" type="number" min="1900" max="2100">
+          </label>
+          <label>
+            Jusqu'à
+            <input id="drinkToInput" name="drinkTo" type="number" min="1900" max="2100">
+          </label>
+          <label class="full-width">
+            Emplacement
+            <input id="locationInput" name="location" placeholder="Casier B3, rangée 2">
+          </label>
+          <label class="full-width">
+            Notes
+            <textarea id="notesInput" name="notes" rows="3" placeholder="Accords, dégustation, occasion..."></textarea>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="ghost-action" id="deleteButton" type="button" hidden>Supprimer</button>
+          <button class="primary-action" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
