@@ -17,17 +17,25 @@
         <div>
           <p class="eyebrow">Gestion de cave</p>
           <h1>Cave a vin</h1>
+          <p class="hero-subtitle">Pilotez votre cave, trouvez les bouteilles a boire et gardez une sauvegarde propre de chaque mouvement.</p>
         </div>
         <div class="top-actions">
-          <button class="ghost-action" id="exportButton" type="button">Exporter JSON</button>
-          <button class="ghost-action" id="importButton" type="button">Importer JSON</button>
-          <button class="ghost-action" id="exportCsvButton" type="button">Exporter CSV</button>
-          <button class="ghost-action" id="importCsvButton" type="button">Importer CSV</button>
-          <button class="ghost-action" id="printButton" type="button">Imprimer / PDF</button>
+          <button class="ghost-action" id="exportButton" type="button" data-icon="JSON">Exporter</button>
+          <button class="ghost-action" id="importButton" type="button" data-icon="IN">Importer</button>
+          <button class="ghost-action" id="exportCsvButton" type="button" data-icon="CSV">CSV</button>
+          <button class="ghost-action" id="importCsvButton" type="button" data-icon="CSV">Import CSV</button>
+          <button class="ghost-action" id="printButton" type="button" data-icon="PDF">PDF</button>
+          <button class="ghost-action" id="createBackupButton" type="button" data-icon="SAVE">Sauvegarde</button>
+          <button class="ghost-action" id="restoreBackupButton" type="button" data-icon="REST">Restaurer</button>
+          <button class="ghost-action" id="diagnosticButton" type="button" data-icon="DIAG">Diagnostic</button>
+          <button class="ghost-action" id="feedbackButton" type="button" data-icon="BETA">Avis</button>
+          <button class="ghost-action" id="changelogButton" type="button" data-icon="NEW">Nouveautes</button>
           <button class="ghost-action install-action" id="installButton" type="button" hidden>Installer</button>
-          <button class="primary-action" id="openFormButton" type="button">Ajouter une bouteille</button>
+          <button class="primary-action" id="openFormButton" type="button" data-icon="+">Ajouter une bouteille</button>
+          <button class="ghost-action danger-action" id="clearDataButton" type="button" data-icon="DEL">Tout supprimer</button>
           <input id="importFileInput" type="file" accept="application/json,.json" hidden>
           <input id="importCsvFileInput" type="file" accept=".csv,text/csv" hidden>
+          <input id="restoreBackupInput" type="file" accept="application/json,.json" hidden>
         </div>
       </header>
 
@@ -35,18 +43,22 @@
         <article>
           <span>Bouteilles</span>
           <strong id="statBottles">0</strong>
+          <small>Stock actif</small>
         </article>
         <article>
           <span>References</span>
           <strong id="statRefs">0</strong>
+          <small>Cuvées suivies</small>
         </article>
         <article>
           <span>Valeur estimee</span>
           <strong id="statValue">0 €</strong>
+          <small>Patrimoine cave</small>
         </article>
         <article>
           <span>A boire bientot</span>
           <strong id="statReady">0</strong>
+          <small>Priorites plaisir</small>
         </article>
       </section>
 
@@ -163,6 +175,14 @@
           <input id="priceMaxFilter" type="number" min="0" step="0.01" placeholder="250">
         </label>
         <label>
+          <span>Valeur min.</span>
+          <input id="valueMinFilter" type="number" min="0" step="0.01" placeholder="0">
+        </label>
+        <label>
+          <span>Valeur max.</span>
+          <input id="valueMaxFilter" type="number" min="0" step="0.01" placeholder="500">
+        </label>
+        <label>
           <span>Tri</span>
           <select id="sortSelect">
             <option value="drinkWindow">Fenetre de degustation</option>
@@ -187,20 +207,52 @@
           <div class="empty-state" id="emptyState" hidden>
             <h3>Aucune bouteille trouvee</h3>
             <p>Ajoute une reference ou ajuste les filtres pour retrouver tes bouteilles.</p>
+            <button class="primary-action" id="emptyAddButton" type="button">Ajouter une bouteille</button>
           </div>
         </div>
 
         <aside class="side-panel">
           <section>
-            <h2>A surveiller</h2>
+            <h2>Conseils de cave</h2>
             <div id="watchList" class="watch-list"></div>
+          </section>
+          <section class="assistant-panel">
+            <h2>Assistant cave</h2>
+            <label>
+              Quel plat, occasion ou envie ?
+              <textarea id="adviceQuestionInput" rows="3" placeholder="Ex. viande rouge, fromage, grande occasion..."></textarea>
+            </label>
+            <div class="quick-advice-actions">
+              <button class="card-action" type="button" data-advice="Viande rouge">Viande rouge</button>
+              <button class="card-action" type="button" data-advice="Poisson">Poisson</button>
+              <button class="card-action" type="button" data-advice="Fromage">Fromage</button>
+              <button class="card-action" type="button" data-advice="Aperitif">Aperitif</button>
+              <button class="card-action" type="button" data-advice="A boire maintenant">A boire maintenant</button>
+              <button class="card-action" type="button" data-advice="Grande occasion">Grande occasion</button>
+            </div>
+            <button class="primary-action" id="askAdviceButton" type="button">Demander conseil</button>
+            <div id="adviceResult" class="advice-result"></div>
+          </section>
+          <section class="wishlist-panel">
+            <div class="panel-title-row">
+              <h2>Wishlist</h2>
+              <button class="card-action" id="openWishlistButton" type="button">Ajouter</button>
+            </div>
+            <div id="wishlistList" class="wishlist-list"></div>
           </section>
           <section class="history-panel">
             <h2>Historique</h2>
             <div id="movementList" class="movement-list"></div>
           </section>
+          <section class="beta-panel">
+            <h2>Etat beta</h2>
+            <div id="betaState" class="beta-state"></div>
+          </section>
         </aside>
       </section>
+      <footer class="app-footer">
+        <span id="appVersion">Version beta 0.1.0</span>
+      </footer>
     </main>
 
     <dialog id="wineDialog">
@@ -367,6 +419,123 @@
           <button class="primary-action" type="submit">Enregistrer</button>
         </div>
       </form>
+    </dialog>
+
+    <dialog id="wineDetailDialog">
+      <div class="detail-shell">
+        <div class="dialog-heading">
+          <h2 id="detailTitle">Fiche bouteille</h2>
+          <button class="icon-button" id="closeDetailButton" type="button" aria-label="Fermer">x</button>
+        </div>
+        <div id="wineDetailContent"></div>
+      </div>
+    </dialog>
+
+    <dialog id="wishlistDialog">
+      <form id="wishlistForm" method="dialog">
+        <div class="dialog-heading">
+          <h2>Ajouter a la wishlist</h2>
+          <button class="icon-button" id="closeWishlistButton" type="button" aria-label="Fermer">x</button>
+        </div>
+        <div class="form-grid">
+          <label>Domaine <input id="wishDomainInput" required></label>
+          <label>Cuvee <input id="wishCuveeInput" required></label>
+          <label>Couleur
+            <select id="wishColorInput">
+              <option>Rouge</option>
+              <option>Blanc</option>
+              <option>Rose</option>
+              <option>Effervescent</option>
+              <option>Liquoreux</option>
+            </select>
+          </label>
+          <label>Region <input id="wishRegionInput"></label>
+          <label>Budget (€) <input id="wishBudgetInput" type="number" min="0" step="0.01"></label>
+          <label>Priorite
+            <select id="wishPriorityInput">
+              <option value="medium">Moyenne</option>
+              <option value="high">Haute</option>
+              <option value="low">Basse</option>
+            </select>
+          </label>
+          <label class="full-width">Note <textarea id="wishNoteInput" rows="3"></textarea></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="primary-action" type="submit">Ajouter</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="tastingDialog">
+      <form id="tastingForm" method="dialog">
+        <div class="dialog-heading">
+          <h2>Note de degustation</h2>
+          <button class="icon-button" id="closeTastingButton" type="button" aria-label="Fermer">x</button>
+        </div>
+        <input id="tastingWineId" type="hidden">
+        <div class="form-grid">
+          <label>Date <input id="tastingDateInput" type="date"></label>
+          <label>Note / 5 <input id="tastingRatingInput" type="number" min="0" max="5" step="0.5"></label>
+          <label class="full-width">Commentaire <textarea id="tastingCommentInput" rows="3"></textarea></label>
+          <label>Accord mets-vins <input id="tastingPairingInput"></label>
+          <label class="checkbox-label"><input id="tastingRebuyInput" type="checkbox"> A racheter</label>
+        </div>
+        <div class="dialog-actions">
+          <button class="primary-action" type="submit">Enregistrer la note</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="feedbackDialog">
+      <form id="feedbackForm" method="dialog">
+        <div class="dialog-heading">
+          <h2>Donner un avis</h2>
+          <button class="icon-button" id="closeFeedbackButton" type="button" aria-label="Fermer">x</button>
+        </div>
+        <div class="form-grid">
+          <label>Satisfaction
+            <select id="feedbackSatisfactionInput">
+              <option value="5">5 - Tres satisfait</option>
+              <option value="4">4 - Satisfait</option>
+              <option value="3">3 - Correct</option>
+              <option value="2">2 - Difficile</option>
+              <option value="1">1 - Bloquant</option>
+            </select>
+          </label>
+          <label class="full-width">Bug rencontre <textarea id="feedbackBugInput" rows="3"></textarea></label>
+          <label class="full-width">Suggestion <textarea id="feedbackSuggestionInput" rows="3"></textarea></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="ghost-action" id="feedbackMailButton" type="button">Ouvrir un mail</button>
+          <button class="primary-action" type="submit">Exporter l'avis</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="changelogDialog">
+      <div class="detail-shell">
+        <div class="dialog-heading">
+          <h2>Nouveautes</h2>
+          <button class="icon-button" id="closeChangelogButton" type="button" aria-label="Fermer">x</button>
+        </div>
+        <ul class="changelog-list">
+          <li>Interface beta plus chaleureuse et responsive.</li>
+          <li>Fiche bouteille detaillee avec historique et notes.</li>
+          <li>Wishlist, assistant cave local, diagnostics et sauvegardes.</li>
+          <li>Import/export JSON et CSV, impression PDF et PWA hors ligne.</li>
+        </ul>
+      </div>
+    </dialog>
+
+    <dialog id="confirmDialog">
+      <div class="confirm-shell">
+        <h2 id="confirmTitle">Confirmation</h2>
+        <p id="confirmMessage"></p>
+        <div class="dialog-actions">
+          <button class="ghost-action" id="confirmCancelButton" type="button">Annuler</button>
+          <button class="primary-action" id="confirmOkButton" type="button">Confirmer</button>
+        </div>
+      </div>
     </dialog>
 
     <section class="print-view" id="printView" aria-hidden="true"></section>

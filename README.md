@@ -14,6 +14,10 @@ Mini application de gestion de cave a vin, installable en PWA et utilisable hors
 - Liste des bouteilles a surveiller
 - Export/import JSON et CSV pour sauvegarder les donnees
 - Vue imprimable pour inventaire PDF
+- Fiche bouteille detaillee avec notes de degustation
+- Wishlist d'achats a venir
+- Assistant cave avec conseil local sans cle API
+- Outils beta : feedback, diagnostic, changelog, sauvegarde/restauration
 - Manifest PWA, icone et service worker
 
 ## Utilisation locale

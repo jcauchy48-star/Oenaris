@@ -1,4 +1,4 @@
-const cacheName = "cave-a-vin-v3";
+const cacheName = "cave-a-vin-v4";
 const cachedFiles = [
   "./",
   "./index.html",
