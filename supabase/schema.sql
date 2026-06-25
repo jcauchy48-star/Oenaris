@@ -25,6 +25,12 @@ create table if not exists public.cellar_snapshots (
   updated_at timestamptz not null default now()
 );
 
+-- TODO future schema normalization:
+-- Keep cellar_snapshots as the minimal cloud backup layer for now.
+-- Later migrations can split payload into normalized tables:
+-- wines, tasting_notes, wishlist_items, cellar_layouts, cellar_slots,
+-- wine_photos, sync_events.
+
 create table if not exists public.wine_references (
   id uuid primary key default gen_random_uuid(),
   domain text not null,
