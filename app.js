@@ -856,23 +856,29 @@ const feedbackFields = {
 };
 
 // Initialisation
-migrateAppData();
-cellarLayouts = ensureCellarLayouts(cellarLayouts);
-syncCellarLayoutWithWines({ persist: false });
-rebuildCellarLayoutCache();
-invalidateWineCaches();
-rebuildLibraryDerivedCaches();
-applyInitialUiState();
-bindEvents();
-render({ targets: ["view", "filters"] });
-window.CAVE_CLOUD_CONFIG_READY?.then(() => {
-  cloudConfig = getCloudConfig();
-  initSupabase()
-    .then(() => syncPendingLibraryReferences({ silent: true }))
-    .then(() => ensureRemoteLibraryLoaded({ silent: true }))
-    .catch((error) => logError(error, "initSupabase"))
-    .finally(() => render({ targets: ["account", "sidebar", "library"] }));
-});
+installRuntimeGuards();
+try {
+  migrateAppData();
+  cellarLayouts = ensureCellarLayouts(cellarLayouts);
+  syncCellarLayoutWithWines({ persist: false });
+  rebuildCellarLayoutCache();
+  invalidateWineCaches();
+  rebuildLibraryDerivedCaches();
+  applyInitialUiState();
+  bindEvents();
+  render({ targets: ["view", "filters"] });
+  window.CAVE_CLOUD_CONFIG_READY?.then(() => {
+    cloudConfig = getCloudConfig();
+    initSupabase()
+      .then(() => syncPendingLibraryReferences({ silent: true }))
+      .then(() => ensureRemoteLibraryLoaded({ silent: true }))
+      .catch((error) => logError(error, "initSupabase"))
+      .finally(() => render({ targets: ["account", "sidebar", "library"] }));
+  });
+} catch (error) {
+  logError(error, "bootstrap");
+  showStartupError(error);
+}
 
 // Evenements
 function bindEvents() {
@@ -988,7 +994,10 @@ function bindEvents() {
   fields.photo.addEventListener("change", handlePhotoSelection);
   document.querySelector("#removePhotoButton").addEventListener("click", removePhoto);
   window.addEventListener("online", () => {
-    if (cloudSyncState.pendingChanges) performCloudAutoSync({ reason: "online", silent: true });
+    if (cloudSyncState.pendingChanges) {
+      performCloudAutoSync({ reason: "online", silent: true })
+        .catch((error) => logError(error, "onlineSync"));
+    }
   });
 
   [
@@ -1000,12 +1009,6 @@ function bindEvents() {
     elements.sortSelect
   ].forEach((control) => control.addEventListener("input", scheduleFilterRender));
 
-  window.addEventListener("error", (event) => {
-    logError(event.error || event.message, "window.error");
-  });
-  window.addEventListener("unhandledrejection", (event) => {
-    logError(event.reason, "unhandledrejection");
-  });
   window.addEventListener("resize", updateSidebarControls);
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeSidebar();
@@ -1032,9 +1035,29 @@ function bindEvents() {
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js");
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .catch((error) => logError(error, "serviceWorker.register"));
     });
   }
+}
+
+function installRuntimeGuards() {
+  if (window.__oenovaRuntimeGuardsInstalled) return;
+  window.__oenovaRuntimeGuardsInstalled = true;
+  window.addEventListener("error", (event) => {
+    logError(event.error || event.message, "window.error");
+  });
+  window.addEventListener("unhandledrejection", (event) => {
+    logError(event.reason, "unhandledrejection");
+  });
+}
+
+function showStartupError(error) {
+  if (!elements.statusMessage) return;
+  elements.statusMessage.textContent = "Oenova a rencontré une erreur au chargement. Rechargez la page ou exportez le diagnostic si le problème persiste.";
+  elements.statusMessage.classList.add("error");
+  elements.statusMessage.title = error?.message || String(error || "");
 }
 
 // Navigation et preferences UI
@@ -6479,7 +6502,11 @@ function logError(error, context = "") {
     stack: error?.stack || ""
   });
   errorLogs = [normalized, ...errorLogs].slice(0, 50);
-  saveErrorLogs(errorLogs);
+  try {
+    saveErrorLogs(errorLogs);
+  } catch {
+    // Logging must never break the user-facing workflow.
+  }
 }
 
 function exportErrorLogs() {
@@ -6889,6 +6916,7 @@ function downloadFile(content, filename, type) {
 }
 
 function showStatus(message, type = "success", action = null) {
+  if (!elements.statusMessage) return;
   elements.statusMessage.innerHTML = `${escapeHtml(message)}${action ? ` <button class="toast-action" type="button">${escapeHtml(action.label)}</button>` : ""}`;
   elements.statusMessage.classList.toggle("error", type === "error");
   const actionButton = elements.statusMessage.querySelector(".toast-action");

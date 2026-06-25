@@ -24,6 +24,9 @@ assert.equal(countMatches(app, /function renderSyncStatus\(/g), 1, "renderSyncSt
 assert.equal(countMatches(app, /async function syncWineLibrary\(/g), 1, "syncWineLibrary must be unique");
 assert.doesNotMatch(app, /authState\.accessToken|authState\.refreshToken/);
 assert.doesNotMatch(app, /localStorage\.setItem\([^)]*(accessToken|refreshToken)/);
+assert.match(app, /function installRuntimeGuards\(/);
+assert.match(app, /function showStartupError\(/);
+assert.match(app, /serviceWorker[\s\S]*\.catch\(\(error\) => logError\(error, "serviceWorker\.register"\)\)/);
 
 const serviceWorker = read("service-worker.js");
 const precacheBlock = serviceWorker.match(/const cachedFiles = \[([\s\S]*?)\];/);

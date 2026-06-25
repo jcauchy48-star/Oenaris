@@ -387,6 +387,7 @@ textarea {
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .app-shell {
@@ -462,7 +463,7 @@ h3 {
   border-radius: 999px;
   display: inline-flex;
   justify-content: center;
-  min-height: 42px;
+  min-height: 44px;
   transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
@@ -2510,12 +2511,12 @@ dialog[open] {
     min-height: 40px;
     padding: 0 14px;
     position: fixed;
-    top: 12px;
+    top: max(12px, env(safe-area-inset-top));
     z-index: 24;
   }
 
   .app-shell {
-    padding-top: 64px;
+    padding-top: calc(64px + env(safe-area-inset-top));
   }
 
   .module-toolbar,
@@ -2604,8 +2605,9 @@ dialog[open] {
 
 @media (max-width: 640px) {
   .app-shell {
-    width: min(100% - 20px, 1240px);
-    padding-top: 66px;
+    width: min(100% - 16px, 1240px);
+    padding-bottom: calc(34px + env(safe-area-inset-bottom));
+    padding-top: calc(66px + env(safe-area-inset-top));
   }
 
   .stats-grid,
@@ -2646,6 +2648,12 @@ dialog[open] {
   .top-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .top-actions .ghost-action,
+  .top-actions .primary-action {
+    width: 100%;
   }
 
   .top-actions .primary-action,
@@ -2684,6 +2692,22 @@ dialog[open] {
   .virtual-cellar-grid {
     --slot-size: 52px;
     padding: 12px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .primary-action:hover,
+  .ghost-action:hover,
+  .card-action:hover,
+  .sidebar-add-action:hover,
+  .sidebar-item:hover,
+  .wine-card:hover,
+  .watch-card:hover,
+  .movement-card:hover,
+  .wishlist-card:hover,
+  .advice-card:hover {
+    box-shadow: none;
+    transform: none;
   }
 }
 
