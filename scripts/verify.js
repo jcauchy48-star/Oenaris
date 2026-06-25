@@ -27,6 +27,10 @@ assert.doesNotMatch(app, /localStorage\.setItem\([^)]*(accessToken|refreshToken)
 assert.match(app, /function installRuntimeGuards\(/);
 assert.match(app, /function showStartupError\(/);
 assert.match(app, /serviceWorker[\s\S]*\.catch\(\(error\) => logError\(error, "serviceWorker\.register"\)\)/);
+assert.match(app, /function isScanApiConfigured\(/);
+assert.match(app, /IA non configurée/);
+assert.match(app, /function hasKnownUserProfile\(/);
+assert.match(app, /function hasUsableCloudSession\(/);
 
 const serviceWorker = read("service-worker.js");
 const precacheBlock = serviceWorker.match(/const cachedFiles = \[([\s\S]*?)\];/);

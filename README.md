@@ -30,10 +30,12 @@ Mini application de gestion de cave à vin, installable en PWA et utilisable hor
 
 La version web reste fonctionnelle sans compte. Supabase est préparé avec `cloud-config.js` et une clé publishable frontend.
 
-1. Dans Supabase, exécuter `supabase/schema.sql`.
-2. Exécuter ensuite `supabase/seed.sql` pour ajouter quelques références communes.
+1. Dans Supabase, exécuter `supabase/schema.sql` depuis ce dépôt.
+2. Exécuter ensuite `supabase/seed.sql` depuis ce dépôt pour ajouter quelques références communes.
 3. Déployer `cloud-config.js` à côté de `index.html`.
 4. Ne jamais placer de clé `service_role` ou de secret dans le frontend.
+
+`supabase-schema.sql` reste présent comme schéma minimal historique, mais le chemin de référence pour la version web est `supabase/schema.sql`.
 
 Le stockage cloud utilise `cellar_snapshots` pour la cave utilisateur, `profiles` pour le compte client et `wine_references` / `wine_vintages` pour la bibliothèque commune. Les politiques RLS limitent les données personnelles à leur propriétaire et gardent la bibliothèque commune lisible.
 

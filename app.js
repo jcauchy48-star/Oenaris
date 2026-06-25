@@ -610,7 +610,8 @@ let scanState = {
   imageDataUrl: "",
   imageThumbDataUrl: "",
   result: null,
-  isLoading: false
+  isLoading: false,
+  apiStatus: "not-configured"
 };
 
 // Selection DOM
@@ -4900,16 +4901,29 @@ async function scanWineLabel(imageFile) {
     render({ targets: ["scanner"] });
 
     let result = null;
-    if (imageFile && canUseScan().allowed) {
+    const apiConfigured = isScanApiConfigured();
+    if (imageFile && apiConfigured && canUseScan().allowed) {
       try {
         result = await scanWineLabelWithApi(imageFile);
-        if (result?._apiUsed) consumeScanCredit();
-      } catch {
+        if (result?._apiUsed) {
+          consumeScanCredit();
+          scanState.apiStatus = "available";
+        }
+      } catch (error) {
+        scanState.apiStatus = "unavailable";
+        logError(error, "scanWineLabelWithApi");
         result = null;
       }
+    } else if (!apiConfigured) {
+      scanState.apiStatus = "not-configured";
     }
     if (!result) {
       result = await scanWineLabelLocally(imageFile);
+      if (!apiConfigured) {
+        result.warnings = uniqueValues(["IA non configurée : analyse locale uniquement.", ...result.warnings]);
+      } else if (scanState.apiStatus === "unavailable") {
+        result.warnings = uniqueValues(["IA indisponible : détection locale limitée.", ...result.warnings]);
+      }
     }
     scanState.result = normalizeScanResult(result);
     render({ targets: ["scanner", "subscription", "sidebar"] });
@@ -4922,20 +4936,45 @@ async function scanWineLabel(imageFile) {
   }
 }
 
+function getScanApiUrl() {
+  const config = window.CAVE_CLOUD_CONFIG || {};
+  if (cleanString(config.scanApiUrl)) return cleanString(config.scanApiUrl);
+  if (config.scanApiEnabled === true) return "/api/scan-wine-label";
+  return "";
+}
+
+function isScanApiConfigured() {
+  return Boolean(getScanApiUrl());
+}
+
 async function scanWineLabelWithApi(imageFile) {
+  const scanApiUrl = getScanApiUrl();
+  if (!scanApiUrl) {
+    const error = new Error("IA scan non configurée");
+    error.code = "SCAN_API_NOT_CONFIGURED";
+    throw error;
+  }
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 1800);
   const formData = new FormData();
   formData.append("image", imageFile);
   formData.append("language", "fr");
-  const response = await fetch("/api/scan-wine-label", {
-    method: "POST",
-    body: formData,
-    signal: controller.signal
-  });
-  window.clearTimeout(timeoutId);
+  let response;
+  try {
+    response = await fetch(scanApiUrl, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal
+    });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
   if (!response.ok) throw new Error("Route scan indisponible");
-  return { ...await response.json(), _apiUsed: true };
+  const payload = await response.json();
+  if (payload?.success === false || payload?.error) {
+    throw new Error(payload.error || "Analyse scan refusée");
+  }
+  return { ...payload, _apiUsed: true };
 }
 
 async function scanWineLabelLocally(imageFile) {
@@ -4972,7 +5011,15 @@ function normalizeScanResult(result = {}) {
 function renderScanner() {
   if (!elements.scanPreview) return;
   const remaining = getRemainingScans();
-  elements.scanCreditsLabel.textContent = `${remaining} scan${remaining > 1 ? "s" : ""} IA disponible${remaining > 1 ? "s" : ""}`;
+  if (isScanApiConfigured()) {
+    elements.scanCreditsLabel.textContent = scanState.apiStatus === "unavailable"
+      ? "IA indisponible · Analyse locale"
+      : `${remaining} scan${remaining > 1 ? "s" : ""} IA disponible${remaining > 1 ? "s" : ""}`;
+    elements.scanCreditsLabel.className = `pill ${scanState.apiStatus === "unavailable" ? "warning" : "ready"}`;
+  } else {
+    elements.scanCreditsLabel.textContent = "IA non configurée · Analyse locale";
+    elements.scanCreditsLabel.className = "pill warning";
+  }
   elements.scanPreview.innerHTML = scanState.imageDataUrl
     ? `<img src="${escapeAttribute(scanState.imageDataUrl)}" alt="Aperçu de l'étiquette" loading="lazy">`
     : `<p>Aucune photo sélectionnée.</p>`;
@@ -4989,7 +5036,11 @@ function renderScanResult(result, error = "") {
     return;
   }
   if (!result) {
-    elements.scanResult.innerHTML = `<div class="advice-card"><strong>Mode assisté</strong><p>Collez le texte visible sur l'étiquette si l'analyse automatique n'est pas disponible.</p></div>`;
+    const title = isScanApiConfigured() ? "Scan assisté" : "Analyse locale";
+    const message = isScanApiConfigured()
+      ? "Collez le texte visible sur l'étiquette si l'analyse automatique n'est pas disponible."
+      : "IA non configurée : la détection reste limitée et s'appuie sur le texte ou le nom du fichier.";
+    elements.scanResult.innerHTML = `<div class="advice-card"><strong>${escapeHtml(title)}</strong><p>${escapeHtml(message)}</p></div>`;
     return;
   }
   elements.scanResult.innerHTML = `
@@ -5290,13 +5341,12 @@ function renderAuthPanel() {
 function renderUserBadge() {
   const configured = isCloudConfigured();
   const signedIn = isSignedIn();
+  const knownProfile = hasKnownUserProfile();
   const sidebarSubtitle = document.querySelector(".sidebar-title span");
   if (sidebarSubtitle) {
-    sidebarSubtitle.textContent = signedIn
-      ? "Cloud connecté"
-      : configured
-        ? "Cloud prêt"
-        : "Version locale";
+    if (signedIn) sidebarSubtitle.textContent = "Cloud connecté";
+    else if (knownProfile) sidebarSubtitle.textContent = "Session à reconnecter";
+    else sidebarSubtitle.textContent = configured ? "Cloud prêt" : "Version locale";
   }
   if (elements.openAccountButton) {
     elements.openAccountButton.innerHTML = `<svg class="ui-icon"><use href="#icon-account"></use></svg>${signedIn ? "Compte" : "Connexion"}`;
@@ -5313,7 +5363,10 @@ function requireAuthForCloudActions() {
 
 function getCloudSyncStatusLabel() {
   if (!isCloudConfigured()) return "Cloud non configure";
-  if (!isSignedIn()) return cloudSyncState.pendingChanges ? "Cave locale non migree" : "Connexion requise";
+  if (!isSignedIn()) {
+    if (hasKnownUserProfile()) return "Session cloud à reconnecter";
+    return cloudSyncState.pendingChanges ? "Cave locale non migree" : "Connexion requise";
+  }
   if (cloudSyncState.syncStatus === "syncing") return "Synchronisation en cours";
   if (cloudSyncState.syncStatus === "pending") return "Synchronisation en attente";
   if (cloudSyncState.syncStatus === "error") return "Erreur de synchronisation";
@@ -5324,6 +5377,9 @@ function getCloudSyncStatusLabel() {
 
 function getCloudSyncDetailText() {
   if (cloudSyncState.lastError) return `Derniere erreur : ${cloudSyncState.lastError}`;
+  if (hasKnownUserProfile() && !isSignedIn()) {
+    return "Profil connu localement, mais aucune session Supabase utilisable. Reconnectez-vous pour synchroniser.";
+  }
   if (cloudSyncState.syncStatus === "needs-decision") {
     return "Une cave existe deja dans le cloud. Choisissez envoyer la cave locale ou restaurer le cloud.";
   }
@@ -5340,15 +5396,19 @@ function renderAccountView() {
   if (!elements.accountStatusCard) return;
   const configured = isCloudConfigured();
   const signedIn = isSignedIn();
+  const knownProfile = hasKnownUserProfile();
   const displayName = authState.user?.displayName;
   const syncStatusLabel = getCloudSyncStatusLabel();
   const cloudLabel = configured ? "Cloud configuré" : "Cloud non configuré";
-  const accountLabel = signedIn ? displayName || authState.user?.email || "Compte connecté" : "Aucun compte connecté";
+  const accountLabel = signedIn
+    ? displayName || authState.user?.email || "Compte connecté"
+    : knownProfile
+      ? "Session cloud à reconnecter"
+      : "Aucun compte connecté";
   elements.cloudConfigStatus.textContent = cloudLabel;
   elements.cloudConfigStatus.classList.toggle("ready", configured);
   elements.cloudConfigStatus.classList.toggle("warning", !configured);
   elements.accountEmail.textContent = accountLabel;
-  elements.accountProvider.textContent = signedIn ? `Supabase · ${authState.user?.email || ""}` : configured ? "Supabase prêt" : "Mode local";
   elements.accountProvider.textContent = signedIn ? `Supabase · ${syncStatusLabel}` : configured ? syncStatusLabel : "Mode local";
   elements.cloudLastSync.textContent = cloudSyncState.lastSyncAt ? formatDateTime(cloudSyncState.lastSyncAt) : "Jamais";
   elements.cloudLastError.textContent = cloudSyncState.lastError ? `Dernière erreur : ${cloudSyncState.lastError}` : "";
@@ -5359,7 +5419,7 @@ function renderAccountView() {
   elements.syncLocalToCloudButton.disabled = !configured || !signedIn;
   elements.restoreCloudButton.disabled = !configured || !signedIn;
   elements.refreshCloudButton.disabled = !configured;
-  elements.signOutButton.disabled = !signedIn;
+  elements.signOutButton.disabled = !knownProfile && !signedIn;
   elements.resetPasswordButton.disabled = !configured;
   elements.resendConfirmationButton.disabled = !configured;
   elements.signInForm.querySelectorAll("button, input").forEach((control) => control.disabled = !configured);
@@ -5369,8 +5429,16 @@ function renderAccountView() {
 }
 
 function isSignedIn() {
+  return hasUsableCloudSession();
+}
+
+function hasKnownUserProfile() {
+  return Boolean(authState.user?.id);
+}
+
+function hasUsableCloudSession() {
   const nowInSeconds = Math.floor(Date.now() / 1000);
-  return Boolean(authState.user?.id && (authSession.accessToken || authState.expiresAt > nowInSeconds));
+  return Boolean(authState.user?.id && authSession.accessToken && (!authState.expiresAt || authState.expiresAt > nowInSeconds));
 }
 
 function normalizeAuthEmail(value) {

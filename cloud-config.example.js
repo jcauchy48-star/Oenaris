@@ -4,5 +4,7 @@ window.CAVE_CLOUD_CONFIG = {
   enabled: false,
   provider: "supabase",
   supabaseUrl: "",
-  supabaseAnonKey: ""
+  supabaseAnonKey: "",
+  scanApiEnabled: false,
+  scanApiUrl: ""
 };
