@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#241417">
     <meta name="description" content="Oenova transforme votre cave personnelle en collection élégante, suivie et intelligente.">
     <meta name="robots" content="index, follow">
+    <meta name="cave-cloud-config" content="./cloud-config.js">
     <title>Oenova | Votre cave à vin, enfin maîtrisée</title>
     <link rel="canonical" href="https://jcauchy48-star.github.io/Oenova/">
     <link rel="manifest" href="manifest.webmanifest">
@@ -26,6 +27,7 @@
           <a href="#fonctionnalites">Fonctionnalités</a>
           <a href="#demo">Démo</a>
           <a href="#confidentialite">Confidentialité</a>
+          <a href="#compte">Compte</a>
           <a href="#tarifs">Tarifs</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -183,6 +185,58 @@
         </div>
       </section>
 
+      <section class="landing-auth" id="compte" aria-labelledby="landing-auth-title">
+        <div class="landing-container landing-auth-layout">
+          <div class="landing-auth-intro">
+            <p class="landing-overline">Un compte, tous vos supports</p>
+            <h2 id="landing-auth-title">Créer votre espace Oenova.</h2>
+            <p>Le compte permet de sauvegarder et retrouver votre cave sur plusieurs appareils. Le mode local reste disponible sans compte.</p>
+            <ul>
+              <li>Une identité unique entre le site et l’application</li>
+              <li>Synchronisation cloud uniquement lorsque vous la choisissez</li>
+              <li>Accès à votre cave depuis un autre appareil</li>
+            </ul>
+            <a class="landing-button landing-button-secondary landing-auth-local-link" href="./app.html">Essayer sans compte</a>
+          </div>
+
+          <div class="landing-auth-panel" id="landingAuthPanel">
+            <div class="landing-auth-tabs" role="tablist" aria-label="Accès au compte Oenova">
+              <button class="is-active" id="landingSignUpTab" type="button" role="tab" aria-selected="true" aria-controls="landingSignUpForm" data-landing-auth-tab="signup">Créer un compte</button>
+              <button id="landingSignInTab" type="button" role="tab" aria-selected="false" aria-controls="landingSignInForm" data-landing-auth-tab="signin" tabindex="-1">Se connecter</button>
+            </div>
+
+            <div class="landing-auth-forms">
+              <form id="landingSignUpForm" data-landing-auth-form="signup" aria-labelledby="landingSignUpTab">
+                <label>Nom affiché<input id="landingSignUpName" type="text" autocomplete="name" maxlength="80" required></label>
+                <label>Email<input id="landingSignUpEmail" type="email" autocomplete="email" inputmode="email" required></label>
+                <label>Mot de passe<input id="landingSignUpPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+                <label>Confirmer le mot de passe<input id="landingSignUpConfirmation" type="password" autocomplete="new-password" minlength="8" required></label>
+                <button class="landing-button landing-button-primary" type="submit">Créer mon compte gratuit</button>
+              </form>
+
+              <form id="landingSignInForm" data-landing-auth-form="signin" aria-labelledby="landingSignInTab" hidden>
+                <label>Email<input id="landingSignInEmail" type="email" autocomplete="email" inputmode="email" required></label>
+                <label>Mot de passe<input id="landingSignInPassword" type="password" autocomplete="current-password" required></label>
+                <button class="landing-button landing-button-primary" type="submit">Me connecter</button>
+                <a class="landing-auth-help-link" href="./app.html?view=account&amp;mode=signin">Mot de passe oublié ou email non confirmé ?</a>
+              </form>
+            </div>
+
+            <div class="landing-session-panel" id="landingSessionPanel" hidden>
+              <span>Compte connecté</span>
+              <strong id="landingSessionEmail"></strong>
+              <div class="landing-session-actions">
+                <a class="landing-button landing-button-primary" href="./app.html?view=account">Ouvrir mon compte</a>
+                <button class="landing-button landing-button-secondary" id="landingSignOutButton" type="button">Se déconnecter</button>
+              </div>
+            </div>
+
+            <p class="landing-auth-status" id="landingAuthStatus" role="status" aria-live="polite"></p>
+            <p class="landing-auth-legal">Aucune donnée bancaire n’est demandée. Vos données locales ne sont jamais envoyées sans action de votre part.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="landing-install" id="installation" aria-labelledby="install-title">
         <div class="landing-container install-layout">
           <div class="install-copy">
@@ -247,5 +301,9 @@
         <div class="landing-footer-meta"><span>Version bêta</span><p>Conçu pour suivre, comprendre et apprécier chaque bouteille.</p></div>
       </div>
     </footer>
+    <script src="cloud-config.js"></script>
+    <script src="cloud-config-loader.js"></script>
+    <script src="src/auth-client.js"></script>
+    <script src="src/landing-auth.js"></script>
   </body>
 </html>

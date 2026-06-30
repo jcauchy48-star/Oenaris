@@ -27,12 +27,14 @@ const VISIBLE_WINE_PAGE_SIZE = 36;
 const DASHBOARD_WINE_LIMIT = 4;
 const CLOUD_REQUEST_TIMEOUT = 9000;
 const CLOUD_SYNC_DEBOUNCE = 1800;
-const SUPABASE_CDN_URL = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 const currentYear = new Date().getFullYear();
 
 const VALID_VIEWS = ["dashboard", "inventory", "cellar", "advice", "assistant", "wishlist", "history", "stats", "library", "scanner", "subscription", "account", "tools", "settings"];
 const CLIENT_VISIBLE_VIEWS = ["dashboard", "inventory", "cellar", "advice", "assistant", "scanner", "wishlist", "history", "stats", "library", "account", "tools"];
 const CLIENT_VISIBLE_NAV_KEYS = [...CLIENT_VISIBLE_VIEWS, "imports"];
+const initialRouteParams = new URLSearchParams(window.location.search);
+const requestedInitialView = initialRouteParams.get("view");
+const requestedAccountMode = initialRouteParams.get("mode");
 const DEFAULT_UI_PREFERENCES = {
   activeView: "",
   activeNavKey: "",
@@ -558,13 +560,19 @@ let authState = loadAuthState();
 let authSession = { accessToken: "", refreshToken: "" };
 let cloudSyncState = loadCloudSyncState();
 let uiPreferences = loadUiPreferences();
-let preferredActiveView = VALID_VIEWS.includes(uiPreferences.activeView)
-  ? uiPreferences.activeView
-  : VALID_VIEWS.includes(uiPreferences.defaultView)
-    ? uiPreferences.defaultView
-    : "dashboard";
+let preferredActiveView = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
+  ? requestedInitialView
+  : VALID_VIEWS.includes(uiPreferences.activeView)
+    ? uiPreferences.activeView
+    : VALID_VIEWS.includes(uiPreferences.defaultView)
+      ? uiPreferences.defaultView
+      : "dashboard";
 let activeView = CLIENT_VISIBLE_VIEWS.includes(preferredActiveView) ? preferredActiveView : "dashboard";
-let activeNavKey = CLIENT_VISIBLE_NAV_KEYS.includes(uiPreferences.activeNavKey) ? uiPreferences.activeNavKey : activeView;
+let activeNavKey = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
+  ? requestedInitialView
+  : CLIENT_VISIBLE_NAV_KEYS.includes(uiPreferences.activeNavKey)
+    ? uiPreferences.activeNavKey
+    : activeView;
 let modificationsSinceBackup = toNumber(localStorage.getItem(MODIFICATION_COUNT_KEY), 0);
 let deferredInstallPrompt = null;
 let pendingConfirm = null;
@@ -868,6 +876,7 @@ try {
   applyInitialUiState();
   bindEvents();
   render({ targets: ["view", "filters"] });
+  applyInitialAccountRoute();
   window.CAVE_CLOUD_CONFIG_READY?.then(() => {
     cloudConfig = getCloudConfig();
     initSupabase()
@@ -1084,6 +1093,17 @@ function setActiveView(viewName, options = {}) {
     closeSidebar();
     if (options.render !== false) render({ targets: ["view"], refreshFilterOptions: false });
     if (nextView === "library") ensureRemoteLibraryLoaded({ silent: true });
+  });
+}
+
+function applyInitialAccountRoute() {
+  if (activeView !== "account" || !["signin", "signup"].includes(requestedAccountMode)) return;
+  const form = requestedAccountMode === "signup" ? elements.signUpForm : elements.signInForm;
+  if (!form) return;
+  form.dataset.routeActive = "true";
+  requestAnimationFrame(() => {
+    form.scrollIntoView({ block: "center" });
+    form.querySelector("input")?.focus({ preventScroll: true });
   });
 }
 
@@ -1874,6 +1894,7 @@ function normalizeCloudSyncState(state = {}) {
 }
 
 function getCloudConfig() {
+  if (window.OenovaAuth?.getCloudConfig) return window.OenovaAuth.getCloudConfig();
   const config = window.CAVE_CLOUD_CONFIG || {};
   const supabaseUrl = cleanString(config.supabaseUrl).replace(/\/$/, "");
   const supabaseAnonKey = cleanString(config.supabaseAnonKey);
@@ -1886,6 +1907,7 @@ function getCloudConfig() {
 }
 
 function isCloudConfigured() {
+  if (window.OenovaAuth?.isCloudConfigured) return window.OenovaAuth.isCloudConfigured();
   cloudConfig = getCloudConfig();
   return Boolean(cloudConfig.enabled);
 }
@@ -5247,25 +5269,12 @@ async function initSupabase() {
   if (supabaseInitPromise) return supabaseInitPromise;
 
   supabaseInitPromise = (async () => {
-    let createClient = window.supabase?.createClient;
-    if (!createClient) {
-      try {
-        const module = await import(SUPABASE_CDN_URL);
-        createClient = module.createClient;
-      } catch (error) {
-        logError(error, "loadSupabaseClient");
-        return null;
-      }
+    if (!window.OenovaAuth?.loadSupabaseClient) {
+      throw new Error("Le module d'authentification Oenova est indisponible.");
     }
-
-    supabaseClient = createClient(cloudConfig.supabaseUrl, cloudConfig.supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    });
-    onAuthStateChanged();
+    supabaseClient = await window.OenovaAuth.loadSupabaseClient();
+    if (!supabaseClient) return null;
+    await onAuthStateChanged();
     const session = await getCurrentSession();
     if (session) {
       saveAuthFromSupabase({ session });
@@ -5283,16 +5292,11 @@ async function initSupabase() {
 }
 
 function getSupabaseClient() {
-  return supabaseClient;
+  return window.OenovaAuth?.getSupabaseClient?.() || supabaseClient;
 }
 
 async function getCurrentSession() {
-  const client = await initSupabase();
-  if (client?.auth?.getSession) {
-    const { data, error } = await client.auth.getSession();
-    if (error) throw error;
-    return data?.session || null;
-  }
+  if (window.OenovaAuth?.getCurrentSession) return window.OenovaAuth.getCurrentSession();
   if (authSession.accessToken && authState.user?.id) {
     return {
       access_token: authSession.accessToken,
@@ -5309,10 +5313,9 @@ async function getCurrentUser() {
   return session?.user || authState.user || null;
 }
 
-function onAuthStateChanged(callback) {
-  const client = getSupabaseClient();
-  if (!client?.auth?.onAuthStateChange || supabaseAuthSubscription) return supabaseAuthSubscription;
-  const subscription = client.auth.onAuthStateChange(async (event, session) => {
+async function onAuthStateChanged(callback) {
+  if (!window.OenovaAuth?.onAuthStateChanged || supabaseAuthSubscription) return supabaseAuthSubscription;
+  supabaseAuthSubscription = await window.OenovaAuth.onAuthStateChanged(async (event, session) => {
     if (session) {
       saveAuthFromSupabase({ session });
       await ensureUserProfile();
@@ -5324,7 +5327,6 @@ function onAuthStateChanged(callback) {
     renderAuthState();
     if (typeof callback === "function") callback(event, session);
   });
-  supabaseAuthSubscription = subscription?.data?.subscription || subscription;
   return supabaseAuthSubscription;
 }
 
@@ -5587,57 +5589,28 @@ async function handleAuthSubmit(event, mode) {
 }
 
 async function signInWithEmail(email, password) {
-  const client = await initSupabase();
-  if (client?.auth?.signInWithPassword) {
-    const { data, error } = await client.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    if (data?.session) saveAuthFromSupabase(data);
-    await ensureUserProfile();
-    await hydrateCloudStateAfterSignIn();
-    return data;
-  }
-  const data = await supabaseAuthRequest("/token?grant_type=password", {
-    method: "POST",
-    body: { email, password }
-  });
-  saveAuthFromSupabase(data);
+  if (!window.OenovaAuth?.signInWithEmail) throw new Error("Le module d'authentification Oenova est indisponible.");
+  const data = await window.OenovaAuth.signInWithEmail(email, password);
+  if (data?.session) saveAuthFromSupabase(data);
   await ensureUserProfile();
   await hydrateCloudStateAfterSignIn();
   return data;
 }
 
 async function signUpWithEmail(email, password, displayName = "") {
-  const client = await initSupabase();
-  if (client?.auth?.signUp) {
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName },
-        emailRedirectTo: getAuthRedirectUrl()
+  if (!window.OenovaAuth?.signUpWithEmail) throw new Error("Le module d'authentification Oenova est indisponible.");
+  const data = await window.OenovaAuth.signUpWithEmail(email, password, displayName);
+  if (data?.session) saveAuthFromSupabase(data);
+  if (data?.user && !data?.session) {
+    saveAuthState({
+      ...authState,
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        displayName
       }
     });
-    if (error) throw error;
-    if (data?.session) saveAuthFromSupabase(data);
-    if (data?.user && !data?.session) {
-      saveAuthState({
-        ...authState,
-        user: {
-          id: data.user.id,
-          email: data.user.email,
-          displayName
-        }
-      });
-    }
-    await ensureUserProfile(displayName);
-    await hydrateCloudStateAfterSignIn();
-    return data;
   }
-  const data = await supabaseAuthRequest(`/signup?redirect_to=${encodeURIComponent(getAuthRedirectUrl())}`, {
-    method: "POST",
-    body: { email, password, data: { display_name: displayName } }
-  });
-  if (data.access_token) saveAuthFromSupabase(data);
   await ensureUserProfile(displayName);
   await hydrateCloudStateAfterSignIn();
   return data;
@@ -5705,16 +5678,7 @@ async function signOut() {
 
 async function signOutUser() {
   try {
-    const client = await initSupabase();
-    if (client?.auth?.signOut) {
-      await client.auth.signOut();
-    } else if (isCloudConfigured() && authSession.accessToken) {
-      await supabaseAuthRequest("/logout", {
-        method: "POST",
-        token: authSession.accessToken,
-        allowEmpty: true
-      });
-    }
+    if (window.OenovaAuth?.signOut && isCloudConfigured()) await window.OenovaAuth.signOut();
   } catch {
     // La déconnexion locale reste prioritaire.
   }

@@ -7,6 +7,7 @@ Site vitrine et application de gestion de cave à vin, installable en PWA et uti
 - `index.html` : site vitrine public Oenova.
 - `app.html` : application complète de gestion de cave.
 - `styles.css` : styles partagés, avec la vitrine isolée sous `.landing-body`.
+- `src/auth-client.js` : client Supabase Auth partagé par la vitrine et l'application.
 - `manifest.webmanifest` : installation PWA avec démarrage direct sur `app.html`.
 - `service-worker.js` : cache hors ligne de la vitrine et de l'application.
 
@@ -39,6 +40,25 @@ Depuis la vitrine, le bouton **Ouvrir l'application** mène à `./app.html`. L'a
 ## Comptes client et cloud
 
 La version web reste fonctionnelle sans compte. Supabase est préparé avec `cloud-config.js` et une clé publishable frontend.
+
+### Compte Oenova unique
+
+- La création de compte et la connexion sont disponibles depuis `index.html` comme depuis `app.html`.
+- Les deux pages utilisent le même projet Supabase Auth : il n'existe aucun compte séparé pour la vitrine.
+- La session Supabase native est partagée sur le même domaine, sans stockage manuel des `accessToken` ou `refreshToken` par le code Oenova.
+- Le compte reste optionnel. La cave fonctionne toujours en local et hors ligne sans connexion.
+- Les données locales restent sur l'appareil tant que l'utilisateur ne choisit pas de les synchroniser.
+- Après connexion, la vue Compte permet d'envoyer la cave locale vers Supabase ou de restaurer la dernière cave cloud.
+- Sur un autre navigateur ou appareil, il faut se connecter au même compte puis restaurer la cave cloud.
+
+Dans `Supabase Dashboard > Authentication > URL Configuration`, configurer :
+
+```text
+Site URL: https://jcauchy48-star.github.io/Oenova/app.html
+Redirect URLs: https://jcauchy48-star.github.io/Oenova/*
+```
+
+Cette wildcard couvre la landing, `app.html` et les routes `?view=account&mode=signin|signup`.
 
 1. Dans Supabase, exécuter `supabase/schema.sql` depuis ce dépôt.
 2. Exécuter ensuite `supabase/seed.sql` depuis ce dépôt pour ajouter quelques références communes.

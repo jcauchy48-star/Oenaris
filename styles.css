@@ -841,6 +841,11 @@ h3 {
   border-color: rgba(88, 123, 101, 0.32);
 }
 
+.account-card[data-route-active="true"] {
+  border-color: rgba(143, 29, 63, 0.5);
+  box-shadow: 0 0 0 3px rgba(143, 29, 63, 0.08), var(--soft-shadow);
+}
+
 .muted-note {
   color: var(--muted);
   font-size: 0.86rem;
@@ -3727,6 +3732,229 @@ dialog[open] {
   font-weight: 500;
 }
 
+.landing-auth {
+  background: #26191d;
+  border-top: 1px solid rgba(245, 238, 226, 0.12);
+  padding: 116px 0;
+  scroll-margin-top: 76px;
+}
+
+.landing-auth-layout {
+  align-items: start;
+  display: grid;
+  gap: 100px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(480px, 1.2fr);
+}
+
+.landing-auth-intro {
+  max-width: 510px;
+  padding-top: 20px;
+}
+
+.landing-auth-intro > p:not(.landing-overline) {
+  color: var(--landing-muted);
+  font-size: 1rem;
+}
+
+.landing-auth-intro ul {
+  border-bottom: 1px solid rgba(245, 238, 226, 0.16);
+  border-top: 1px solid rgba(245, 238, 226, 0.16);
+  list-style: none;
+  margin: 30px 0;
+  padding: 16px 0;
+}
+
+.landing-auth-intro li {
+  color: var(--landing-muted);
+  font-size: 0.82rem;
+  padding: 8px 0 8px 20px;
+  position: relative;
+}
+
+.landing-auth-intro li::before {
+  background: var(--landing-sage);
+  border-radius: 50%;
+  content: "";
+  height: 6px;
+  left: 0;
+  position: absolute;
+  top: 1.05em;
+  width: 6px;
+}
+
+.landing-auth-local-link {
+  min-width: 190px;
+}
+
+.landing-auth-panel {
+  background: #f3eadf;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+  color: #291e1d;
+  min-width: 0;
+  padding: 30px;
+  transition: opacity 180ms ease;
+}
+
+.landing-auth-panel.is-busy {
+  cursor: progress;
+  opacity: 0.78;
+}
+
+.landing-auth-tabs {
+  background: #e6d9cd;
+  border: 1px solid #cdbeb1;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 28px;
+  padding: 4px;
+}
+
+.landing-auth-tabs button {
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  color: #70645e;
+  cursor: pointer;
+  font: 700 0.82rem var(--font-ui);
+  min-height: 43px;
+  padding: 9px 12px;
+}
+
+.landing-auth-tabs button.is-active {
+  background: #fffaf3;
+  box-shadow: 0 4px 14px rgba(55, 31, 28, 0.1);
+  color: #7c1f3b;
+}
+
+.landing-auth-tabs button:focus-visible,
+.landing-auth-panel input:focus-visible,
+.landing-auth-panel button:focus-visible,
+.landing-auth-panel a:focus-visible {
+  outline: 3px solid #b58b45;
+  outline-offset: 2px;
+}
+
+.landing-auth-forms form {
+  display: grid;
+  gap: 17px;
+}
+
+.landing-auth-forms form[hidden] {
+  display: none;
+}
+
+.landing-auth-forms label {
+  color: #5e514c;
+  display: grid;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 7px;
+}
+
+.landing-auth-forms input {
+  background: #fffaf3;
+  border: 1px solid #cdbeb1;
+  border-radius: 4px;
+  color: #291e1d;
+  font: 400 1rem var(--font-ui);
+  min-height: 48px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.landing-auth-forms input:hover {
+  border-color: #a9917f;
+}
+
+.landing-auth-forms .landing-button {
+  margin-top: 5px;
+  width: 100%;
+}
+
+.landing-auth-help-link {
+  color: #7c1f3b !important;
+  font-size: 0.75rem;
+  justify-self: center;
+}
+
+.landing-session-panel {
+  background: #fffaf3;
+  border: 1px solid #cdbeb1;
+  border-radius: 5px;
+  display: grid;
+  padding: 24px;
+}
+
+.landing-session-panel[hidden] {
+  display: none;
+}
+
+.landing-session-panel > span {
+  color: #587b65;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.landing-session-panel > strong {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 7px 0 20px;
+  overflow-wrap: anywhere;
+}
+
+.landing-session-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.landing-session-actions .landing-button-secondary {
+  border-color: #9e8174;
+  color: #6b2035 !important;
+}
+
+.landing-auth-status {
+  border-radius: 4px;
+  color: #6f625c;
+  font-size: 0.78rem;
+  margin: 18px 0 0;
+  min-height: 1.5em;
+  padding: 0;
+}
+
+.landing-auth-status:not(:empty) {
+  background: #e7dbce;
+  padding: 10px 12px;
+}
+
+.landing-auth-status[data-status="success"] {
+  background: #dde8dd;
+  color: #3d6249;
+}
+
+.landing-auth-status[data-status="warning"] {
+  background: #f2dfc7;
+  color: #7b4d22;
+}
+
+.landing-auth-status[data-status="error"] {
+  background: #f2d8d3;
+  color: #8d342c;
+}
+
+.landing-auth-legal {
+  border-top: 1px solid #d4c5b8;
+  color: #7a6d67;
+  font-size: 0.68rem;
+  margin: 20px 0 0;
+  padding-top: 16px;
+}
+
 .landing-install {
   background: #f1e8dc;
   color: #271c1b;
@@ -4083,6 +4311,7 @@ dialog[open] {
 
   .landing-section-intro-split,
   .landing-trust-grid,
+  .landing-auth-layout,
   .install-layout,
   .faq-layout {
     gap: 52px;
@@ -4257,6 +4486,7 @@ dialog[open] {
   .landing-features,
   .landing-demo,
   .landing-trust,
+  .landing-auth,
   .landing-install,
   .landing-pricing,
   .landing-faq {
@@ -4313,6 +4543,7 @@ dialog[open] {
   }
 
   .landing-trust-grid,
+  .landing-auth-layout,
   .install-layout,
   .faq-layout {
     gap: 36px;
@@ -4320,6 +4551,23 @@ dialog[open] {
 
   .landing-pricing-card {
     padding: 24px;
+  }
+
+  .landing-auth-intro {
+    padding-top: 0;
+  }
+
+  .landing-auth-panel {
+    padding: 18px;
+  }
+
+  .landing-auth-tabs button {
+    font-size: 0.74rem;
+    padding-inline: 7px;
+  }
+
+  .landing-session-actions {
+    grid-template-columns: 1fr;
   }
 
   .landing-final-cta {

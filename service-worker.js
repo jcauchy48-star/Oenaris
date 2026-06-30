@@ -1,4 +1,4 @@
-const cacheName = "oenova-v27";
+const cacheName = "oenova-v28";
 const cachedFiles = [
   "./",
   "./index.html",
@@ -7,6 +7,8 @@ const cachedFiles = [
   "./cloud-config-loader.js",
   "./cloud-config.example.js",
   "./src/shared-helpers.js",
+  "./src/auth-client.js",
+  "./src/landing-auth.js",
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg"
@@ -20,6 +22,8 @@ const networkFirstUrls = new Set([
   new URL("./styles.css", self.location.href).pathname,
   new URL("./cloud-config-loader.js", self.location.href).pathname,
   new URL("./src/shared-helpers.js", self.location.href).pathname,
+  new URL("./src/auth-client.js", self.location.href).pathname,
+  new URL("./src/landing-auth.js", self.location.href).pathname,
   new URL("./service-worker.js", self.location.href).pathname
 ]);
 
