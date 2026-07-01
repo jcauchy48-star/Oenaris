@@ -11,7 +11,7 @@ Site vitrine et application de gestion de cave à vin, installable en PWA et uti
 - `manifest.webmanifest` : installation PWA avec démarrage direct sur `app.html`.
 - `service-worker.js` : cache hors ligne de la vitrine et de l'application.
 
-Depuis la vitrine, le bouton **Ouvrir l'application** mène à `./app.html`. L'application reste utilisable sans compte et sans backend.
+La vitrine privilégie désormais la création d'un compte Oenova partagé avec l'application. Le lien **Essayer sans compte** mène toujours à `./app.html`, qui reste entièrement utilisable en local et sans backend.
 
 ## Fonctionnalités
 

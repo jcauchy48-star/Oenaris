@@ -1,4 +1,4 @@
-const cacheName = "oenova-v29";
+const cacheName = "oenova-v30";
 const cachedFiles = [
   "./",
   "./index.html",

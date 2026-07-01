@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#241417">
-    <meta name="description" content="Oenova transforme votre cave personnelle en collection élégante, suivie et intelligente.">
+    <meta name="theme-color" content="#160d10">
+    <meta name="description" content="Créez votre espace Oenova et retrouvez votre cave à vin personnelle sur tous vos supports.">
     <meta name="robots" content="index, follow">
     <meta name="cave-cloud-config" content="./cloud-config.js">
     <title>Oenova | Votre cave à vin, enfin maîtrisée</title>
@@ -41,18 +41,19 @@
       <section class="landing-hero" id="accueil" aria-labelledby="hero-title">
         <div class="landing-container landing-hero-grid">
           <div class="landing-hero-copy">
-            <p class="landing-overline">Oenova · Cave personnelle</p>
-            <h1 id="hero-title">Votre cave à vin, enfin maîtrisée.</h1>
-            <p class="landing-hero-lead">Oenova transforme votre cave personnelle en collection élégante, suivie et intelligente.</p>
-            <p class="landing-hero-detail">Inventaire, cave virtuelle, scanner d’étiquettes, notes de dégustation, conseils de garde et sauvegarde cloud optionnelle.</p>
+            <p class="landing-overline">Oenova · Cave personnelle connectée</p>
+            <h1 id="hero-title">Votre cave à vin,<br>enfin maîtrisée.</h1>
+            <p class="landing-hero-lead">Créez votre espace Oenova, sauvegardez votre collection et retrouvez chaque bouteille sur tous vos supports.</p>
+            <p class="landing-hero-detail">Sans carte bancaire. Mode local disponible. Export à tout moment.</p>
             <div class="landing-actions">
-              <a class="landing-button landing-button-primary" href="./app.html">Ouvrir l’application</a>
-              <a class="landing-button landing-button-secondary" href="#demo">Voir la démonstration</a>
+              <a class="landing-button landing-button-primary" href="#landingAuthPanel" data-landing-auth-open="signup">Créer mon compte gratuit</a>
+              <a class="landing-button landing-button-secondary" href="#landingAuthPanel" data-landing-auth-open="signin">Se connecter</a>
+              <a class="landing-link-tertiary" href="./app.html">Essayer sans compte</a>
             </div>
             <ul class="landing-proof-list" aria-label="Avantages principaux">
-              <li>Sans compte obligatoire</li>
-              <li>Disponible hors ligne</li>
-              <li>Export à tout moment</li>
+              <li>Compte gratuit</li>
+              <li>Cloud optionnel</li>
+              <li>Contrôle total</li>
             </ul>
           </div>
 
@@ -80,10 +81,10 @@
                     <div class="product-bottle-card">
                       <div class="product-bottle-visual"><span></span></div>
                       <div>
-                        <small>Bordeaux · 2018</small>
-                        <strong>Château Margaux</strong>
-                        <p>Premier Grand Cru Classé</p>
-                        <div class="product-tags"><span>Prêt à boire</span><span>Casier A4</span></div>
+                        <small>Saint-Émilion · 2019</small>
+                        <strong>Domaine Valombre</strong>
+                        <p>Cuvée Héritage</p>
+                        <div class="product-tags"><span>Prêt à boire</span><span>Casier B4</span></div>
                       </div>
                     </div>
                     <div class="product-cellar-map">
@@ -98,7 +99,19 @@
                 </div>
               </div>
             </div>
-            <div class="product-stage-caption"><span>Collection suivie</span><strong>Une vue claire, bouteille après bouteille.</strong></div>
+            <div class="product-phone" aria-hidden="true">
+              <div class="product-phone-top"><span>OENOVA</span><i></i></div>
+              <small>À ouvrir ce mois-ci</small>
+              <strong>Clos Saint-Aubin</strong>
+              <span class="product-phone-year">2020 · Blanc</span>
+              <div class="product-phone-rack"><i></i><i class="filled"></i><i></i><i class="filled"></i><i></i><i></i></div>
+            </div>
+            <div class="product-floating-wine" aria-hidden="true">
+              <span class="product-floating-bottle"><i></i></span>
+              <div><small>Prochaine dégustation</small><strong>Château Belrive</strong><em>2021 · Casier C2</em></div>
+            </div>
+            <div class="product-stage-stat" aria-hidden="true"><strong>24</strong><span>bouteilles prêtes</span></div>
+            <div class="product-stage-caption"><span>Collection privée</span><strong>Une vue claire, bouteille après bouteille.</strong></div>
           </div>
         </div>
         <a class="landing-next" href="#constat">Découvrir Oenova <span aria-hidden="true">↓</span></a>
@@ -107,16 +120,14 @@
       <section class="landing-problem" id="constat" aria-labelledby="problem-title">
         <div class="landing-container">
           <div class="landing-section-intro">
-            <p class="landing-overline">Une cave mérite mieux qu’un oubli</p>
-            <h2 id="problem-title">Chaque bouteille a son moment.</h2>
-            <p>Oenova rassemble les informations dispersées pour vous aider à profiter de votre collection avec plus de sérénité.</p>
+            <p class="landing-overline">Le plaisir, sans l’approximation</p>
+            <h2 id="problem-title">Une belle cave ne devrait jamais être approximative.</h2>
+            <p>Bouteilles oubliées, millésimes perdus, fichiers Excel dispersés : Oenova remet de l’ordre sans retirer le plaisir.</p>
           </div>
           <div class="problem-list">
-            <article><span>01</span><h3>Bouteilles oubliées</h3><p>Retrouvez les cuvées qui arrivent dans leur meilleure fenêtre.</p></article>
-            <article><span>02</span><h3>Millésimes mal suivis</h3><p>Gardez une vision simple de ce qui peut attendre et de ce qui doit être ouvert.</p></article>
-            <article><span>03</span><h3>Tableurs dispersés</h3><p>Remplacez les lignes difficiles à lire par une cave vivante et structurée.</p></article>
-            <article><span>04</span><h3>Choix du moment</h3><p>Trouvez plus facilement la bouteille adaptée au plat ou à l’occasion.</p></article>
-            <article><span>05</span><h3>Sauvegarde incertaine</h3><p>Exportez votre cave quand vous le souhaitez, dans des formats ouverts.</p></article>
+            <article><span>01</span><h3>Vous oubliez ce que vous possédez</h3><p>Chaque domaine, millésime et quantité reste lisible, même lorsque la collection grandit.</p></article>
+            <article><span>02</span><h3>Vous ne savez plus quoi ouvrir</h3><p>Les fenêtres de dégustation remettent les bonnes bouteilles au premier plan.</p></article>
+            <article><span>03</span><h3>Votre suivi manque de continuité</h3><p>Une cave structurée remplace les notes éparses et les fichiers difficiles à maintenir.</p></article>
           </div>
         </div>
       </section>
@@ -128,34 +139,31 @@
             <p>Une application complète qui reste agréable à utiliser, de la première bouteille à la collection entière.</p>
           </div>
           <div class="feature-grid">
-            <article class="feature-card feature-card-wide"><span class="feature-index">01</span><h3>Inventaire intelligent</h3><p>Recherchez, filtrez et suivez quantités, valeurs, fenêtres de dégustation et emplacements.</p><em>Vue synthétique</em></article>
-            <article class="feature-card"><span class="feature-index">02</span><h3>Cave virtuelle</h3><p>Visualisez vos armoires, casiers, rangées et colonnes.</p><em>Emplacements précis</em></article>
-            <article class="feature-card"><span class="feature-index">03</span><h3>Scanner assisté</h3><p>Préremplissez une fiche avec une détection locale, complétée manuellement si besoin.</p><em>IA optionnelle</em></article>
-            <article class="feature-card"><span class="feature-index">04</span><h3>Notes de dégustation</h3><p>Conservez vos impressions, accords et envies de rachat.</p><em>Mémoire personnelle</em></article>
-            <article class="feature-card"><span class="feature-index">05</span><h3>Conseils de garde</h3><p>Repérez les vins prêts, à garder ou proches de leur limite.</p><em>Priorités utiles</em></article>
-            <article class="feature-card"><span class="feature-index">06</span><h3>Exports ouverts</h3><p>JSON, CSV et vue PDF imprimable pour ne jamais enfermer vos données.</p><em>Libre à tout moment</em></article>
-            <article class="feature-card"><span class="feature-index">07</span><h3>Cloud optionnel</h3><p>Créez un compte uniquement lorsque vous souhaitez synchroniser votre cave.</p><em>Supabase sécurisé</em></article>
-            <article class="feature-card feature-card-wide"><span class="feature-index">08</span><h3>Mode local et hors ligne</h3><p>Commencez immédiatement. Votre cave reste disponible sur l’appareil, même sans connexion réseau.</p><em>PWA installable</em></article>
+            <article class="feature-card feature-card-inventory"><span class="feature-index">01</span><div class="feature-visual feature-visual-inventory" aria-hidden="true"><i></i><i></i><i></i></div><h3>Inventaire intelligent</h3><p>Suivez domaines, cuvées, millésimes, valeurs, quantités et fenêtres de dégustation.</p><em>Votre collection, en un regard</em></article>
+            <article class="feature-card feature-card-cellar"><span class="feature-index">02</span><div class="feature-visual feature-visual-cellar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Cave virtuelle</h3><p>Retrouvez chaque bouteille à son emplacement exact.</p><em>Armoires, casiers et rangées</em></article>
+            <article class="feature-card feature-card-account"><span class="feature-index">03</span><div class="feature-visual feature-visual-account" aria-hidden="true"><i></i><i></i><b>O</b></div><h3>Compte multi-supports</h3><p>Créez votre espace Oenova et retrouvez votre cave sur vos appareils.</p><em>Une identité, plusieurs supports</em></article>
+            <article class="feature-card feature-card-scan"><span class="feature-index">04</span><div class="feature-visual feature-visual-scan" aria-hidden="true"><i></i><span>MAISON OENOVA</span></div><h3>Scanner assisté</h3><p>Préremplissez une fiche, puis validez les informations avant ajout.</p><em>Analyse locale · IA optionnelle</em></article>
           </div>
+          <p class="feature-secondary-line">Notes de dégustation <span>·</span> Exports <span>·</span> Mode hors ligne <span>·</span> Cloud optionnel <span>·</span> Conseils de garde</p>
         </div>
       </section>
 
       <section class="landing-demo" id="demo" aria-labelledby="demo-title">
         <div class="landing-container">
           <div class="landing-section-intro demo-intro">
-            <p class="landing-overline">Démonstration</p>
+            <p class="landing-overline">Au cœur d’Oenova</p>
             <h2 id="demo-title">Votre collection, sous le bon angle.</h2>
-            <p>Quatre vues complémentaires pour décider, retrouver et comprendre sans surcharger l’écran.</p>
+            <p>Quatre vues complémentaires pour décider, retrouver et comprendre chaque bouteille sans surcharger l’écran.</p>
           </div>
           <div class="demo-gallery">
             <article class="demo-screen demo-screen-dashboard">
-              <div class="demo-screen-top"><span>Tableau de bord</span><b>Vue d’ensemble</b></div>
+              <div class="demo-screen-top"><span>Tableau de bord</span><b>Maison Oenova</b></div>
               <div class="demo-stat-row"><span><small>En cave</small><strong>128</strong></span><span><small>À boire</small><strong>24</strong></span><span><small>Favoris</small><strong>11</strong></span></div>
               <div class="demo-chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
             </article>
             <article class="demo-screen demo-screen-bottle">
               <div class="demo-screen-top"><span>Fiche bouteille</span><b>Détails utiles</b></div>
-              <div class="demo-bottle-layout"><div class="demo-bottle-shape"><i></i></div><div><small>Saint-Émilion Grand Cru</small><h3>Château Canon</h3><p>2019 · Rouge · Magnum</p><hr><b>À garder jusqu’en 2038</b></div></div>
+              <div class="demo-bottle-layout"><div class="demo-bottle-shape"><i></i></div><div><small>Saint-Émilion Grand Cru</small><h3>Domaine Valombre</h3><p>2019 · Rouge · Magnum</p><hr><b>À garder jusqu’en 2038</b></div></div>
             </article>
             <article class="demo-screen demo-screen-cellar">
               <div class="demo-screen-top"><span>Cave virtuelle</span><b>Armoire principale</b></div>
@@ -171,13 +179,28 @@
               <p>Détection limitée · vérification avant ajout</p>
             </article>
           </div>
-          <div class="demo-action"><a class="landing-button landing-button-primary" href="./app.html">Explorer l’application</a></div>
+          <div class="demo-action"><a class="landing-link-tertiary" href="./app.html">Explorer Oenova <span aria-hidden="true">→</span></a></div>
+        </div>
+      </section>
+
+      <section class="landing-beta" id="retours-beta" aria-labelledby="beta-title">
+        <div class="landing-container">
+          <div class="landing-section-intro landing-section-intro-split">
+            <div><p class="landing-overline">Retours bêta</p><h2 id="beta-title">Pensé avec les premiers utilisateurs.</h2></div>
+            <p>Oenova évolue autour de besoins simples : retrouver, comprendre et apprécier chaque bouteille.</p>
+          </div>
+          <div class="beta-grid">
+            <article><span aria-hidden="true">“</span><blockquote>Je veux arrêter de gérer ma cave dans Excel.</blockquote><p>Amateur régulier</p></article>
+            <article><span aria-hidden="true">“</span><blockquote>Je veux savoir rapidement quoi ouvrir.</blockquote><p>Cave familiale</p></article>
+            <article><span aria-hidden="true">“</span><blockquote>Je veux retrouver mes bouteilles sans fouiller.</blockquote><p>Collection privée</p></article>
+          </div>
+          <p class="beta-disclaimer">Les avis publics seront ajoutés après les premiers retours utilisateurs vérifiés.</p>
         </div>
       </section>
 
       <section class="landing-trust" id="confidentialite" aria-labelledby="trust-title">
         <div class="landing-container landing-trust-grid">
-          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent sous votre contrôle.</h2><p>Oenova privilégie une approche locale et transparente. Le cloud n’est jamais une condition pour commencer.</p></div>
+          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent à vous.</h2><p>Oenova privilégie une approche locale et transparente. Le cloud n’est jamais une condition pour commencer.</p><div class="trust-seal" aria-hidden="true"><span>O</span><small>Collection privée</small></div></div>
           <ul class="trust-list">
             <li><span>01</span><strong>Oenova fonctionne localement par défaut.</strong></li>
             <li><span>02</span><strong>Aucun compte obligatoire pour commencer.</strong></li>
@@ -190,18 +213,20 @@
       <section class="landing-auth" id="compte" aria-labelledby="landing-auth-title">
         <div class="landing-container landing-auth-layout">
           <div class="landing-auth-intro">
-            <p class="landing-overline">Un compte, tous vos supports</p>
-            <h2 id="landing-auth-title">Créer votre espace Oenova.</h2>
-            <p>Le compte permet de sauvegarder et retrouver votre cave sur plusieurs appareils. Le mode local reste disponible sans compte.</p>
+            <p class="landing-overline">Espace privé</p>
+            <h2 id="landing-auth-title">Votre espace privé Oenova.</h2>
+            <p>Un seul compte pour créer, sauvegarder et retrouver votre cave sur tous vos supports.</p>
             <ul>
-              <li>Une identité unique entre le site et l’application</li>
-              <li>Synchronisation cloud uniquement lorsque vous la choisissez</li>
-              <li>Accès à votre cave depuis un autre appareil</li>
+              <li><span>01</span><div><strong>Compte unique</strong><small>Une identité commune au site et à l’application.</small></div></li>
+              <li><span>02</span><div><strong>Cave synchronisable</strong><small>Le cloud reste un choix, jamais une obligation.</small></div></li>
+              <li><span>03</span><div><strong>Accès multi-supports</strong><small>Retrouvez votre collection sur vos appareils.</small></div></li>
+              <li><span>04</span><div><strong>Mode local conservé</strong><small>Commencez sans compte et exportez à tout moment.</small></div></li>
             </ul>
-            <a class="landing-button landing-button-secondary landing-auth-local-link" href="./app.html">Essayer sans compte</a>
+            <a class="landing-link-tertiary landing-auth-local-link" href="./app.html">Essayer sans compte <span aria-hidden="true">→</span></a>
           </div>
 
           <div class="landing-auth-panel" id="landingAuthPanel">
+            <p class="landing-auth-badge">Espace privé</p>
             <div class="landing-auth-tabs" role="tablist" aria-label="Accès au compte Oenova">
               <button class="is-active" id="landingSignUpTab" type="button" role="tab" aria-selected="true" aria-controls="landingSignUpForm" data-landing-auth-tab="signup">Créer un compte</button>
               <button id="landingSignInTab" type="button" role="tab" aria-selected="false" aria-controls="landingSignInForm" data-landing-auth-tab="signin" tabindex="-1">Se connecter</button>
@@ -242,15 +267,15 @@
       <section class="landing-install" id="installation" aria-labelledby="install-title">
         <div class="landing-container install-layout">
           <div class="install-copy">
-            <p class="landing-overline">Installation PWA</p>
-            <h2 id="install-title">Oenova, toujours à portée de main.</h2>
-            <p>La version actuelle s’installe directement depuis votre navigateur. Aucun App Store n’est nécessaire.</p>
+            <p class="landing-overline">Installation</p>
+            <h2 id="install-title">Installez Oenova comme une application.</h2>
+            <p>La version actuelle s’installe directement depuis votre navigateur, sur ordinateur comme sur mobile.</p>
             <a class="landing-button landing-button-primary" href="./app.html">Ouvrir l’application</a>
           </div>
           <ol class="install-steps">
-            <li><span>01</span><div><strong>Sur ordinateur</strong><p>Ouvrez l’app, puis utilisez l’option d’installation proposée par votre navigateur.</p></div></li>
-            <li><span>02</span><div><strong>Sur mobile</strong><p>Ouvrez l’app, puis choisissez « Ajouter à l’écran d’accueil » dans le menu du navigateur.</p></div></li>
-            <li><span>03</span><div><strong>Une fois installée</strong><p>Lancez Oenova comme une application et retrouvez votre cave, même hors ligne.</p></div></li>
+            <li><span>01</span><div><strong>Ouvrir Oenova</strong><p>Lancez l’application depuis votre navigateur habituel.</p></div></li>
+            <li><span>02</span><div><strong>Ajouter à l’écran d’accueil</strong><p>Utilisez l’option d’installation proposée dans le menu du navigateur.</p></div></li>
+            <li><span>03</span><div><strong>Gérer sa cave partout</strong><p>Retrouvez une expérience dédiée et disponible hors ligne.</p></div></li>
           </ol>
         </div>
       </section>
@@ -263,9 +288,9 @@
             <p>Le cœur d’Oenova est accessible gratuitement en local. Les offres connectées sont encore en préparation.</p>
           </div>
           <div class="landing-pricing-grid">
-            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Local</h3><p class="landing-pricing-price">Gratuit</p><ul><li>Inventaire complet</li><li>Cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Fonctionnement hors ligne</li></ul><a class="landing-button landing-button-primary" href="./app.html">Ouvrir Oenova</a></article>
-            <article class="landing-pricing-card"><span class="landing-pricing-label">Bientôt</span><h3>Premium</h3><p class="landing-pricing-price">À venir</p><ul><li>Synchronisation cloud enrichie</li><li>Scanner IA avancé</li><li>Conseils personnalisés</li><li>Continuité multi-appareils</li></ul><span class="landing-pricing-placeholder">En préparation</span></article>
-            <article class="landing-pricing-card"><span class="landing-pricing-label">Bientôt</span><h3>Collectionneur</h3><p class="landing-pricing-price">À venir</p><ul><li>Rapports avancés</li><li>Valorisation de cave</li><li>Statistiques approfondies</li><li>Outils de collection</li></ul><span class="landing-pricing-placeholder">En préparation</span></article>
+            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Local</h3><p class="landing-pricing-price">Gratuit</p><ul><li>Inventaire complet</li><li>Cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Mode hors ligne</li></ul><a class="landing-button landing-button-primary" href="./app.html">Essayer sans compte</a></article>
+            <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Premium</h3><p class="landing-pricing-price">À venir</p><ul><li>Synchronisation cloud enrichie</li><li>Scanner IA avancé</li><li>Conseils personnalisés</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
+            <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Collectionneur</h3><p class="landing-pricing-price">À venir</p><ul><li>Rapports avancés</li><li>Valorisation de cave</li><li>Statistiques approfondies</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
           </div>
           <p class="landing-pricing-notice">Les offres premium sont en préparation. Aucun paiement réel n’est actif actuellement.</p>
         </div>
@@ -290,8 +315,12 @@
       <section class="landing-final-cta" aria-labelledby="final-title">
         <div class="landing-container">
           <p class="landing-overline">Votre collection vous attend</p>
-          <h2 id="final-title">Une cave plus claire commence par une bouteille.</h2>
-          <a class="landing-button landing-button-light" href="./app.html">Ouvrir l’application</a>
+          <h2 id="final-title">Prêt à créer votre cave Oenova ?</h2>
+          <p>Créez votre compte gratuit ou commencez immédiatement en local. Vous gardez le contrôle de vos données.</p>
+          <div class="landing-final-actions">
+            <a class="landing-button landing-button-light" href="#landingAuthPanel" data-landing-auth-open="signup">Créer mon compte gratuit</a>
+            <a class="landing-button landing-button-secondary" href="./app.html">Essayer sans compte</a>
+          </div>
         </div>
       </section>
     </main>

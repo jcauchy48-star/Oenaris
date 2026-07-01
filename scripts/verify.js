@@ -32,7 +32,14 @@ assert.match(landingHtml, /id="landingSignUpConfirmation"/, "landing page must c
 assert.match(landingHtml, /Créer mon compte gratuit/, "landing page must offer free account creation");
 assert.match(landingHtml, /Se connecter/, "landing page must offer sign in");
 assert.match(landingHtml, /Essayer sans compte/, "landing page must keep local mode visible");
+assert.match(landingHtml, /<section class="landing-hero"[\s\S]*Créer mon compte gratuit/, "hero must prioritize account creation");
+assert.match(landingHtml, /Retours bêta/, "landing page must include transparent beta feedback");
+assert.match(landingHtml, /Prêt à créer votre cave Oenova \?/, "landing page must include the final account CTA");
+assert.match(landingHtml, /href="#landingAuthPanel" data-landing-auth-open="signup"/, "signup CTAs must open the account panel");
+assert.match(landingHtml, /href="#landingAuthPanel" data-landing-auth-open="signin"/, "signin CTAs must open the account panel");
+assert.ok(fs.existsSync(path.join(root, "app.html")), "app.html must remain present");
 assert.match(landingHtml, /src="src\/auth-client\.js"/, "landing page must load shared auth");
+assert.match(landingHtml, /src="src\/landing-auth\.js"/, "landing page must load landing auth");
 assert.match(appHtml, /src="cloud-config-loader\.js"/, "app.html must load cloud config");
 assert.match(appHtml, /src="src\/shared-helpers\.js"/, "app.html must load shared helpers");
 assert.match(appHtml, /src="src\/auth-client\.js"/, "app.html must load shared auth");
