@@ -157,30 +157,28 @@
             <h2 id="demo-title">Votre collection, sous le bon angle.</h2>
             <p>Quatre vues complémentaires pour décider, retrouver et comprendre chaque bouteille sans surcharger l’écran.</p>
           </div>
-          <div class="demo-gallery">
-            <article class="demo-screen demo-screen-dashboard">
-              <div class="demo-screen-top"><span>Tableau de bord</span><b>Maison Oenova</b></div>
-              <div class="demo-stat-row"><span><small>En cave</small><strong>128</strong></span><span><small>À boire</small><strong>24</strong></span><span><small>Favoris</small><strong>11</strong></span></div>
-              <div class="demo-chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            </article>
-            <article class="demo-screen demo-screen-bottle">
-              <div class="demo-screen-top"><span>Fiche bouteille</span><b>Détails utiles</b></div>
-              <div class="demo-bottle-layout"><div class="demo-bottle-shape"><i></i></div><div><small>Saint-Émilion Grand Cru</small><h3>Domaine Valombre</h3><p>2019 · Rouge · Magnum</p><hr><b>À garder jusqu’en 2038</b></div></div>
-            </article>
-            <article class="demo-screen demo-screen-cellar">
-              <div class="demo-screen-top"><span>Cave virtuelle</span><b>Armoire principale</b></div>
-              <div class="demo-large-rack" aria-hidden="true">
-                <i></i><i class="wine-red"></i><i></i><i class="wine-gold"></i><i class="wine-red"></i><i></i>
-                <i class="wine-red"></i><i></i><i></i><i class="wine-gold"></i><i></i><i class="wine-red"></i>
-                <i></i><i class="wine-gold"></i><i class="wine-red"></i><i></i><i class="wine-red"></i><i></i>
-              </div>
-            </article>
-            <article class="demo-screen demo-screen-scan">
-              <div class="demo-screen-top"><span>Scanner</span><b>Analyse locale</b></div>
-              <div class="demo-scan-frame"><div class="demo-label"><small>APPELLATION</small><strong>OENOVA</strong><span>GRAND VIN · 2018</span></div><i></i></div>
-              <p>Détection limitée · vérification avant ajout</p>
-            </article>
+          <div class="demo-video-shell">
+            <div class="demo-video-heading">
+              <div><span class="demo-video-kicker">Visite guidée</span><h3>Découvrez Oenova en 36 secondes</h3></div>
+              <span class="demo-video-duration" aria-label="Durée : 36 secondes">00:36</span>
+            </div>
+            <video class="demo-video" controls playsinline preload="metadata" poster="assets/oenova-demo-poster.jpg" aria-describedby="demo-video-description">
+              <source src="assets/oenova-demo.mp4" type="video/mp4">
+              <track kind="captions" src="assets/oenova-demo-fr.vtt" srclang="fr" label="Français" default>
+              Votre navigateur ne peut pas lire cette vidéo. <a href="assets/oenova-demo.mp4">Ouvrir la démonstration</a>.
+            </video>
+            <p class="demo-video-caption" id="demo-video-description">Ajoutez une bouteille, retrouvez-la en un instant et laissez Oenova vous aider à choisir le bon moment pour l’ouvrir.</p>
           </div>
+          <ol class="demo-chapters" aria-label="Étapes présentées dans la vidéo">
+            <li><span>01</span><div><strong>Ajoutez</strong><small>Une fiche claire en quelques secondes</small></div></li>
+            <li><span>02</span><div><strong>Organisez</strong><small>Chaque bouteille à sa place</small></div></li>
+            <li><span>03</span><div><strong>Choisissez</strong><small>Des conseils adaptés à votre cave</small></div></li>
+            <li><span>04</span><div><strong>Emportez</strong><small>Votre collection sur tous vos appareils</small></div></li>
+          </ol>
+          <details class="demo-transcript">
+            <summary>Lire la transcription</summary>
+            <p>Oenova réunit votre collection dans une cave claire et personnelle. Ajoutez une bouteille, indiquez son emplacement et retrouvez-la instantanément. Suivez les quantités, les valeurs et les fenêtres de dégustation. Consultez les conseils de cave pour choisir quoi ouvrir au bon moment. Votre espace reste accessible sur ordinateur et mobile avec votre compte Oenova.</p>
+          </details>
           <div class="demo-action"><a class="landing-link-tertiary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon espace Oenova <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
