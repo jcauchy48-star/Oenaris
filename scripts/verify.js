@@ -26,6 +26,7 @@ const authClient = read("src/auth-client.js");
 const landingTabs = read("src/landing-tabs.js");
 const landingAuth = read("src/landing-auth.js");
 const manifest = JSON.parse(read("manifest.webmanifest"));
+const landingWithoutRepositoryUrls = landingHtml.replaceAll("https://jcauchy48-star.github.io/Oenova/", "");
 
 assert.equal(countMatches(landingHtml, /href="\.\/app\.html/g), 1, "only the authenticated download flow may link directly to app.html");
 assert.match(landingHtml, /href="\.\/app\.html\?installation=continue" data-continue-to-app/, "app access must be conditional on the download flow");
@@ -34,15 +35,24 @@ assert.match(landingHtml, /id="landingSignUpConfirmation"/, "landing page must c
 assert.match(landingHtml, /Créer mon compte gratuit/, "landing page must offer free account creation");
 assert.match(landingHtml, /Se connecter/, "landing page must offer sign in");
 assert.match(landingHtml, /Compte requis/, "landing page must state that an account is required");
-assert.match(landingHtml, /Télécharger Oenova/, "landing page must expose the download path");
+assert.match(landingHtml, /Oenaris/, "landing page must expose the Oenaris brand");
+assert.match(landingHtml, /Votre cave privée,<br>enfin maîtrisée\./, "landing hero must expose the official tagline");
+assert.match(landingHtml, /Installer Oenaris/, "landing page must expose the installation path");
 assert.doesNotMatch(landingHtml, /Essayer sans compte|Mode local disponible|compte optionnel/i, "public copy must not promise anonymous access");
 assert.match(landingHtml, /<section class="landing-hero"[\s\S]*Créer mon compte gratuit/, "hero must prioritize account creation");
 assert.match(landingHtml, /Retours bêta/, "landing page must include transparent beta feedback");
-assert.match(landingHtml, /Prêt à créer votre cave Oenova \?/, "landing page must include the final account CTA");
+assert.match(landingHtml, /Votre cave privée, enfin maîtrisée\./, "landing page must repeat the official tagline");
 assert.match(landingHtml, /class="demo-video"/, "landing demo must include the explainer video");
-assert.match(landingHtml, /assets\/oenova-demo-fr\.vtt/, "landing demo must include French captions");
-assert.ok(fs.statSync(path.join(root, "assets", "oenova-demo.mp4")).size > 0, "demo video must exist");
-assert.ok(fs.statSync(path.join(root, "assets", "oenova-demo-poster.jpg")).size > 0, "demo poster must exist");
+assert.match(landingHtml, /assets\/oenaris-demo-fr\.vtt/, "landing demo must include French captions");
+assert.ok(fs.statSync(path.join(root, "assets", "oenaris-demo.mp4")).size > 0, "demo video must exist");
+assert.ok(fs.statSync(path.join(root, "assets", "oenaris-demo-poster.jpg")).size > 0, "demo poster must exist");
+assert.ok(fs.existsSync(path.join(root, "icon.svg")), "PWA icon must exist");
+assert.ok(fs.existsSync(path.join(root, "assets", "logo-oenaris.svg")), "main Oenaris logo must exist");
+assert.ok(fs.existsSync(path.join(root, "assets", "logo-oenaris-horizontal.svg")), "horizontal Oenaris logo must exist");
+assert.ok(fs.existsSync(path.join(root, "assets", "logo-oenaris-icon.svg")), "Oenaris app icon must exist");
+assert.doesNotMatch(landingWithoutRepositoryUrls, /Oenova|OENOVA/, "landing must not expose the former brand");
+assert.doesNotMatch(appHtml, /Oenova|OENOVA/, "application HTML must not expose the former brand");
+assert.doesNotMatch(JSON.stringify(manifest), /Oenova|OENOVA/, "manifest must not expose the former brand");
 assert.match(landingHtml, /data-site-tab="accueil"/);
 ["fonctionnalites", "demo", "tarifs", "securite", "telecharger", "compte"].forEach((tabName) => {
   assert.match(landingHtml, new RegExp(`data-site-tab="${tabName}"`), `landing must expose the ${tabName} tab`);
@@ -55,6 +65,8 @@ assert.match(landingHtml, /src="src\/landing-tabs\.js"/, "landing page must load
 assert.match(landingHtml, /src="src\/landing-auth\.js"/, "landing page must load landing auth");
 assert.match(appHtml, /id="appAccessGate"/, "app.html must provide an access gate");
 assert.match(appHtml, /id="appLayout" hidden/, "application UI must start hidden");
+assert.match(appHtml, /Oenaris/, "app.html must expose the Oenaris brand");
+assert.match(appHtml, /Votre cave privée, enfin maîtrisée\./, "access gate must expose the official tagline");
 assert.match(appHtml, /Votre cave est vide/);
 assert.match(appHtml, /Scanner une étiquette/);
 assert.match(appHtml, /src="cloud-config-loader\.js"/, "app.html must load cloud config");
@@ -65,6 +77,8 @@ assert.ok(appHtml.indexOf('src="src/auth-client.js"') < appHtml.indexOf('src="ap
 assert.ok(landingHtml.indexOf('src="src/auth-client.js"') < landingHtml.indexOf('src="src/landing-auth.js"'), "shared auth must load before landing auth");
 assert.ok(landingHtml.indexOf('src="src/landing-tabs.js"') < landingHtml.indexOf('src="src/landing-auth.js"'), "tab navigation must load before landing auth");
 assert.equal(manifest.start_url, "./app.html", "PWA must start on app.html");
+assert.equal(manifest.name, "Oenaris");
+assert.equal(manifest.short_name, "Oenaris");
 
 ["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
   assert.match(authClient, new RegExp(`function ${functionName}\\(`), `shared auth must define ${functionName}`);
@@ -107,9 +121,12 @@ assert.match(precacheBlock[1], /\.\/app\.html/, "application page must be cached
 assert.match(precacheBlock[1], /\.\/src\/auth-client\.js/, "shared auth must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-tabs\.js/, "landing tabs must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-auth\.js/, "landing auth must be cached");
-assert.match(serviceWorker, /oenova-v32/);
+assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris\.svg/, "main logo must be cached");
+assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-horizontal\.svg/, "horizontal logo must be cached");
+assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-icon\.svg/, "app icon must be cached");
+assert.match(serviceWorker, /oenaris-v32/);
 assert.match(serviceWorker, /request\.destination === "video"/, "large videos must bypass service worker caching");
 assert.match(serviceWorker, /response\.ok/);
 assert.doesNotMatch(serviceWorker, /catch\(\(\) => caches\.match\("\.\/index\.html"\)\)/);
 
-console.log("Oenova verification OK");
+console.log("Oenaris verification OK");

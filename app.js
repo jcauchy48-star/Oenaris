@@ -1,4 +1,6 @@
 // Constantes
+const BRAND_NAME = "Oenaris";
+const BRAND_TAGLINE = "Votre cave privée, enfin maîtrisée.";
 const STORAGE_KEY = "mini-cave-a-vin";
 const MOVEMENTS_KEY = "mini-cave-a-vin-movements";
 const WISHLIST_KEY = "mini-cave-a-vin-wishlist";
@@ -627,6 +629,7 @@ let scanState = {
 // Selection DOM
 const elements = {
   appAccessGate: document.querySelector("#appAccessGate"),
+  appAccessTagline: document.querySelector("#appAccessTagline"),
   appAccessEyebrow: document.querySelector("#appAccessEyebrow"),
   appAccessTitle: document.querySelector("#appAccessTitle"),
   appAccessMessage: document.querySelector("#appAccessMessage"),
@@ -988,21 +991,21 @@ function showAppAccessGate(state, error) {
   const content = {
     account: {
       eyebrow: "Compte requis",
-      title: "Connectez-vous pour ouvrir votre cave",
-      message: "L'accès à Oenova nécessite désormais un compte valide. Votre cave locale existante reste conservée sur cet appareil.",
+      title: `Accès réservé aux comptes ${BRAND_NAME}`,
+      message: "Connectez-vous ou créez votre compte pour accéder à votre cave privée. Votre cave locale existante reste conservée sur cet appareil.",
       primary: ["Se connecter", "./index.html?tab=compte&mode=signin"],
       secondary: ["Créer un compte", "./index.html?tab=compte&mode=signup"]
     },
     install: {
       eyebrow: "Installation requise",
-      title: "Installez Oenova avant de continuer",
-      message: "Ouvrez l'onglet Télécharger pour installer la PWA. Si votre navigateur ne propose pas l'installation, le parcours vous permettra de continuer dans le navigateur.",
+      title: `Installez ${BRAND_NAME} avant de continuer`,
+      message: "Ouvrez l'onglet Installer pour ajouter la PWA. Si votre navigateur ne propose pas l'installation, le parcours vous permettra de continuer dans le navigateur.",
       primary: ["Voir les étapes d'installation", "./index.html?tab=telecharger"],
       secondary: ["Retour au compte", "./index.html?tab=compte"]
     },
     unavailable: {
       eyebrow: "Service indisponible",
-      title: "Les comptes Oenova ne sont pas configurés",
+      title: `Les comptes ${BRAND_NAME} ne sont pas configurés`,
       message: "La configuration Supabase est nécessaire pour ouvrir l'application. Réessayez lorsque le service de compte est disponible.",
       primary: ["Retour au site", "./index.html?tab=accueil"],
       secondary: ["Sécurité", "./index.html?tab=securite"]
@@ -1020,6 +1023,7 @@ function showAppAccessGate(state, error) {
   elements.appLayout.hidden = true;
   elements.mobileMenuButton.hidden = true;
   elements.appAccessGate.hidden = false;
+  elements.appAccessTagline.textContent = BRAND_TAGLINE;
   elements.appAccessEyebrow.textContent = content.eyebrow;
   elements.appAccessTitle.textContent = content.title;
   elements.appAccessMessage.textContent = content.message;
@@ -1207,7 +1211,7 @@ function installRuntimeGuards() {
 
 function showStartupError(error) {
   if (!elements.statusMessage) return;
-  elements.statusMessage.textContent = "Oenova a rencontré une erreur au chargement. Rechargez la page ou exportez le diagnostic si le problème persiste.";
+  elements.statusMessage.textContent = `${BRAND_NAME} a rencontré une erreur au chargement. Rechargez la page ou exportez le diagnostic si le problème persiste.`;
   elements.statusMessage.classList.add("error");
   elements.statusMessage.title = error?.message || String(error || "");
 }
@@ -5420,7 +5424,7 @@ async function initSupabase() {
 
   supabaseInitPromise = (async () => {
     if (!window.OenovaAuth?.loadSupabaseClient) {
-      throw new Error("Le module d'authentification Oenova est indisponible.");
+      throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
     }
     supabaseClient = await window.OenovaAuth.loadSupabaseClient();
     if (!supabaseClient) return null;
@@ -5740,7 +5744,7 @@ async function handleAuthSubmit(event, mode) {
 }
 
 async function signInWithEmail(email, password) {
-  if (!window.OenovaAuth?.signInWithEmail) throw new Error("Le module d'authentification Oenova est indisponible.");
+  if (!window.OenovaAuth?.signInWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
   const data = await window.OenovaAuth.signInWithEmail(email, password);
   if (data?.session) saveAuthFromSupabase(data);
   await ensureUserProfile();
@@ -5749,7 +5753,7 @@ async function signInWithEmail(email, password) {
 }
 
 async function signUpWithEmail(email, password, displayName = "") {
-  if (!window.OenovaAuth?.signUpWithEmail) throw new Error("Le module d'authentification Oenova est indisponible.");
+  if (!window.OenovaAuth?.signUpWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
   const data = await window.OenovaAuth.signUpWithEmail(email, password, displayName);
   if (data?.session) saveAuthFromSupabase(data);
   if (data?.user && !data?.session) {

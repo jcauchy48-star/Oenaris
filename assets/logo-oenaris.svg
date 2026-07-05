@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" role="img" aria-labelledby="title desc">
+  <title id="title">Oenaris</title>
+  <desc id="desc">Monogramme de cave et nom Oenaris</desc>
+  <g transform="translate(18 13)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="82" cy="82" rx="67" ry="78" stroke="#551025" stroke-width="10"/>
+    <path d="M61 158V76c0-17 9-29 21-29s21 12 21 29v82" stroke="#c89b52" stroke-width="8"/>
+    <path d="M20 91h41M103 91h41M24 116h37M103 116h37" stroke="#c89b52" stroke-width="7"/>
+  </g>
+  <text x="186" y="133" fill="#551025" font-family="Georgia, 'Times New Roman', serif" font-size="116" font-weight="400" letter-spacing="0">Oenaris</text>
+</svg>

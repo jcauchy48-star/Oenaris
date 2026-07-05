@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#8d223d">
-    <meta name="description" content="Application PWA de gestion de cave à vin, installable et utilisable hors ligne.">
+    <meta name="theme-color" content="#551025">
+    <meta name="description" content="Oenaris, votre cave privée, enfin maîtrisée. Application premium de gestion de cave à vin.">
     <meta name="cave-cloud-config" content="./cloud-config.js">
-    <title>Oenova | Application de gestion de cave</title>
+    <title>Oenaris | Votre cave privée, enfin maîtrisée</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon.svg">
@@ -15,13 +15,13 @@
   <body>
     <section class="app-access-gate" id="appAccessGate" aria-labelledby="appAccessTitle" aria-live="polite">
       <div class="app-access-panel">
-        <a class="app-access-brand" href="./index.html?tab=accueil" aria-label="Retour au site Oenova">
-          <img src="icon.svg" alt="" width="38" height="38">
-          <span>Oenova</span>
+        <a class="app-access-brand" href="./index.html?tab=accueil" aria-label="Retour au site Oenaris">
+          <img class="app-access-logo" src="assets/logo-oenaris.svg" alt="Oenaris" width="176" height="44">
         </a>
+        <p class="app-access-tagline" id="appAccessTagline">Votre cave privée, enfin maîtrisée.</p>
         <p class="eyebrow" id="appAccessEyebrow">Vérification de l’accès</p>
         <h1 id="appAccessTitle">Ouverture de votre cave…</h1>
-        <p id="appAccessMessage">Nous vérifions votre session Oenova sur cet appareil.</p>
+        <p id="appAccessMessage">Nous vérifions votre session Oenaris sur cet appareil.</p>
         <div class="app-access-actions" id="appAccessActions" hidden>
           <a class="primary-action" id="appAccessPrimary" href="./index.html?tab=compte&amp;mode=signin">Se connecter</a>
           <a class="ghost-action" id="appAccessSecondary" href="./index.html?tab=compte&amp;mode=signup">Créer un compte</a>
@@ -66,10 +66,10 @@
     <div class="app-layout" id="appLayout" hidden>
       <aside class="app-sidebar" id="appSidebar" aria-label="Navigation principale">
         <div class="sidebar-header">
-          <div class="sidebar-brand" aria-hidden="true"><svg class="ui-icon"><use href="#icon-bottle"></use></svg></div>
+          <div class="sidebar-brand" aria-hidden="true"><img src="assets/logo-oenaris-icon.svg" alt=""></div>
           <div class="sidebar-title">
-            <strong>Cave à vin</strong>
-            <span>Espace privé</span>
+            <strong>Oenaris</strong>
+            <span>Cave privée</span>
           </div>
           <div class="sidebar-badges" aria-label="Abonnement et scans" data-client-hidden>
             <span id="sidebarPlanBadge" class="plan-badge">Gratuit</span>
@@ -165,7 +165,7 @@
     <main class="app-shell">
       <header class="topbar">
         <div>
-          <a class="back-to-site-link" href="./index.html" aria-label="Retour au site Oenova">Retour au site Oenova</a>
+          <a class="back-to-site-link" href="./index.html" aria-label="Retour au site Oenaris">Retour au site Oenaris</a>
           <p class="eyebrow">Gestion de cave</p>
           <h1>Cave à vin</h1>
           <p class="hero-subtitle">Pilotez votre cave, trouvez les bouteilles à boire et gardez une sauvegarde propre de chaque mouvement.</p>

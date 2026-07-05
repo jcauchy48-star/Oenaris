@@ -3,11 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#160d10">
-    <meta name="description" content="Créez votre espace Oenova et retrouvez votre cave à vin personnelle sur tous vos supports.">
+    <meta name="theme-color" content="#551025">
+    <meta name="description" content="Oenaris est une application premium pour créer, organiser et retrouver votre cave à vin privée sur vos supports.">
     <meta name="robots" content="index, follow">
     <meta name="cave-cloud-config" content="./cloud-config.js">
-    <title>Oenova | Votre cave à vin, enfin maîtrisée</title>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Oenaris">
+    <meta property="og:title" content="Oenaris | Votre cave privée, enfin maîtrisée">
+    <meta property="og:description" content="Créez votre compte Oenaris, installez l’application et retrouvez votre cave personnelle sur vos supports.">
+    <meta property="og:url" content="https://jcauchy48-star.github.io/Oenova/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Oenaris | Votre cave privée, enfin maîtrisée">
+    <meta name="twitter:description" content="Créez, organisez et retrouvez votre cave à vin privée sur vos supports.">
+    <title>Oenaris | Votre cave privée, enfin maîtrisée</title>
     <link rel="canonical" href="https://jcauchy48-star.github.io/Oenova/">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -19,9 +27,8 @@
 
     <header class="landing-header">
       <div class="landing-header-inner">
-        <a class="landing-brand" href="?tab=accueil" data-site-tab-target="accueil" aria-label="Oenova, accueil">
-          <img src="icon.svg" alt="" width="34" height="34">
-          <span>Oenova</span>
+        <a class="landing-brand" href="?tab=accueil" data-site-tab-target="accueil" aria-label="Oenaris, accueil">
+          <img class="landing-brand-logo" src="assets/logo-oenaris-horizontal.svg" alt="Oenaris" width="142" height="33">
         </a>
         <nav class="landing-nav" role="tablist" aria-label="Navigation du site">
           <a href="?tab=accueil" role="tab" data-site-tab="accueil">Accueil</a>
@@ -29,7 +36,7 @@
           <a href="?tab=demo" role="tab" data-site-tab="demo">Démo</a>
           <a href="?tab=tarifs" role="tab" data-site-tab="tarifs">Tarifs</a>
           <a href="?tab=securite" role="tab" data-site-tab="securite">Sécurité</a>
-          <a href="?tab=telecharger" role="tab" data-site-tab="telecharger">Télécharger</a>
+          <a href="?tab=telecharger" role="tab" data-site-tab="telecharger">Installer</a>
           <a href="?tab=compte" role="tab" data-site-tab="compte">Compte</a>
         </nav>
         <div class="landing-header-actions" aria-label="Accès au compte">
@@ -43,14 +50,14 @@
       <section class="landing-hero" id="accueil" data-site-panel="accueil" aria-labelledby="hero-title">
         <div class="landing-container landing-hero-grid">
           <div class="landing-hero-copy">
-            <p class="landing-overline">Oenova · Cave personnelle connectée</p>
-            <h1 id="hero-title">Votre cave à vin,<br>enfin maîtrisée.</h1>
-            <p class="landing-hero-lead">Créez votre espace Oenova, sauvegardez votre collection et retrouvez chaque bouteille sur tous vos supports.</p>
+            <p class="landing-overline">Oenaris · Cave personnelle connectée</p>
+            <h1 id="hero-title">Votre cave privée,<br>enfin maîtrisée.</h1>
+            <p class="landing-hero-lead">Créez votre compte Oenaris, installez l’application et retrouvez chaque bouteille sur vos supports.</p>
             <p class="landing-hero-detail">Compte requis. Installation requise. Sans carte bancaire. Export à tout moment.</p>
             <div class="landing-actions">
               <a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte gratuit</a>
               <a class="landing-button landing-button-secondary" href="?tab=compte&amp;mode=signin" data-site-tab-target="compte" data-landing-auth-open="signin">Se connecter</a>
-              <a class="landing-link-tertiary" href="?tab=telecharger" data-site-tab-target="telecharger">Comment installer Oenova</a>
+              <a class="landing-link-tertiary" href="?tab=telecharger" data-site-tab-target="telecharger">Installer Oenaris</a>
             </div>
             <ul class="landing-proof-list" aria-label="Avantages principaux">
               <li>Compte gratuit</li>
@@ -59,10 +66,10 @@
             </ul>
           </div>
 
-          <div class="product-stage" aria-label="Aperçu de l’interface Oenova">
+          <div class="product-stage" aria-label="Aperçu de l’interface Oenaris">
             <div class="product-window">
               <div class="product-window-bar">
-                <span class="product-window-brand">OENOVA</span>
+                <span class="product-window-brand">OENARIS</span>
                 <span class="product-window-status">Espace privé</span>
               </div>
               <div class="product-window-layout">
@@ -102,7 +109,7 @@
               </div>
             </div>
             <div class="product-phone" aria-hidden="true">
-              <div class="product-phone-top"><span>OENOVA</span><i></i></div>
+              <div class="product-phone-top"><span>OENARIS</span><i></i></div>
               <small>À ouvrir ce mois-ci</small>
               <strong>Clos Saint-Aubin</strong>
               <span class="product-phone-year">2020 · Blanc</span>
@@ -116,7 +123,7 @@
             <div class="product-stage-caption"><span>Collection privée</span><strong>Une vue claire, bouteille après bouteille.</strong></div>
           </div>
         </div>
-        <a class="landing-next" href="?tab=fonctionnalites" data-site-tab-target="fonctionnalites">Découvrir Oenova <span aria-hidden="true">→</span></a>
+        <a class="landing-next" href="?tab=fonctionnalites" data-site-tab-target="fonctionnalites">Découvrir Oenaris <span aria-hidden="true">→</span></a>
       </section>
 
       <section class="landing-problem" id="constat" data-site-panel="accueil" aria-labelledby="problem-title">
@@ -124,7 +131,7 @@
           <div class="landing-section-intro">
             <p class="landing-overline">Le plaisir, sans l’approximation</p>
             <h2 id="problem-title">Une belle cave ne devrait jamais être approximative.</h2>
-            <p>Bouteilles oubliées, millésimes perdus, fichiers Excel dispersés : Oenova remet de l’ordre sans retirer le plaisir.</p>
+            <p>Bouteilles oubliées, millésimes perdus, fichiers Excel dispersés : Oenaris remet de l’ordre sans retirer le plaisir.</p>
           </div>
           <div class="problem-list">
             <article><span>01</span><h3>Vous oubliez ce que vous possédez</h3><p>Chaque domaine, millésime et quantité reste lisible, même lorsque la collection grandit.</p></article>
@@ -143,8 +150,8 @@
           <div class="feature-grid">
             <article class="feature-card feature-card-inventory"><span class="feature-index">01</span><div class="feature-visual feature-visual-inventory" aria-hidden="true"><i></i><i></i><i></i></div><h3>Inventaire intelligent</h3><p>Suivez domaines, cuvées, millésimes, valeurs, quantités et fenêtres de dégustation.</p><em>Votre collection, en un regard</em></article>
             <article class="feature-card feature-card-cellar"><span class="feature-index">02</span><div class="feature-visual feature-visual-cellar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h3>Cave virtuelle</h3><p>Retrouvez chaque bouteille à son emplacement exact.</p><em>Armoires, casiers et rangées</em></article>
-            <article class="feature-card feature-card-account"><span class="feature-index">03</span><div class="feature-visual feature-visual-account" aria-hidden="true"><i></i><i></i><b>O</b></div><h3>Compte multi-supports</h3><p>Créez votre espace Oenova et retrouvez votre cave sur vos appareils.</p><em>Une identité, plusieurs supports</em></article>
-            <article class="feature-card feature-card-scan"><span class="feature-index">04</span><div class="feature-visual feature-visual-scan" aria-hidden="true"><i></i><span>MAISON OENOVA</span></div><h3>Scanner assisté</h3><p>Préremplissez une fiche, puis validez les informations avant ajout.</p><em>Analyse locale · IA optionnelle</em></article>
+            <article class="feature-card feature-card-account"><span class="feature-index">03</span><div class="feature-visual feature-visual-account" aria-hidden="true"><i></i><i></i><b>O</b></div><h3>Compte multi-supports</h3><p>Créez votre espace Oenaris et retrouvez votre cave sur vos appareils.</p><em>Une identité, plusieurs supports</em></article>
+            <article class="feature-card feature-card-scan"><span class="feature-index">04</span><div class="feature-visual feature-visual-scan" aria-hidden="true"><i></i><span>MAISON OENARIS</span></div><h3>Scanner assisté</h3><p>Préremplissez une fiche, puis validez les informations avant ajout.</p><em>Analyse locale · IA optionnelle</em></article>
           </div>
           <p class="feature-secondary-line">Notes de dégustation <span>·</span> Exports <span>·</span> Mode hors ligne après connexion <span>·</span> Compte sécurisé <span>·</span> Conseils de garde</p>
         </div>
@@ -153,21 +160,21 @@
       <section class="landing-demo" id="demo" data-site-panel="demo" aria-labelledby="demo-title">
         <div class="landing-container">
           <div class="landing-section-intro demo-intro">
-            <p class="landing-overline">Au cœur d’Oenova</p>
+            <p class="landing-overline">Au cœur d’Oenaris</p>
             <h2 id="demo-title">Votre collection, sous le bon angle.</h2>
             <p>Quatre vues complémentaires pour décider, retrouver et comprendre chaque bouteille sans surcharger l’écran.</p>
           </div>
           <div class="demo-video-shell">
             <div class="demo-video-heading">
-              <div><span class="demo-video-kicker">Visite guidée</span><h3>Découvrez Oenova en 36 secondes</h3></div>
+              <div><span class="demo-video-kicker">Visite guidée</span><h3>Découvrez Oenaris en 36 secondes</h3></div>
               <span class="demo-video-duration" aria-label="Durée : 36 secondes">00:36</span>
             </div>
-            <video class="demo-video" controls playsinline preload="metadata" poster="assets/oenova-demo-poster.jpg" aria-describedby="demo-video-description">
-              <source src="assets/oenova-demo.mp4" type="video/mp4">
-              <track kind="captions" src="assets/oenova-demo-fr.vtt" srclang="fr" label="Français" default>
-              Votre navigateur ne peut pas lire cette vidéo. <a href="assets/oenova-demo.mp4">Ouvrir la démonstration</a>.
+            <video class="demo-video" controls playsinline preload="metadata" poster="assets/oenaris-demo-poster.jpg" aria-describedby="demo-video-description">
+              <source src="assets/oenaris-demo.mp4" type="video/mp4">
+              <track kind="captions" src="assets/oenaris-demo-fr.vtt" srclang="fr" label="Français" default>
+              Votre navigateur ne peut pas lire cette vidéo. <a href="assets/oenaris-demo.mp4">Ouvrir la démonstration</a>.
             </video>
-            <p class="demo-video-caption" id="demo-video-description">Ajoutez une bouteille, retrouvez-la en un instant et laissez Oenova vous aider à choisir le bon moment pour l’ouvrir.</p>
+            <p class="demo-video-caption" id="demo-video-description">Ajoutez une bouteille, retrouvez-la en un instant et laissez Oenaris vous aider à choisir le bon moment pour l’ouvrir.</p>
           </div>
           <ol class="demo-chapters" aria-label="Étapes présentées dans la vidéo">
             <li><span>01</span><div><strong>Ajoutez</strong><small>Une fiche claire en quelques secondes</small></div></li>
@@ -177,9 +184,9 @@
           </ol>
           <details class="demo-transcript">
             <summary>Lire la transcription</summary>
-            <p>Oenova réunit votre collection dans une cave claire et personnelle. Ajoutez une bouteille, indiquez son emplacement et retrouvez-la instantanément. Suivez les quantités, les valeurs et les fenêtres de dégustation. Consultez les conseils de cave pour choisir quoi ouvrir au bon moment. Votre espace reste accessible sur ordinateur et mobile avec votre compte Oenova.</p>
+            <p>Oenaris réunit votre collection dans une cave claire et personnelle. Ajoutez une bouteille, indiquez son emplacement et retrouvez-la instantanément. Suivez les quantités, les valeurs et les fenêtres de dégustation. Consultez les conseils de cave pour choisir quoi ouvrir au bon moment. Votre espace reste accessible sur ordinateur et mobile avec votre compte Oenaris.</p>
           </details>
-          <div class="demo-action"><a class="landing-link-tertiary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon espace Oenova <span aria-hidden="true">→</span></a></div>
+          <div class="demo-action"><a class="landing-link-tertiary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon espace Oenaris <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
 
@@ -187,7 +194,7 @@
         <div class="landing-container">
           <div class="landing-section-intro landing-section-intro-split">
             <div><p class="landing-overline">Retours bêta</p><h2 id="beta-title">Pensé avec les premiers utilisateurs.</h2></div>
-            <p>Oenova évolue autour de besoins simples : retrouver, comprendre et apprécier chaque bouteille.</p>
+            <p>Oenaris évolue autour de besoins simples : retrouver, comprendre et apprécier chaque bouteille.</p>
           </div>
           <div class="beta-grid">
             <article><span aria-hidden="true">“</span><blockquote>Je veux arrêter de gérer ma cave dans Excel.</blockquote><p>Amateur régulier</p></article>
@@ -200,7 +207,7 @@
 
       <section class="landing-trust" id="confidentialite" data-site-panel="securite" aria-labelledby="trust-title">
         <div class="landing-container landing-trust-grid">
-          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent à vous.</h2><p>Oenova protège l’accès à votre cave par un compte. Les données locales existantes restent sur votre appareil et peuvent être exportées à tout moment. Aucun paiement n’est actif et aucune donnée bancaire n’est demandée actuellement.</p><div class="trust-seal" aria-hidden="true"><span>O</span><small>Collection privée</small></div></div>
+          <div class="trust-statement"><p class="landing-overline">Confidentialité par défaut</p><h2 id="trust-title">Vos données restent à vous.</h2><p>Oenaris protège l’accès à votre cave par un compte. Les données locales existantes restent sur votre appareil et peuvent être exportées à tout moment. Aucun paiement n’est actif et aucune donnée bancaire n’est demandée actuellement.</p><div class="trust-seal" aria-hidden="true"><span>O</span><small>Collection privée</small></div></div>
           <ul class="trust-list">
             <li><span>01</span><strong>Un compte valide est requis pour ouvrir la cave.</strong></li>
             <li><span>02</span><strong>La session est gérée par Supabase Auth.</strong></li>
@@ -214,8 +221,8 @@
         <div class="landing-container landing-auth-layout">
           <div class="landing-auth-intro">
             <p class="landing-overline">Espace privé</p>
-            <h2 id="landing-auth-title">Votre compte Oenova.</h2>
-            <p>Un compte est nécessaire pour accéder à l’application et préparer l’accès à votre cave sur vos supports.</p>
+            <h2 id="landing-auth-title">Votre compte Oenaris.</h2>
+            <p><strong>Votre cave privée, enfin maîtrisée.</strong> Un compte est nécessaire pour accéder à l’application et retrouver votre cave sur vos supports.</p>
             <ul>
               <li><span>01</span><div><strong>Compte unique</strong><small>Une identité commune au site et à l’application.</small></div></li>
               <li><span>02</span><div><strong>Cave personnelle</strong><small>Votre collection est rattachée à une session authentifiée.</small></div></li>
@@ -227,7 +234,7 @@
 
           <div class="landing-auth-panel" id="landingAuthPanel">
             <p class="landing-auth-badge">Espace privé</p>
-            <div class="landing-auth-tabs" role="tablist" aria-label="Accès au compte Oenova">
+            <div class="landing-auth-tabs" role="tablist" aria-label="Accès au compte Oenaris">
               <button class="is-active" id="landingSignUpTab" type="button" role="tab" aria-selected="true" aria-controls="landingSignUpForm" data-landing-auth-tab="signup">Créer un compte</button>
               <button id="landingSignInTab" type="button" role="tab" aria-selected="false" aria-controls="landingSignInForm" data-landing-auth-tab="signin" tabindex="-1">Se connecter</button>
             </div>
@@ -245,7 +252,7 @@
                 <label>Email<input id="landingSignInEmail" type="email" autocomplete="email" inputmode="email" required></label>
                 <label>Mot de passe<input id="landingSignInPassword" type="password" autocomplete="current-password" required></label>
                 <button class="landing-button landing-button-primary" type="submit">Me connecter</button>
-                <p class="landing-auth-help-link">Mot de passe oublié ou email non confirmé ? Vérifiez d’abord les messages envoyés par Oenova.</p>
+                <p class="landing-auth-help-link">Mot de passe oublié ou email non confirmé ? Vérifiez d’abord les messages envoyés par Oenaris.</p>
               </form>
             </div>
 
@@ -253,7 +260,7 @@
               <span>Compte connecté</span>
               <strong id="landingSessionEmail"></strong>
               <div class="landing-session-actions">
-                <a class="landing-button landing-button-primary" href="?tab=telecharger" data-site-tab-target="telecharger">Continuer vers le téléchargement</a>
+                <a class="landing-button landing-button-primary" href="?tab=telecharger" data-site-tab-target="telecharger">Continuer vers l’installation</a>
                 <button class="landing-button landing-button-secondary" id="landingSignOutButton" type="button">Se déconnecter</button>
               </div>
             </div>
@@ -267,9 +274,9 @@
       <section class="landing-install" id="installation" data-site-panel="telecharger" aria-labelledby="install-title">
         <div class="landing-container install-layout">
           <div class="install-copy">
-            <p class="landing-overline">Télécharger</p>
-            <h2 id="install-title">Télécharger Oenova</h2>
-            <p>Installez Oenova comme une application, connectez votre compte, puis ouvrez votre cave privée.</p>
+            <p class="landing-overline">Installer</p>
+            <h2 id="install-title">Installer Oenaris</h2>
+            <p>Installez Oenaris comme une application, connectez votre compte, puis ouvrez votre cave privée.</p>
             <p class="landing-install-state" data-install-state>Installation à vérifier sur cet appareil.</p>
             <div class="landing-download-actions" data-auth-anonymous-only>
               <p>Créez un compte ou connectez-vous pour accéder à l’application.</p>
@@ -295,10 +302,10 @@
           <div class="landing-section-intro">
             <p class="landing-overline">Tarifs</p>
             <h2 id="pricing-title">Commencez librement.</h2>
-            <p>Le cœur d’Oenova est accessible gratuitement avec un compte. Les offres payantes sont encore en préparation.</p>
+            <p>Le cœur d’Oenaris est accessible gratuitement avec un compte. Les offres payantes sont encore en préparation.</p>
           </div>
           <div class="landing-pricing-grid">
-            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Découverte</h3><p class="landing-pricing-price">Gratuit pendant la bêta</p><ul><li>Compte Oenova requis</li><li>Inventaire et cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Scanner assisté local</li></ul><a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte</a></article>
+            <article class="landing-pricing-card landing-pricing-card-current"><span class="landing-pricing-label">Disponible</span><h3>Découverte</h3><p class="landing-pricing-price">Gratuit pendant la bêta</p><ul><li>Compte Oenaris requis</li><li>Inventaire et cave virtuelle</li><li>Exports JSON, CSV et PDF</li><li>Scanner assisté local</li></ul><a class="landing-button landing-button-primary" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte</a></article>
             <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Premium</h3><p class="landing-pricing-price">À venir</p><ul><li>Synchronisation cloud enrichie</li><li>Scanner IA avancé</li><li>Conseils personnalisés</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
             <article class="landing-pricing-card"><span class="landing-pricing-label">En préparation</span><h3>Collectionneur</h3><p class="landing-pricing-price">À venir</p><ul><li>Rapports avancés</li><li>Valorisation de cave</li><li>Statistiques approfondies</li></ul><span class="landing-pricing-placeholder">Aucun paiement actif</span></article>
           </div>
@@ -308,15 +315,15 @@
 
       <section class="landing-faq" id="faq" data-site-panel="securite" aria-labelledby="faq-title">
         <div class="landing-container faq-layout">
-          <div class="faq-heading"><p class="landing-overline">Questions fréquentes</p><h2 id="faq-title">Avant d’ouvrir votre cave.</h2><p>Des réponses simples sur le fonctionnement actuel d’Oenova.</p></div>
+          <div class="faq-heading"><p class="landing-overline">Questions fréquentes</p><h2 id="faq-title">Avant d’ouvrir votre cave.</h2><p>Des réponses simples sur le fonctionnement actuel d’Oenaris.</p></div>
           <div class="faq-list">
             <details open><summary>Est-ce gratuit ?</summary><p>Oui. Le compte actuel est gratuit et aucun paiement réel n’est activé.</p></details>
-            <details><summary>Dois-je créer un compte ?</summary><p>Oui. Une session Oenova valide est nécessaire pour accéder à l’application et à votre cave.</p></details>
+            <details><summary>Dois-je créer un compte ?</summary><p>Oui. Une session Oenaris valide est nécessaire pour accéder à l’application et à votre cave.</p></details>
             <details><summary>Mes données sont-elles privées ?</summary><p>L’accès est protégé par votre session. Les données locales existantes ne sont ni effacées ni envoyées sans action prévue par l’application.</p></details>
             <details><summary>L’application fonctionne-t-elle hors ligne ?</summary><p>La PWA met ses fichiers en cache. Une session déjà établie peut être relue localement ; une première connexion nécessite internet.</p></details>
             <details><summary>Puis-je exporter ma cave ?</summary><p>Oui. Les exports JSON, CSV et la vue imprimable PDF sont disponibles depuis l’application.</p></details>
             <details><summary>Le scanner IA est-il disponible ?</summary><p>Une analyse locale limitée est disponible. L’analyse IA distante reste optionnelle et n’est utilisée que lorsqu’un service sécurisé est configuré.</p></details>
-            <details><summary>Comment installer l’application ?</summary><p>Connectez votre compte, ouvrez l’onglet Télécharger, puis utilisez l’option « Installer » ou « Ajouter à l’écran d’accueil » de votre navigateur.</p></details>
+            <details><summary>Comment installer l’application ?</summary><p>Connectez votre compte, ouvrez l’onglet Installer, puis utilisez l’option « Installer » ou « Ajouter à l’écran d’accueil » de votre navigateur.</p></details>
             <details><summary>Y aura-t-il une version mobile native ?</summary><p>Elle pourra être étudiée plus tard. Pour l’instant, la PWA offre une expérience installable sur ordinateur et mobile.</p></details>
           </div>
         </div>
@@ -325,11 +332,11 @@
       <section class="landing-final-cta" data-site-panel="accueil" aria-labelledby="final-title">
         <div class="landing-container">
           <p class="landing-overline">Votre collection vous attend</p>
-          <h2 id="final-title">Prêt à créer votre cave Oenova ?</h2>
-          <p>Créez votre compte gratuit, installez Oenova et commencez votre collection dans un espace privé.</p>
+          <h2 id="final-title">Votre cave privée, enfin maîtrisée.</h2>
+          <p>Créez votre compte gratuit, installez Oenaris et commencez votre collection dans un espace privé.</p>
           <div class="landing-final-actions">
             <a class="landing-button landing-button-light" href="?tab=compte&amp;mode=signup" data-site-tab-target="compte" data-landing-auth-open="signup">Créer mon compte gratuit</a>
-            <a class="landing-button landing-button-secondary" href="?tab=telecharger" data-site-tab-target="telecharger">Télécharger Oenova</a>
+            <a class="landing-button landing-button-secondary" href="?tab=telecharger" data-site-tab-target="telecharger">Installer Oenaris</a>
           </div>
         </div>
       </section>
@@ -337,8 +344,8 @@
 
     <footer class="landing-footer">
       <div class="landing-container landing-footer-grid">
-        <div><a class="landing-brand landing-footer-brand" href="?tab=accueil" data-site-tab-target="accueil"><img src="icon.svg" alt="" width="32" height="32"><span>Oenova</span></a><p>Application de gestion de cave à vin.</p></div>
-        <div class="landing-footer-links"><a href="?tab=telecharger" data-site-tab-target="telecharger">Télécharger</a><a href="?tab=compte" data-site-tab-target="compte">Compte</a><a href="./docs/security.md">Confidentialité et sécurité</a><a href="./docs/technical-roadmap.md">Feuille de route technique</a></div>
+        <div><a class="landing-brand landing-footer-brand" href="?tab=accueil" data-site-tab-target="accueil"><img class="landing-brand-logo" src="assets/logo-oenaris-horizontal.svg" alt="Oenaris" width="142" height="33"></a><p>Votre cave privée, enfin maîtrisée.</p></div>
+        <div class="landing-footer-links"><a href="?tab=telecharger" data-site-tab-target="telecharger">Installer</a><a href="?tab=compte" data-site-tab-target="compte">Compte</a><a href="./docs/security.md">Confidentialité et sécurité</a><a href="./docs/technical-roadmap.md">Feuille de route technique</a></div>
         <div class="landing-footer-meta"><span>Version bêta</span><p>Conçu pour suivre, comprendre et apprécier chaque bouteille.</p></div>
       </div>
     </footer>

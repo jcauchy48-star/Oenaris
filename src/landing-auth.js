@@ -56,7 +56,7 @@
 
   function getFriendlyError(error) {
     const raw = String(error?.message || error || "").toLowerCase();
-    if (error?.code === "CLOUD_NOT_CONFIGURED") return "Le service de compte Oenova n'est pas configuré. L'accès à l'application est temporairement indisponible.";
+    if (error?.code === "CLOUD_NOT_CONFIGURED") return "Le service de compte Oenaris n'est pas configuré. L'accès à l'application est temporairement indisponible.";
     if (raw.includes("invalid login credentials")) return "Email ou mot de passe incorrect.";
     if (raw.includes("email not confirmed") || raw.includes("not confirmed")) return "Votre adresse email doit être confirmée avant la connexion.";
     if (raw.includes("already registered") || raw.includes("user already exists")) return "Un compte existe déjà avec cette adresse. Utilisez l'onglet Se connecter.";
@@ -73,7 +73,7 @@
       && session?.access_token
       && (!session.expires_at || Number(session.expires_at) > Math.floor(Date.now() / 1000))
     );
-    const email = session?.user?.email || "Compte Oenova connecté";
+    const email = session?.user?.email || "Compte Oenaris connecté";
     elements.sessionPanel.hidden = !isSignedIn;
     elements.tabsContainer.hidden = isSignedIn;
     elements.formsContainer.hidden = isSignedIn;
@@ -82,7 +82,7 @@
     elements.sessionEmails.forEach((element) => { element.textContent = isSignedIn ? email : ""; });
     if (isSignedIn) {
       elements.sessionEmail.textContent = email;
-      setStatus("Votre compte est connecté. Passez à l'onglet Télécharger pour installer ou ouvrir Oenova.", "success");
+      setStatus("Votre compte est connecté. Passez à l'onglet Installer pour installer ou ouvrir Oenaris.", "success");
     }
   }
 
@@ -169,7 +169,7 @@
     await global.CAVE_CLOUD_CONFIG_READY;
     if (!auth.isCloudConfigured()) {
       showSignedInSession(null);
-      setStatus("Le service de compte Oenova n'est pas configuré. L'accès à l'application est temporairement indisponible.", "error");
+      setStatus("Le service de compte Oenaris n'est pas configuré. L'accès à l'application est temporairement indisponible.", "error");
       return;
     }
 

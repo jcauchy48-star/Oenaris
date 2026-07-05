@@ -1,9 +1,9 @@
-# Oenova - Security notes
+# Oenaris - Security notes
 
 ## Données et sessions
 
 - `localStorage` conserve les données locales de cave et des informations UI non sensibles.
-- Oenova utilise un compte unique Supabase Auth depuis la landing et l'application ; aucun second système d'identité n'est créé.
+- Oenaris utilise un compte unique Supabase Auth depuis la landing et l'application ; aucun second système d'identité n'est créé.
 - La session Supabase native est partagée entre `index.html` et `app.html` sur le même domaine.
 - Une session Supabase valide est obligatoire avant le chargement et le rendu des données de cave dans `app.html`.
 - Un accès direct à `app.html` sans session affiche uniquement l'écran de connexion requis.

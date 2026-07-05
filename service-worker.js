@@ -1,4 +1,4 @@
-const cacheName = "oenova-v32";
+const cacheName = "oenaris-v32";
 const cachedFiles = [
   "./",
   "./index.html",
@@ -12,7 +12,10 @@ const cachedFiles = [
   "./src/landing-auth.js",
   "./app.js",
   "./manifest.webmanifest",
-  "./icon.svg"
+  "./icon.svg",
+  "./assets/logo-oenaris.svg",
+  "./assets/logo-oenaris-horizontal.svg",
+  "./assets/logo-oenaris-icon.svg"
 ];
 
 const networkFirstUrls = new Set([

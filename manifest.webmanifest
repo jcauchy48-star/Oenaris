@@ -1,12 +1,12 @@
 {
-  "name": "Oenova - Cave à vin",
-  "short_name": "Oenova",
-  "description": "Gestion élégante de cave à vin, installable et utilisable hors ligne.",
+  "name": "Oenaris",
+  "short_name": "Oenaris",
+  "description": "Votre cave privée, enfin maîtrisée. Application premium de gestion de cave à vin.",
   "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f1e8",
-  "theme_color": "#8d223d",
+  "theme_color": "#551025",
   "orientation": "portrait",
   "icons": [
     {

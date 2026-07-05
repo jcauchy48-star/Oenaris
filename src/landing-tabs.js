@@ -36,7 +36,7 @@
       panel.hidden = !isActive;
     });
     document.body.dataset.activeSiteTab = nextTab;
-    document.title = `${activeTab?.textContent.trim() || "Oenova"} | Oenova`;
+    document.title = `${activeTab?.textContent.trim() || "Oenaris"} | Oenaris`;
 
     if (global.matchMedia?.("(max-width: 860px)").matches && activeTab?.parentElement) {
       const nav = activeTab.parentElement;
@@ -59,8 +59,8 @@
 
   function renderInstallState() {
     const message = isInstalled()
-      ? "Oenova est installée sur cet appareil."
-      : "Oenova peut être installée depuis le menu de votre navigateur.";
+      ? "Oenaris est installée sur cet appareil."
+      : "Oenaris peut être installée depuis le menu de votre navigateur.";
     document.querySelectorAll("[data-install-state]").forEach((element) => {
       element.textContent = message;
       element.dataset.installed = String(isInstalled());
