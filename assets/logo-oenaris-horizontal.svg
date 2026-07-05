@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 128" role="img" aria-labelledby="title desc">
+  <title id="title">Oenaris</title>
+  <desc id="desc">Logo horizontal Oenaris</desc>
+  <g transform="translate(10 8)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="56" cy="56" rx="44" ry="52" stroke="#d8b56e" stroke-width="7"/>
+    <path d="M42 108V53c0-12 6-20 14-20s14 8 14 20v55" stroke="#d8b56e" stroke-width="6"/>
+    <path d="M15 62h27M70 62h27M18 79h24M70 79h24" stroke="#d8b56e" stroke-width="5"/>
+  </g>
+  <text x="126" y="91" fill="#fffaf3" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="400" letter-spacing="0">Oenaris</text>
+</svg>

@@ -26,7 +26,7 @@
   }
 
   function createConfigurationError() {
-    const error = new Error("Le service cloud Oenova n'est pas configuré.");
+    const error = new Error("Le service cloud Oenaris n'est pas configuré.");
     error.code = "CLOUD_NOT_CONFIGURED";
     return error;
   }

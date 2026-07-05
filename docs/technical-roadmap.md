@@ -1,8 +1,8 @@
-# Oenova - Technical roadmap
+# Oenaris - Technical roadmap
 
 ## État actuel
 
-Oenova est une PWA statique publiée sur GitHub Pages. L'accès à l'application nécessite désormais un compte Supabase valide et passe par un parcours de téléchargement/installation. Les données de cave restent disponibles localement avec `localStorage` et peuvent être synchronisées via Supabase.
+Oenaris est une PWA statique publiée sur GitHub Pages. L'accès à l'application nécessite un compte Supabase valide et passe par un parcours d'installation. Les données de cave restent disponibles localement avec `localStorage` et peuvent être synchronisées via Supabase.
 
 ## Limites connues
 

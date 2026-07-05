@@ -15,8 +15,8 @@ TOTAL_FRAMES = int(FPS * SCENE_SECONDS * SCENES)
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
-VIDEO_PATH = ASSETS / "oenova-demo.mp4"
-POSTER_PATH = ASSETS / "oenova-demo-poster.jpg"
+VIDEO_PATH = ASSETS / "oenaris-demo.mp4"
+POSTER_PATH = ASSETS / "oenaris-demo-poster.jpg"
 
 CREAM = "#F7F1E8"
 PANEL = "#FFFAF3"
@@ -93,7 +93,7 @@ def shell() -> tuple[Image.Image, ImageDraw.ImageDraw]:
     draw.rectangle((0, 0, WIDTH, 70), fill=WHITE)
     draw.line((0, 69, WIDTH, 69), fill=LINE, width=1)
     logo(draw, 46, 14, 42)
-    text(draw, (99, 34), "Oenova", F26S, INK, "lm")
+    text(draw, (99, 34), "Oenaris", F26S, INK, "lm")
     text(draw, (1024, 35), "DÉMONSTRATION", F12, BURGUNDY, "lm")
     draw.rounded_rectangle((1162, 20, 1234, 50), radius=6, outline=LINE, width=1)
     text(draw, (1198, 35), "00:36", F12, MUTED, "mm")
@@ -112,7 +112,7 @@ def scene_intro(progress: float) -> Image.Image:
     draw.ellipse((836, 189, 1136, 489), fill="#312522", outline="#55423C", width=2)
     bottle(draw, 961, 213, BURGUNDY, 1.75)
     draw.arc((866, 219, 1106, 459), 205, 335, fill=GOLD, width=3)
-    text(draw, (986, 520), "MAISON OENOVA", F14, "#D7B86E", "mm")
+    text(draw, (986, 520), "MAISON OENARIS", F14, "#D7B86E", "mm")
     subtitle(draw, "Une vision simple et personnelle de votre collection", 0)
     return image
 
@@ -185,7 +185,7 @@ def stat(draw, x, y, title, value, accent):
 def scene_advice(progress: float) -> Image.Image:
     image, draw = shell()
     text(draw, (72, 116), "Le bon vin, au bon moment", F46S, INK)
-    text(draw, (74, 171), "Oenova transforme vos données en conseils simples et actionnables.", F18, MUTED)
+    text(draw, (74, 171), "Oenaris transforme vos données en conseils simples et actionnables.", F18, MUTED)
     stat(draw, 72, 220, "En cave", "128", BURGUNDY)
     stat(draw, 312, 220, "Prêtes", "24", SAGE)
     stat(draw, 552, 220, "À surveiller", "7", GOLD)
@@ -208,17 +208,17 @@ def scene_advice(progress: float) -> Image.Image:
 def scene_everywhere(progress: float) -> Image.Image:
     image, draw = shell()
     text(draw, (72, 118), "Votre cave vous suit.", F46S, INK)
-    text(draw, (74, 174), "Un compte Oenova, une collection accessible sur vos appareils.", F18, MUTED)
+    text(draw, (74, 174), "Un compte Oenaris, une collection accessible sur vos appareils.", F18, MUTED)
     card(draw, (74, 227, 844, 567), fill=WHITE)
     draw.rectangle((74, 227, 844, 276), fill="#2A211F")
-    text(draw, (103, 251), "OENOVA · TABLEAU DE BORD", F12, WHITE, "lm")
+    text(draw, (103, 251), "OENARIS · TABLEAU DE BORD", F12, WHITE, "lm")
     stat(draw, 108, 308, "En cave", "128", BURGUNDY)
     stat(draw, 348, 308, "Favoris", "11", GOLD)
     stat(draw, 588, 308, "Prêtes", "24", SAGE)
     draw.rounded_rectangle((907, 205, 1167, 588), radius=24, fill="#211B18")
     draw.rounded_rectangle((919, 217, 1155, 576), radius=18, fill=CREAM)
     logo(draw, 944, 244, 34)
-    text(draw, (992, 261), "Oenova", F22B, INK, "lm")
+    text(draw, (992, 261), "Oenaris", F22B, INK, "lm")
     card(draw, (944, 314, 1130, 390), fill=WHITE)
     text(draw, (962, 337), "À BOIRE", F12, MUTED)
     text(draw, (962, 370), "24", F26S, BURGUNDY)
@@ -228,8 +228,8 @@ def scene_everywhere(progress: float) -> Image.Image:
     text(draw, (962, 489), "Prêt à ouvrir", F12, "#D8CCC2")
     if progress > 0.55:
         draw.rounded_rectangle((430, 597, 850, 648), radius=7, fill=BURGUNDY)
-        text(draw, (640, 622), "Créer mon espace Oenova", F16, WHITE, "mm")
-    subtitle(draw, "Commencez gratuitement et installez Oenova sur mobile", 4)
+        text(draw, (640, 622), "Créer mon espace Oenaris", F16, WHITE, "mm")
+    subtitle(draw, "Commencez gratuitement et installez Oenaris sur mobile", 4)
     return image
 
 

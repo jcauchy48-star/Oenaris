@@ -1,10 +1,13 @@
-# Oenova
+# Oenaris
 
-Site vitrine et application de gestion de cave à vin, installable en PWA et utilisable hors ligne.
+Oenaris est une application premium de gestion de cave à vin.
+**Votre cave privée, enfin maîtrisée.**
+
+Le site public présente le service, permet de créer un compte privé et accompagne l'installation de la PWA.
 
 ## Architecture web
 
-- `index.html` : site vitrine public Oenova.
+- `index.html` : site vitrine public Oenaris.
 - `app.html` : application complète de gestion de cave.
 - `styles.css` : styles partagés, avec la vitrine isolée sous `.landing-body`.
 - `src/auth-client.js` : client Supabase Auth partagé par la vitrine et l'application.
@@ -12,16 +15,16 @@ Site vitrine et application de gestion de cave à vin, installable en PWA et uti
 - `manifest.webmanifest` : installation PWA avec démarrage sur `app.html`, protégé par la session.
 - `service-worker.js` : cache hors ligne de la vitrine et de l'application.
 
-La vitrine propose sept onglets (`?tab=accueil`, `fonctionnalites`, `demo`, `tarifs`, `securite`, `telecharger`, `compte`). La création ou la connexion à un compte Oenova est obligatoire avant l'ouverture de l'application.
+La vitrine propose sept onglets (`?tab=accueil`, `fonctionnalites`, `demo`, `tarifs`, `securite`, `telecharger`, `compte`). La création ou la connexion à un compte Oenaris est obligatoire avant l'ouverture de l'application.
 
 ## Parcours utilisateur
 
-1. Découvrir Oenova depuis les onglets du site public.
+1. Découvrir Oenaris depuis les onglets du site public.
 2. Créer un compte ou se connecter depuis l'onglet Compte.
-3. Suivre les instructions de l'onglet Télécharger pour installer la PWA.
+3. Suivre les instructions de l'onglet Installer pour ajouter la PWA.
 4. Continuer vers `app.html` avec une session Supabase valide.
 
-`app.html` reste verrouillée sans session. Une cave nouvellement créée est vide : les bouteilles de démonstration ne sont jamais injectées dans l'inventaire réel. L'installation est requise pour l'expérience complète ; un passage contrôlé depuis l'onglet Télécharger reste prévu pour les navigateurs qui ne proposent pas l'installation PWA.
+`app.html` reste verrouillée sans session. Une cave nouvellement créée est vide : les bouteilles de démonstration ne sont jamais injectées dans l'inventaire réel. L'installation est requise pour l'expérience complète ; un passage contrôlé depuis l'onglet Installer reste prévu pour les navigateurs qui ne proposent pas l'installation PWA.
 
 ## Routes utiles
 
@@ -62,11 +65,11 @@ La version web exige un compte. Supabase est configuré avec `cloud-config.js` e
 
 L'authentification Supabase est la source unique d'identité. L'URL du projet et sa clé publishable doivent être fournies dans `cloud-config.js`; aucune clé `service_role`, clé IA ou autre secret ne doit être ajouté au frontend.
 
-### Compte Oenova unique
+### Compte Oenaris unique
 
 - La création de compte et la connexion sont disponibles depuis l'onglet Compte de `index.html`; le verrou de `app.html` y renvoie si nécessaire.
 - Les deux pages utilisent le même projet Supabase Auth : il n'existe aucun compte séparé pour la vitrine.
-- La session Supabase native est partagée sur le même domaine, sans stockage manuel des `accessToken` ou `refreshToken` par le code Oenova.
+- La session Supabase native est partagée sur le même domaine, sans stockage manuel des `accessToken` ou `refreshToken` par le code Oenaris.
 - Une session Supabase valide est exigée avant que `app.html` charge et affiche les données de cave.
 - Les données locales existantes restent sur l'appareil et ne sont pas supprimées par cette évolution.
 - Un nouveau compte sur un navigateur vierge démarre avec une cave vide, sans bouteilles de démonstration injectées.
