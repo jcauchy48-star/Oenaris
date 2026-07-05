@@ -39,6 +39,10 @@ assert.doesNotMatch(landingHtml, /Essayer sans compte|Mode local disponible|comp
 assert.match(landingHtml, /<section class="landing-hero"[\s\S]*Créer mon compte gratuit/, "hero must prioritize account creation");
 assert.match(landingHtml, /Retours bêta/, "landing page must include transparent beta feedback");
 assert.match(landingHtml, /Prêt à créer votre cave Oenova \?/, "landing page must include the final account CTA");
+assert.match(landingHtml, /class="demo-video"/, "landing demo must include the explainer video");
+assert.match(landingHtml, /assets\/oenova-demo-fr\.vtt/, "landing demo must include French captions");
+assert.ok(fs.statSync(path.join(root, "assets", "oenova-demo.mp4")).size > 0, "demo video must exist");
+assert.ok(fs.statSync(path.join(root, "assets", "oenova-demo-poster.jpg")).size > 0, "demo poster must exist");
 assert.match(landingHtml, /data-site-tab="accueil"/);
 ["fonctionnalites", "demo", "tarifs", "securite", "telecharger", "compte"].forEach((tabName) => {
   assert.match(landingHtml, new RegExp(`data-site-tab="${tabName}"`), `landing must expose the ${tabName} tab`);
@@ -103,7 +107,8 @@ assert.match(precacheBlock[1], /\.\/app\.html/, "application page must be cached
 assert.match(precacheBlock[1], /\.\/src\/auth-client\.js/, "shared auth must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-tabs\.js/, "landing tabs must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-auth\.js/, "landing auth must be cached");
-assert.match(serviceWorker, /oenova-v31/);
+assert.match(serviceWorker, /oenova-v32/);
+assert.match(serviceWorker, /request\.destination === "video"/, "large videos must bypass service worker caching");
 assert.match(serviceWorker, /response\.ok/);
 assert.doesNotMatch(serviceWorker, /catch\(\(\) => caches\.match\("\.\/index\.html"\)\)/);
 

@@ -1,4 +1,4 @@
-const cacheName = "oenova-v31";
+const cacheName = "oenova-v32";
 const cachedFiles = [
   "./",
   "./index.html",
@@ -91,6 +91,7 @@ async function cacheFirst(request) {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  if (event.request.destination === "video") return;
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== self.location.origin) return;
 
