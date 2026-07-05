@@ -1,4 +1,4 @@
-const cacheName = "oenaris-v32";
+const cacheName = "oenaris-v33";
 const cachedFiles = [
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const cachedFiles = [
   "./src/auth-client.js",
   "./src/landing-tabs.js",
   "./src/landing-auth.js",
+  "./src/pwa-register.js",
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
@@ -29,6 +30,7 @@ const networkFirstUrls = new Set([
   new URL("./src/auth-client.js", self.location.href).pathname,
   new URL("./src/landing-tabs.js", self.location.href).pathname,
   new URL("./src/landing-auth.js", self.location.href).pathname,
+  new URL("./src/pwa-register.js", self.location.href).pathname,
   new URL("./service-worker.js", self.location.href).pathname
 ]);
 

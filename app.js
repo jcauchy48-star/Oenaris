@@ -1189,13 +1189,9 @@ function bindEvents() {
     elements.installButton.hidden = true;
   });
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("./service-worker.js")
-        .catch((error) => logError(error, "serviceWorker.register"));
-    });
-  }
+  window.addEventListener("oenaris:service-worker-error", (event) => {
+    logError(event.detail, "serviceWorker.register");
+  });
 }
 
 function installRuntimeGuards() {
