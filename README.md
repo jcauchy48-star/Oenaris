@@ -79,8 +79,8 @@ L'authentification Supabase est la source unique d'identité. L'URL du projet et
 Dans `Supabase Dashboard > Authentication > URL Configuration`, configurer :
 
 ```text
-Site URL: https://jcauchy48-star.github.io/Oenova/
-Redirect URLs: https://jcauchy48-star.github.io/Oenova/*
+Site URL: https://jcauchy48-star.github.io/Oenaris/
+Redirect URLs: https://jcauchy48-star.github.io/Oenaris/*
 ```
 
 Cette wildcard couvre la landing, la confirmation de compte et les onglets `?tab=compte&mode=signin|signup`.
@@ -120,6 +120,6 @@ node -e "const http=require('http'),fs=require('fs'),path=require('path');http.c
 
 Le workflow GitHub Actions inclus publie automatiquement le site sur GitHub Pages à chaque push sur `main`.
 
-La racine GitHub Pages affiche la vitrine. L'application est disponible sous `/Oenova/app.html`.
+La racine GitHub Pages affiche la vitrine. L'application est disponible sous `/Oenaris/app.html`.
 
 Dans GitHub, aller dans `Settings > Pages`, puis choisir `GitHub Actions` comme source.
