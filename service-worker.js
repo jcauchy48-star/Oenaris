@@ -1,4 +1,4 @@
-const cacheName = "oenaris-v34";
+const cacheName = "oenaris-v35";
 const cachedFiles = [
   "./",
   "./index.html",

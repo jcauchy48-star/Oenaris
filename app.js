@@ -6333,22 +6333,15 @@ async function requestWineAdvice(userQuestion) {
       return;
     }
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 1200);
-      const response = await fetch("/api/wine-advice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildWineAdvicePrompt(question, eligible)),
-        signal: controller.signal
-      });
-      window.clearTimeout(timeoutId);
-      if (response.ok) {
-        renderWineAdviceResult(await response.json());
+    if (isWineAdviceApiEnabled()) {
+      try {
+        elements.adviceResult.innerHTML = '<div class="advice-card"><strong>Assistant IA</strong><p>Analyse de votre cave en cours...</p></div>';
+        const remoteAdvice = await requestRemoteWineAdvice(buildWineAdvicePrompt(question, eligible));
+        renderWineAdviceResult(normalizeRemoteWineAdvice(remoteAdvice, eligible));
         return;
+      } catch (error) {
+        logError(error, "requestWineAdvice.remote");
       }
-    } catch {
-      // La route IA est optionnelle : fallback local obligatoire.
     }
 
     renderWineAdviceResult(getLocalWineAdvice(question, eligible));
@@ -6356,6 +6349,56 @@ async function requestWineAdvice(userQuestion) {
     logError(error, "requestWineAdvice");
     renderWineAdviceError("Impossible de générér un conseil pour le moment.");
   }
+}
+
+function isWineAdviceApiEnabled() {
+  return window.CAVE_CLOUD_CONFIG?.wineAdviceApiEnabled === true && isCloudConfigured();
+}
+
+function getWineAdviceApiUrl() {
+  const configuredUrl = cleanString(window.CAVE_CLOUD_CONFIG?.wineAdviceApiUrl);
+  if (configuredUrl) return configuredUrl;
+  const { supabaseUrl } = getCloudConfig();
+  return supabaseUrl ? `${supabaseUrl}/functions/v1/wine-advice` : "";
+}
+
+async function requestRemoteWineAdvice(payload) {
+  const url = getWineAdviceApiUrl();
+  const session = await getCurrentSession();
+  const { supabaseAnonKey } = getCloudConfig();
+  if (!url || !session?.access_token || !supabaseAnonKey) throw new Error("Assistant IA non configure.");
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: supabaseAnonKey
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(data?.message || `Erreur IA ${response.status}`);
+    return data;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function normalizeRemoteWineAdvice(result, eligibleWines) {
+  const wineById = new Map(eligibleWines.map((wine) => [wine.id, wine]));
+  const recommendations = Array.isArray(result?.recommendations)
+    ? result.recommendations.filter((item) => wineById.has(item?.wineId)).slice(0, 3).map((item) => ({
+      ...item,
+      title: wineName(wineById.get(item.wineId))
+    }))
+    : [];
+  if (!recommendations.length) throw new Error("Aucune recommandation IA valide.");
+  return { ...result, source: "ai", recommendations };
 }
 
 function getLocalWineAdviceLegacy(userQuestion, eligibleWines) {
@@ -6420,31 +6463,34 @@ function buildWineAdvicePrompt(userQuestion, eligibleWines) {
       "Ne jamais demander de cle API cote navigateur."
     ],
     responseSchema: WINE_ADVICE_RESPONSE_SCHEMA,
-    wines: eligibleWines.map((wine) => {
-      const reference = getLibraryReferenceForWine(wine);
-      return {
-        id: wine.id,
-        title: wineName(wine),
-        color: wine.color,
-        region: wine.region,
-        appellation: wine.appellation,
-        vintage: wine.vintage,
-        drinkFrom: wine.drinkFrom,
-        drinkTo: wine.drinkTo,
-        notes: wine.notes,
-        quantity: wine.quantity,
-        location: getWineLocationLabel(wine),
-        library: reference ? {
-          foodPairings: reference.foodPairings,
-          servingTemperature: reference.servingTemperature,
-          openingAdvice: reference.openingAdvice,
-          body: reference.body,
-          tannins: reference.tannins,
-          acidity: reference.acidity,
-          sweetness: reference.sweetness
-        } : null
-      };
-    })
+    wines: [...eligibleWines]
+      .sort((a, b) => getDrinkPriorityScore(b) - getDrinkPriorityScore(a))
+      .slice(0, 60)
+      .map((wine) => {
+        const reference = getLibraryReferenceForWine(wine);
+        return {
+          id: wine.id,
+          title: wineName(wine),
+          color: wine.color,
+          region: wine.region,
+          appellation: wine.appellation,
+          vintage: wine.vintage,
+          drinkFrom: wine.drinkFrom,
+          drinkTo: wine.drinkTo,
+          notes: wine.notes,
+          quantity: wine.quantity,
+          location: getWineLocationLabel(wine),
+          library: reference ? {
+            foodPairings: reference.foodPairings,
+            servingTemperature: reference.servingTemperature,
+            openingAdvice: reference.openingAdvice,
+            body: reference.body,
+            tannins: reference.tannins,
+            acidity: reference.acidity,
+            sweetness: reference.sweetness
+          } : null
+        };
+      })
   };
 }
 
@@ -6478,6 +6524,7 @@ function getLocalWineAdvice(userQuestion, eligibleWines) {
 
   return {
     adviceId: crypto.randomUUID(),
+    source: "local",
     recommendations: scored.map(({ wine, score, reference }) => ({
       wineId: wine.id,
       title: wineName(wine),
@@ -6495,11 +6542,13 @@ function getLocalWineAdvice(userQuestion, eligibleWines) {
 function renderWineAdviceResult(result) {
   const normalizedResult = {
     adviceId: result.adviceId || crypto.randomUUID(),
+    source: result.source === "ai" ? "ai" : "local",
     recommendations: Array.isArray(result.recommendations) ? result.recommendations.slice(0, 3) : [],
     generalAdvice: cleanString(result.generalAdvice) || "Conseil genere a partir des informations de votre cave. A ajuster selon vos preferences."
   };
   lastAdviceResult = normalizedResult;
   elements.adviceResult.innerHTML = `
+    <p class="advice-source">${normalizedResult.source === "ai" ? "Conseil IA sécurisé" : "Analyse locale"}</p>
     ${normalizedResult.recommendations.map((item) => `
       <div class="advice-card">
         <strong>${escapeHtml(item.title)}</strong>

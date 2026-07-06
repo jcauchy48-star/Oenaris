@@ -3,6 +3,8 @@
 Oenaris est une application premium de gestion de cave à vin.
 **Votre cave privée, enfin maîtrisée.**
 
+La configuration de l'assistant IA securise est documentee dans `docs/ai-setup.md`.
+
 Le site public présente le service, permet de créer un compte privé et accompagne l'installation de la PWA.
 
 ## Architecture web

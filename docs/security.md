@@ -1,5 +1,11 @@
 # Oenaris - Security notes
 
+## Assistant cave IA
+
+- L'assistant distant passe par `supabase/functions/wine-advice` et exige une session Supabase valide.
+- La cle `OPENAI_API_KEY` reste uniquement dans les secrets Supabase Edge Functions.
+- Les reponses OpenAI suivent un schema JSON strict et les identifiants de bouteilles sont controles avant affichage.
+
 ## Données et sessions
 
 - `localStorage` conserve les données locales de cave et des informations UI non sensibles.

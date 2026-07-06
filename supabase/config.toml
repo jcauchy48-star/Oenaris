@@ -1,0 +1,4 @@
+project_id = "gdrpihlnfrfmnsbvrooc"
+
+[functions.wine-advice]
+verify_jwt = false

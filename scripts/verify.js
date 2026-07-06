@@ -27,6 +27,7 @@ const landingTabs = read("src/landing-tabs.js");
 const landingAuth = read("src/landing-auth.js");
 const pwaRegister = read("src/pwa-register.js");
 const serviceWorker = read("service-worker.js");
+const wineAdviceFunction = read("supabase/functions/wine-advice/index.ts");
 const manifest = JSON.parse(read("manifest.webmanifest"));
 
 assert.equal(countMatches(landingHtml, /href="\.\/app\.html/g), 1, "only the authenticated download flow may link directly to app.html");
@@ -82,9 +83,15 @@ assert.ok(landingHtml.indexOf('src="src/landing-tabs.js"') < landingHtml.indexOf
 assert.equal(manifest.start_url, "./app.html", "PWA must start on app.html");
 assert.equal(manifest.name, "Oenaris");
 assert.equal(manifest.short_name, "Oenaris");
-assert.match(pwaRegister, /service-worker\.js\?v=34/, "service worker registration must be cache-busted");
-assert.match(serviceWorker, /oenaris-v34/, "service worker cache must be incremented");
+assert.match(pwaRegister, /service-worker\.js\?v=35/, "service worker registration must be cache-busted");
+assert.match(serviceWorker, /oenaris-v35/, "service worker cache must be incremented");
 assert.doesNotMatch(pwaRegister, /Oenova|OENOVA/, "PWA registration must not expose the former brand");
+assert.match(app, /function requestRemoteWineAdvice\(/, "frontend must support the secured wine advice endpoint");
+assert.match(app, /wineAdviceApiEnabled === true/, "remote AI must require explicit activation");
+assert.match(wineAdviceFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/, "OpenAI key must come from Supabase secrets");
+assert.match(wineAdviceFunction, /\/auth\/v1\/user/, "wine advice endpoint must validate the Supabase session");
+assert.match(wineAdviceFunction, /type: "json_schema"/, "wine advice endpoint must use structured outputs");
+assert.doesNotMatch(landingHtml + appHtml + app, /OPENAI_API_KEY/, "frontend must never expose the OpenAI key name or value");
 
 ["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
   assert.match(authClient, new RegExp(`function ${functionName}\\(`), `shared auth must define ${functionName}`);
@@ -130,7 +137,7 @@ assert.match(precacheBlock[1], /\.\/src\/pwa-register\.js/, "shared PWA registra
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris\.svg/, "main logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-horizontal\.svg/, "horizontal logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-icon\.svg/, "app icon must be cached");
-assert.match(serviceWorker, /oenaris-v34/);
+assert.match(serviceWorker, /oenaris-v35/);
 assert.match(serviceWorker, /request\.destination === "video"/, "large videos must bypass service worker caching");
 assert.match(serviceWorker, /response\.ok/);
 assert.doesNotMatch(serviceWorker, /catch\(\(\) => caches\.match\("\.\/index\.html"\)\)/);

@@ -1,5 +1,11 @@
 # Oenaris - Technical roadmap
 
+## Assistant cave IA
+
+La fonction Supabase `wine-advice` est preparee. Son activation est conditionnee au secret OpenAI et a la variable frontend documentee dans `docs/ai-setup.md`. Le fallback local reste actif tant que le backend n'est pas deploye.
+
+Apres validation du conseil IA, la meme architecture pourra etre reutilisee pour le scan d'etiquette.
+
 ## État actuel
 
 Oenaris est une PWA statique publiée sur GitHub Pages. L'accès à l'application nécessite un compte Supabase valide et passe par un parcours d'installation. Les données de cave restent disponibles localement avec `localStorage` et peuvent être synchronisées via Supabase.

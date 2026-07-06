@@ -1757,6 +1757,13 @@ body[data-cellar-slot-size="large"] .virtual-cellar-grid {
   margin-top: 12px;
 }
 
+.advice-source {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin: 0;
+}
+
 .detail-hero {
   display: grid;
   gap: 18px;
