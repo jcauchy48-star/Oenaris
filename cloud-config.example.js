@@ -7,6 +7,8 @@ window.CAVE_CLOUD_CONFIG = {
   supabaseAnonKey: "",
   wineAdviceApiEnabled: false,
   wineAdviceApiUrl: "",
+  wineToolsApiEnabled: false,
+  wineToolsApiUrl: "",
   scanApiEnabled: false,
   scanApiUrl: ""
 };

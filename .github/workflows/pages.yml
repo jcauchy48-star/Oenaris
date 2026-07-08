@@ -35,7 +35,7 @@ jobs:
           CAVE_WINE_ADVICE_API_ENABLED: ${{ vars.CAVE_WINE_ADVICE_API_ENABLED }}
         run: |
           if [ -n "$CAVE_SUPABASE_URL" ] && [ -n "$CAVE_SUPABASE_ANON_KEY" ]; then
-            node -e 'const fs = require("fs"); const config = { enabled: true, provider: "supabase", supabaseUrl: process.env.CAVE_SUPABASE_URL, supabaseAnonKey: process.env.CAVE_SUPABASE_ANON_KEY, wineAdviceApiEnabled: process.env.CAVE_WINE_ADVICE_API_ENABLED === "true" }; fs.writeFileSync("cloud-config.js", `window.CAVE_CLOUD_CONFIG = ${JSON.stringify(config, null, 2)};\n`);'
+            node -e 'const fs = require("fs"); const aiEnabled = process.env.CAVE_WINE_ADVICE_API_ENABLED === "true"; const config = { enabled: true, provider: "supabase", supabaseUrl: process.env.CAVE_SUPABASE_URL, supabaseAnonKey: process.env.CAVE_SUPABASE_ANON_KEY, wineAdviceApiEnabled: aiEnabled, wineToolsApiEnabled: aiEnabled }; fs.writeFileSync("cloud-config.js", `window.CAVE_CLOUD_CONFIG = ${JSON.stringify(config, null, 2)};\n`);'
           else
             cp cloud-config.example.js cloud-config.js
             echo "::warning::CAVE_SUPABASE_URL and CAVE_SUPABASE_ANON_KEY are missing. The app will be deployed in local-only mode."

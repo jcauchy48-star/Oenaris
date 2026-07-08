@@ -28,6 +28,8 @@ const landingAuth = read("src/landing-auth.js");
 const pwaRegister = read("src/pwa-register.js");
 const serviceWorker = read("service-worker.js");
 const wineAdviceFunction = read("supabase/functions/wine-advice/index.ts");
+const wineToolsFunction = read("supabase/functions/wine-tools/index.ts");
+const supabaseFunctionsWorkflow = read(".github/workflows/supabase-functions.yml");
 const manifest = JSON.parse(read("manifest.webmanifest"));
 
 assert.equal(countMatches(landingHtml, /href="\.\/app\.html/g), 1, "only the authenticated download flow may link directly to app.html");
@@ -83,14 +85,28 @@ assert.ok(landingHtml.indexOf('src="src/landing-tabs.js"') < landingHtml.indexOf
 assert.equal(manifest.start_url, "./app.html", "PWA must start on app.html");
 assert.equal(manifest.name, "Oenaris");
 assert.equal(manifest.short_name, "Oenaris");
-assert.match(pwaRegister, /service-worker\.js\?v=35/, "service worker registration must be cache-busted");
-assert.match(serviceWorker, /oenaris-v35/, "service worker cache must be incremented");
+assert.match(pwaRegister, /service-worker\.js\?v=36/, "service worker registration must be cache-busted");
+assert.match(serviceWorker, /oenaris-v36/, "service worker cache must be incremented");
 assert.doesNotMatch(pwaRegister, /Oenova|OENOVA/, "PWA registration must not expose the former brand");
 assert.match(app, /function requestRemoteWineAdvice\(/, "frontend must support the secured wine advice endpoint");
 assert.match(app, /wineAdviceApiEnabled === true/, "remote AI must require explicit activation");
 assert.match(wineAdviceFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/, "OpenAI key must come from Supabase secrets");
 assert.match(wineAdviceFunction, /\/auth\/v1\/user/, "wine advice endpoint must validate the Supabase session");
 assert.match(wineAdviceFunction, /type: "json_schema"/, "wine advice endpoint must use structured outputs");
+assert.match(appHtml, /id="aiToolActions"/, "assistant must expose the complementary AI tools");
+assert.match(appHtml, /id="tastingAiButton"/, "tasting notes must expose AI assistance");
+assert.match(app, /function requestWineTool\(/, "frontend must support the secured wine tools endpoint");
+assert.match(app, /wineToolsApiEnabled === true/, "remote wine tools must require explicit activation");
+assert.match(wineToolsFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/, "wine tools must read the OpenAI key from Supabase secrets");
+assert.match(wineToolsFunction, /\/auth\/v1\/user/, "wine tools must validate the Supabase session");
+assert.match(wineToolsFunction, /"scan-label"/, "wine tools must support label scanning");
+assert.match(wineToolsFunction, /"tasting-note"/, "wine tools must support tasting-note assistance");
+assert.match(wineToolsFunction, /"quality-audit"/, "wine tools must support data quality audits");
+assert.match(wineToolsFunction, /"purchase-plan"/, "wine tools must support purchase suggestions");
+assert.match(wineToolsFunction, /"cellar-summary"/, "wine tools must support cellar summaries");
+assert.match(wineToolsFunction, /type: "json_schema"/, "wine tools must use structured outputs");
+assert.match(supabaseFunctionsWorkflow, /secrets\.SUPABASE_ACCESS_TOKEN/, "Supabase deployment must read its token from GitHub Actions secrets");
+assert.match(supabaseFunctionsWorkflow, /functions deploy wine-tools/, "Supabase workflow must deploy complementary wine tools");
 assert.doesNotMatch(landingHtml + appHtml + app, /OPENAI_API_KEY/, "frontend must never expose the OpenAI key name or value");
 
 ["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
@@ -137,7 +153,7 @@ assert.match(precacheBlock[1], /\.\/src\/pwa-register\.js/, "shared PWA registra
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris\.svg/, "main logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-horizontal\.svg/, "horizontal logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-icon\.svg/, "app icon must be cached");
-assert.match(serviceWorker, /oenaris-v35/);
+assert.match(serviceWorker, /oenaris-v36/);
 assert.match(serviceWorker, /request\.destination === "video"/, "large videos must bypass service worker caching");
 assert.match(serviceWorker, /response\.ok/);
 assert.doesNotMatch(serviceWorker, /catch\(\(\) => caches\.match\("\.\/index\.html"\)\)/);

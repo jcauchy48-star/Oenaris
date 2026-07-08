@@ -3,6 +3,7 @@
 ## Assistant cave IA
 
 - L'assistant distant passe par `supabase/functions/wine-advice` et exige une session Supabase valide.
+- Les outils complementaires passent par `supabase/functions/wine-tools` et appliquent la meme validation de session.
 - La cle `OPENAI_API_KEY` reste uniquement dans les secrets Supabase Edge Functions.
 - Les reponses OpenAI suivent un schema JSON strict et les identifiants de bouteilles sont controles avant affichage.
 
@@ -28,9 +29,11 @@
 
 ## IA et scanner
 
-- Le scanner IA est optionnel.
-- Sans backend `/api/scan-wine-label` configuré, l'app affiche une analyse locale limitée.
-- Un crédit scan ne doit être consommé qu'après une réponse API réussie.
+- Le scanner IA est optionnel et passe par la fonction Supabase `wine-tools` lorsqu'elle est active.
+- Sans cette fonction, l'app affiche une analyse locale limitée.
+- Un crédit scan n'est consommé qu'après une réponse distante réussie.
+- Les images d'étiquette sont envoyées uniquement à la demande de l'utilisateur et ne sont pas stockées par la fonction.
+- Les outils de cave limitent le nombre de références transmises et utilisent des sorties JSON strictes.
 - Aucune clé IA ne doit être stockée dans le frontend.
 
 ## Exports
