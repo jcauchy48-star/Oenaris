@@ -29,6 +29,7 @@ const pwaRegister = read("src/pwa-register.js");
 const serviceWorker = read("service-worker.js");
 const wineAdviceFunction = read("supabase/functions/wine-advice/index.ts");
 const wineToolsFunction = read("supabase/functions/wine-tools/index.ts");
+const supabaseFunctionsWorkflow = read(".github/workflows/supabase-functions.yml");
 const manifest = JSON.parse(read("manifest.webmanifest"));
 
 assert.equal(countMatches(landingHtml, /href="\.\/app\.html/g), 1, "only the authenticated download flow may link directly to app.html");
@@ -104,6 +105,8 @@ assert.match(wineToolsFunction, /"quality-audit"/, "wine tools must support data
 assert.match(wineToolsFunction, /"purchase-plan"/, "wine tools must support purchase suggestions");
 assert.match(wineToolsFunction, /"cellar-summary"/, "wine tools must support cellar summaries");
 assert.match(wineToolsFunction, /type: "json_schema"/, "wine tools must use structured outputs");
+assert.match(supabaseFunctionsWorkflow, /secrets\.SUPABASE_ACCESS_TOKEN/, "Supabase deployment must read its token from GitHub Actions secrets");
+assert.match(supabaseFunctionsWorkflow, /functions deploy wine-tools/, "Supabase workflow must deploy complementary wine tools");
 assert.doesNotMatch(landingHtml + appHtml + app, /OPENAI_API_KEY/, "frontend must never expose the OpenAI key name or value");
 
 ["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
