@@ -777,6 +777,18 @@
             </div>
             <button class="primary-action" id="askAdviceButton" type="button">Demander conseil</button>
             <div id="adviceResult" class="advice-result"></div>
+            <div class="ai-tool-suite">
+              <div class="panel-title-row compact">
+                <h3>Outils IA</h3>
+                <span id="aiToolsStatus" class="pill warning">Non configurés</span>
+              </div>
+              <div id="aiToolActions" class="ai-tool-actions">
+                <button class="card-action" type="button" data-ai-tool="quality-audit">Vérifier mes fiches</button>
+                <button class="card-action" type="button" data-ai-tool="purchase-plan">Conseiller mes achats</button>
+                <button class="card-action" type="button" data-ai-tool="cellar-summary">Créer mon bilan</button>
+              </div>
+              <div id="aiToolResult" class="ai-tool-result" aria-live="polite"></div>
+            </div>
           </section>
           <section class="wishlist-panel" data-view-section="wishlist">
             <div class="panel-title-row">
@@ -1043,8 +1055,13 @@
           <label class="checkbox-label"><input id="tastingRebuyInput" type="checkbox"> À racheter</label>
         </div>
         <div class="dialog-actions">
+          <div class="tasting-ai-actions">
+            <button class="ghost-action" id="tastingAiButton" type="button"><svg class="ui-icon"><use href="#icon-assistant"></use></svg>Suggérer avec l’IA</button>
+            <button class="ghost-action" id="tastingAiApplyButton" type="button" hidden>Utiliser la suggestion</button>
+          </div>
           <button class="primary-action" type="submit">Enregistrer la note</button>
         </div>
+        <div id="tastingAiResult" class="ai-tool-result" aria-live="polite"></div>
       </form>
     </dialog>
 

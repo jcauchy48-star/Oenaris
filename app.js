@@ -625,6 +625,8 @@ let scanState = {
   isLoading: false,
   apiStatus: "not-configured"
 };
+let activeAiToolAction = "";
+let lastTastingAiSuggestion = null;
 
 // Selection DOM
 const elements = {
@@ -820,6 +822,12 @@ const elements = {
   adviceQuestionInput: document.querySelector("#adviceQuestionInput"),
   askAdviceButton: document.querySelector("#askAdviceButton"),
   adviceResult: document.querySelector("#adviceResult"),
+  aiToolsStatus: document.querySelector("#aiToolsStatus"),
+  aiToolActions: document.querySelector("#aiToolActions"),
+  aiToolResult: document.querySelector("#aiToolResult"),
+  tastingAiButton: document.querySelector("#tastingAiButton"),
+  tastingAiApplyButton: document.querySelector("#tastingAiApplyButton"),
+  tastingAiResult: document.querySelector("#tastingAiResult"),
   betaState: document.querySelector("#betaState"),
   appVersion: document.querySelector("#appVersion"),
   inventoryTitle: document.querySelector(".inventory-panel .panel-heading h2")
@@ -1083,6 +1091,8 @@ function bindEvents() {
   elements.wishlistForm.addEventListener("submit", saveWishlistFromForm);
   elements.closeTastingButton.addEventListener("click", () => elements.tastingDialog.close());
   elements.tastingForm.addEventListener("submit", saveTastingNoteFromForm);
+  elements.tastingAiButton?.addEventListener("click", suggestTastingNoteWithAi);
+  elements.tastingAiApplyButton?.addEventListener("click", applyTastingAiSuggestion);
   elements.closeFeedbackButton.addEventListener("click", () => elements.feedbackDialog.close());
   elements.feedbackForm.addEventListener("submit", exportFeedback);
   elements.feedbackMailButton.addEventListener("click", openFeedbackMail);
@@ -1090,6 +1100,7 @@ function bindEvents() {
   elements.confirmCancelButton.addEventListener("click", () => resolveConfirm(false));
   elements.confirmOkButton.addEventListener("click", () => resolveConfirm(true));
   elements.askAdviceButton.addEventListener("click", () => requestWineAdvice(elements.adviceQuestionInput.value));
+  elements.aiToolActions?.addEventListener("click", handleAiToolActionClick);
   elements.wineList.addEventListener("click", handleWineListClick);
   elements.wishlistList.addEventListener("click", handleWishlistListClick);
   elements.libraryList?.addEventListener("click", handleLibraryListClick);
@@ -2159,6 +2170,9 @@ function render(options = {}) {
     if (all || targets.has("scanner") || activeChanged && activeView === "scanner") {
       renderScanner();
     }
+    if (all || targets.has("ai-tools") || activeChanged && activeView === "assistant") {
+      renderAiToolsStatus();
+    }
     if (all || targets.has("subscription") || activeChanged && activeView === "subscription") {
       renderSubscriptionView();
     }
@@ -3225,11 +3239,72 @@ function addWineToWishlist(wine) {
 
 function openTastingNoteForm(wineId) {
   elements.tastingForm.reset();
+  lastTastingAiSuggestion = null;
+  if (elements.tastingAiResult) elements.tastingAiResult.innerHTML = "";
+  if (elements.tastingAiApplyButton) elements.tastingAiApplyButton.hidden = true;
+  if (elements.tastingAiButton) elements.tastingAiButton.disabled = false;
   tastingFields.wineId.value = wineId;
   tastingFields.date.value = today();
   tastingFields.rating.value = "";
   elements.tastingDialog.showModal();
   tastingFields.rating.focus();
+}
+
+async function suggestTastingNoteWithAi() {
+  const wine = wines.find((item) => item.id === tastingFields.wineId.value);
+  const draftText = cleanString(tastingFields.comment.value || tastingFields.pairing.value);
+  if (!wine) {
+    showStatus("Bouteille introuvable.", "error");
+    return;
+  }
+  if (!draftText) {
+    elements.tastingAiResult.innerHTML = '<div class="ai-tool-card"><p>Ajoutez quelques impressions personnelles avant de demander une reformulation.</p></div>';
+    tastingFields.comment.focus();
+    return;
+  }
+  if (!isWineToolsApiEnabled()) {
+    elements.tastingAiResult.innerHTML = '<div class="ai-tool-card"><p>Les outils IA ne sont pas encore configurés.</p></div>';
+    return;
+  }
+
+  elements.tastingAiButton.disabled = true;
+  elements.tastingAiResult.innerHTML = '<div class="ai-tool-card"><p>Préparation de la note...</p></div>';
+  try {
+    const suggestion = await requestWineTool("tasting-note", {
+      wine: serializeWineForAi(wine),
+      draft: {
+        rating: toNumber(tastingFields.rating.value, 0),
+        comment: cleanString(tastingFields.comment.value),
+        pairing: cleanString(tastingFields.pairing.value),
+        rebuy: tastingFields.rebuy.checked
+      }
+    });
+    lastTastingAiSuggestion = suggestion;
+    elements.tastingAiApplyButton.hidden = false;
+    elements.tastingAiResult.innerHTML = `
+      <div class="ai-tool-card">
+        <h4>Suggestion IA</h4>
+        <p>${escapeHtml(suggestion.comment)}</p>
+        ${suggestion.pairing ? `<small>Accord : ${escapeHtml(suggestion.pairing)}</small>` : ""}
+        ${suggestion.servingAdvice ? `<small>Service : ${escapeHtml(suggestion.servingAdvice)}</small>` : ""}
+      </div>
+    `;
+  } catch (error) {
+    logError(error, "suggestTastingNoteWithAi");
+    elements.tastingAiResult.innerHTML = `<div class="ai-tool-card" data-severity="warning"><p>${escapeHtml(error?.message || "Suggestion IA indisponible.")}</p></div>`;
+  } finally {
+    elements.tastingAiButton.disabled = false;
+  }
+}
+
+function applyTastingAiSuggestion() {
+  if (!lastTastingAiSuggestion) return;
+  tastingFields.comment.value = cleanString(lastTastingAiSuggestion.comment);
+  tastingFields.pairing.value = cleanString(lastTastingAiSuggestion.pairing);
+  if (lastTastingAiSuggestion.rebuyRecommendation === "yes") tastingFields.rebuy.checked = true;
+  if (lastTastingAiSuggestion.rebuyRecommendation === "no") tastingFields.rebuy.checked = false;
+  elements.tastingAiApplyButton.hidden = true;
+  showStatus("Suggestion appliquée. Relisez-la avant d’enregistrer.");
 }
 
 function saveTastingNoteFromForm(event) {
@@ -5074,9 +5149,9 @@ async function scanWineLabel(imageFile) {
 
     let result = null;
     const apiConfigured = isScanApiConfigured();
-    if (imageFile && apiConfigured && canUseScan().allowed) {
+    if ((imageFile || manualText) && apiConfigured && canUseScan().allowed) {
       try {
-        result = await scanWineLabelWithApi(imageFile);
+        result = await scanWineLabelWithApi(imageFile, manualText);
         if (result?._apiUsed) {
           consumeScanCredit();
           scanState.apiStatus = "available";
@@ -5108,8 +5183,53 @@ async function scanWineLabel(imageFile) {
   }
 }
 
+function isWineToolsApiEnabled() {
+  return window.CAVE_CLOUD_CONFIG?.wineToolsApiEnabled === true && isCloudConfigured();
+}
+
+function getWineToolsApiUrl() {
+  const config = window.CAVE_CLOUD_CONFIG || {};
+  const configuredUrl = cleanString(config.wineToolsApiUrl);
+  if (configuredUrl) return configuredUrl;
+  const { supabaseUrl } = getCloudConfig();
+  return supabaseUrl ? `${supabaseUrl}/functions/v1/wine-tools` : "";
+}
+
+async function requestWineTool(action, payload = {}, options = {}) {
+  if (!isWineToolsApiEnabled()) throw new Error("Outils IA non configurés.");
+  const url = getWineToolsApiUrl();
+  const session = await getCurrentSession();
+  const { supabaseAnonKey } = getCloudConfig();
+  if (!url || !session?.access_token || !supabaseAnonKey) throw new Error("Session cloud requise pour utiliser l’IA.");
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), Math.max(10000, toNumber(options.timeout, 45000)));
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: supabaseAnonKey
+      },
+      body: JSON.stringify({ action, ...payload }),
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(data?.message || `Erreur IA ${response.status}`);
+    if (!data?.success || !data?.result) throw new Error("Réponse IA incomplète.");
+    return data.result;
+  } catch (error) {
+    if (error?.name === "AbortError") throw new Error("L’analyse IA a dépassé le délai autorisé.");
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 function getScanApiUrl() {
   const config = window.CAVE_CLOUD_CONFIG || {};
+  if (isWineToolsApiEnabled()) return getWineToolsApiUrl();
   if (cleanString(config.scanApiUrl)) return cleanString(config.scanApiUrl);
   if (config.scanApiEnabled === true) return "/api/scan-wine-label";
   return "";
@@ -5119,12 +5239,25 @@ function isScanApiConfigured() {
   return Boolean(getScanApiUrl());
 }
 
-async function scanWineLabelWithApi(imageFile) {
+async function scanWineLabelWithApi(imageFile, manualText = "") {
   const scanApiUrl = getScanApiUrl();
   if (!scanApiUrl) {
     const error = new Error("IA scan non configurée");
     error.code = "SCAN_API_NOT_CONFIGURED";
     throw error;
+  }
+  if (isWineToolsApiEnabled()) {
+    let imageDataUrl = scanState.imageDataUrl;
+    if (!imageDataUrl && imageFile) {
+      const compressed = await compressImage(imageFile);
+      imageDataUrl = compressed.photoFull;
+    }
+    const result = await requestWineTool("scan-label", {
+      imageDataUrl,
+      manualText,
+      fileName: imageFile?.name || ""
+    }, { timeout: 60000 });
+    return { ...result, _apiUsed: true };
   }
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 1800);
@@ -6466,31 +6599,38 @@ function buildWineAdvicePrompt(userQuestion, eligibleWines) {
     wines: [...eligibleWines]
       .sort((a, b) => getDrinkPriorityScore(b) - getDrinkPriorityScore(a))
       .slice(0, 60)
-      .map((wine) => {
-        const reference = getLibraryReferenceForWine(wine);
-        return {
-          id: wine.id,
-          title: wineName(wine),
-          color: wine.color,
-          region: wine.region,
-          appellation: wine.appellation,
-          vintage: wine.vintage,
-          drinkFrom: wine.drinkFrom,
-          drinkTo: wine.drinkTo,
-          notes: wine.notes,
-          quantity: wine.quantity,
-          location: getWineLocationLabel(wine),
-          library: reference ? {
-            foodPairings: reference.foodPairings,
-            servingTemperature: reference.servingTemperature,
-            openingAdvice: reference.openingAdvice,
-            body: reference.body,
-            tannins: reference.tannins,
-            acidity: reference.acidity,
-            sweetness: reference.sweetness
-          } : null
-        };
-      })
+      .map(serializeWineForAi)
+  };
+}
+
+function serializeWineForAi(wine) {
+  const reference = getLibraryReferenceForWine(wine);
+  return {
+    id: wine.id,
+    title: wineName(wine),
+    color: wine.color,
+    region: wine.region,
+    appellation: wine.appellation,
+    vintage: wine.vintage,
+    drinkFrom: wine.drinkFrom,
+    drinkTo: wine.drinkTo,
+    notes: wine.notes,
+    quantity: wine.quantity,
+    status: wine.status,
+    favorite: wine.favorite,
+    location: getWineLocationLabel(wine),
+    purchasePrice: wine.purchasePrice,
+    estimatedValue: bottleValue(wine),
+    tags: wine.tags,
+    library: reference ? {
+      foodPairings: reference.foodPairings,
+      servingTemperature: reference.servingTemperature,
+      openingAdvice: reference.openingAdvice,
+      body: reference.body,
+      tannins: reference.tannins,
+      acidity: reference.acidity,
+      sweetness: reference.sweetness
+    } : null
   };
 }
 
@@ -6563,6 +6703,122 @@ function renderWineAdviceResult(result) {
       </div>
     `).join("")}
     <p>${escapeHtml(normalizedResult.generalAdvice)}</p>
+  `;
+}
+
+function renderAiToolsStatus() {
+  if (!elements.aiToolsStatus || !elements.aiToolActions) return;
+  const enabled = isWineToolsApiEnabled();
+  const usable = enabled && isSignedIn();
+  elements.aiToolsStatus.textContent = usable ? "Prêts" : enabled ? "Connexion requise" : "Non configurés";
+  elements.aiToolsStatus.className = `pill ${usable ? "ready" : "warning"}`;
+  elements.aiToolActions.querySelectorAll("[data-ai-tool]").forEach((button) => {
+    button.disabled = Boolean(activeAiToolAction) || !usable;
+  });
+}
+
+function handleAiToolActionClick(event) {
+  const button = event.target.closest("[data-ai-tool]");
+  if (!button) return;
+  runAiCellarTool(button.dataset.aiTool);
+}
+
+function buildAiCellarStats() {
+  const activeWines = wines.filter((wine) => wine.quantity > 0 && !["bu", "vendu", "offert"].includes(wine.status));
+  return {
+    references: activeWines.length,
+    bottles: activeWines.reduce((sum, wine) => sum + wine.quantity, 0),
+    purchaseValue: activeWines.reduce((sum, wine) => sum + wine.purchasePrice * wine.quantity, 0),
+    estimatedValue: activeWines.reduce((sum, wine) => sum + bottleValue(wine) * wine.quantity, 0),
+    ready: activeWines.filter((wine) => drinkStatus(wine).state === "ready").length,
+    expired: activeWines.filter((wine) => drinkStatus(wine).state === "expired").length,
+    favorites: activeWines.filter((wine) => wine.favorite).length
+  };
+}
+
+async function runAiCellarTool(action) {
+  const supportedActions = ["quality-audit", "purchase-plan", "cellar-summary"];
+  if (!supportedActions.includes(action) || activeAiToolAction) return;
+  if (!isWineToolsApiEnabled() || !isSignedIn()) {
+    elements.aiToolResult.innerHTML = '<div class="ai-tool-card" data-severity="warning"><p>Connectez votre compte pour utiliser les outils IA.</p></div>';
+    return;
+  }
+  if (!wines.some((wine) => wine.quantity > 0)) {
+    elements.aiToolResult.innerHTML = '<div class="ai-tool-card"><p>Ajoutez au moins une bouteille avant de lancer cette analyse.</p></div>';
+    return;
+  }
+
+  activeAiToolAction = action;
+  renderAiToolsStatus();
+  elements.aiToolResult.innerHTML = '<div class="ai-tool-card"><p>Analyse sécurisée en cours...</p></div>';
+  try {
+    const result = await requestWineTool(action, {
+      wines: [...wines]
+        .sort((a, b) => getDrinkPriorityScore(b) - getDrinkPriorityScore(a))
+        .slice(0, 60)
+        .map(serializeWineForAi),
+      wishlist: wishlist.slice(0, 40).map((item) => ({
+        title: [item.domain, item.cuvee].filter(Boolean).join(" "),
+        color: item.color,
+        region: item.region,
+        budget: item.budget,
+        priority: item.priority,
+        note: item.note
+      })),
+      stats: buildAiCellarStats()
+    });
+    renderAiCellarToolResult(action, result);
+  } catch (error) {
+    logError(error, `runAiCellarTool.${action}`);
+    elements.aiToolResult.innerHTML = `<div class="ai-tool-card" data-severity="warning"><p>${escapeHtml(error?.message || "Analyse IA indisponible.")}</p></div>`;
+  } finally {
+    activeAiToolAction = "";
+    renderAiToolsStatus();
+  }
+}
+
+function renderAiCellarToolResult(action, result = {}) {
+  if (action === "quality-audit") {
+    const issues = Array.isArray(result.issues) ? result.issues.slice(0, 12) : [];
+    elements.aiToolResult.innerHTML = `
+      <div class="ai-tool-card"><h4>Audit des fiches</h4><p>${escapeHtml(result.summary || "Audit terminé.")}</p></div>
+      ${issues.map((issue) => `
+        <div class="ai-tool-card" data-severity="${escapeAttribute(issue.severity || "info")}">
+          <h4>${escapeHtml(issue.title || "À vérifier")}</h4>
+          <p>${escapeHtml(issue.message || "")}</p>
+          <small>${escapeHtml(issue.suggestedFix || "")}</small>
+        </div>
+      `).join("")}
+    `;
+    return;
+  }
+  if (action === "purchase-plan") {
+    const suggestions = Array.isArray(result.suggestions) ? result.suggestions.slice(0, 5) : [];
+    elements.aiToolResult.innerHTML = `
+      <div class="ai-tool-card"><h4>Suggestions d’achat</h4><p>${escapeHtml(result.summary || "")}</p></div>
+      ${suggestions.map((item) => `
+        <div class="ai-tool-card">
+          <h4>${escapeHtml(item.style || item.color || "Style à rechercher")}</h4>
+          <p>${escapeHtml([item.color, item.region].filter(Boolean).join(" · "))}</p>
+          <p>${escapeHtml(item.reason || "")}</p>
+          <small>${escapeHtml(item.budgetHint || "Budget à définir")} · ${escapeHtml(priorityLabel(item.priority))}</small>
+        </div>
+      `).join("")}
+    `;
+    return;
+  }
+
+  const wineById = new Map(wines.map((wine) => [wine.id, wine]));
+  const highlights = Array.isArray(result.highlights) ? result.highlights.slice(0, 5) : [];
+  const priorities = Array.isArray(result.priorities) ? result.priorities.slice(0, 5) : [];
+  elements.aiToolResult.innerHTML = `
+    <div class="ai-tool-card"><h4>${escapeHtml(result.headline || "Bilan de cave")}</h4><p>${escapeHtml(result.summary || "")}</p></div>
+    ${highlights.map((item) => `<div class="ai-tool-card"><small>${escapeHtml(item.label || "Repère")}</small><strong>${escapeHtml(item.value || "")}</strong></div>`).join("")}
+    ${priorities.map((item) => {
+      const wine = wineById.get(item.wineId);
+      if (!wine) return "";
+      return `<div class="ai-tool-card"><h4>${escapeHtml(wineName(wine))}</h4><p>${escapeHtml(item.reason || "")}</p></div>`;
+    }).join("")}
   `;
 }
 

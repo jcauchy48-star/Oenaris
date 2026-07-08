@@ -1764,6 +1764,76 @@ body[data-cellar-slot-size="large"] .virtual-cellar-grid {
   margin: 0;
 }
 
+.ai-tool-suite {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.view-dashboard .ai-tool-suite {
+  display: none;
+}
+
+.ai-tool-suite h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.ai-tool-actions,
+.tasting-ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ai-tool-actions .card-action {
+  flex: 1 1 140px;
+  min-height: 42px;
+}
+
+.ai-tool-result {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ai-tool-result:empty {
+  display: none;
+}
+
+.ai-tool-card {
+  background: rgba(255, 250, 243, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.ai-tool-card h4,
+.ai-tool-card p {
+  margin: 0;
+}
+
+.ai-tool-card small {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.ai-tool-card[data-severity="danger"] {
+  border-color: rgba(174, 62, 62, 0.4);
+}
+
+.ai-tool-card[data-severity="warning"] {
+  border-color: rgba(200, 155, 60, 0.5);
+}
+
+.tasting-ai-actions {
+  align-items: center;
+}
+
 .detail-hero {
   display: grid;
   gap: 18px;
@@ -2722,6 +2792,16 @@ dialog[open] {
   .pricing-grid,
   .scan-pack-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dialog-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dialog-actions > .primary-action,
+  .tasting-ai-actions > button {
+    width: 100%;
   }
 
   .account-status-card {

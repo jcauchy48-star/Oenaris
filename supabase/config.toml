@@ -2,3 +2,6 @@ project_id = "gdrpihlnfrfmnsbvrooc"
 
 [functions.wine-advice]
 verify_jwt = false
+
+[functions.wine-tools]
+verify_jwt = false
