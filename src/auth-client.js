@@ -1,4 +1,4 @@
-(function initializeOenovaAuth(global) {
+(function initializeOenarisAuth(global) {
   "use strict";
 
   const SUPABASE_CDN_URL = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -70,6 +70,10 @@
     return new URL("./index.html?tab=compte&mode=signin", global.location.href).href;
   }
 
+  function getPasswordResetRedirectUrl() {
+    return new URL("./index.html?tab=compte&mode=reset", global.location.href).href;
+  }
+
   async function requireClient() {
     const client = await loadSupabaseClient();
     if (!client) throw createConfigurationError();
@@ -105,6 +109,32 @@
     return data;
   }
 
+  async function resetPasswordForEmail(email) {
+    const client = await requireClient();
+    const { data, error } = await client.auth.resetPasswordForEmail(
+      cleanString(email).toLowerCase(),
+      { redirectTo: getPasswordResetRedirectUrl() }
+    );
+    if (error) throw error;
+    return data;
+  }
+
+  async function resendConfirmationEmail(email) {
+    const client = await requireClient();
+    if (typeof client.auth.resend !== "function") {
+      const error = new Error("Le renvoi de confirmation n'est pas disponible avec cette version du service de compte.");
+      error.code = "RESEND_NOT_SUPPORTED";
+      throw error;
+    }
+    const { data, error } = await client.auth.resend({
+      type: "signup",
+      email: cleanString(email).toLowerCase(),
+      options: { emailRedirectTo: getEmailRedirectUrl() }
+    });
+    if (error) throw error;
+    return data;
+  }
+
   async function signOut() {
     const client = await requireClient();
     const { error } = await client.auth.signOut();
@@ -126,15 +156,18 @@
     return subscription?.data?.subscription || subscription;
   }
 
-  global.OenovaAuth = Object.freeze({
+  global.OenarisAuth = Object.freeze({
     getCloudConfig,
     isCloudConfigured,
     loadSupabaseClient,
     getSupabaseClient,
     signUpWithEmail,
     signInWithEmail,
+    resetPasswordForEmail,
+    resendConfirmationEmail,
     signOut,
     getCurrentSession,
     onAuthStateChanged
   });
+  global.OenovaAuth = global.OenarisAuth;
 })(window);

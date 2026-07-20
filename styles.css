@@ -99,6 +99,128 @@
   line-height: 1.55;
 }
 
+/* Pages légales publiques */
+.legal-body {
+  background: #f7f1e8;
+  color: #2b2020;
+  font-family: var(--font-ui);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.legal-header {
+  background: #3d0b1b;
+  border-bottom: 1px solid rgba(200, 155, 60, 0.45);
+}
+
+.legal-header-inner,
+.legal-main,
+.legal-footer-inner {
+  margin: 0 auto;
+  max-width: 880px;
+  padding-inline: 24px;
+}
+
+.legal-header-inner {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  min-height: 76px;
+}
+
+.legal-header img {
+  display: block;
+  height: auto;
+  width: 132px;
+}
+
+.legal-back-link,
+.legal-footer a {
+  color: #f1d89d;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.legal-back-link:hover,
+.legal-footer a:hover {
+  text-decoration: underline;
+}
+
+.legal-main {
+  padding-block: 56px 72px;
+}
+
+.legal-main h1,
+.legal-main h2 {
+  color: #65142f;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.legal-main h1 {
+  font-size: clamp(2.15rem, 7vw, 3.5rem);
+  margin: 0 0 12px;
+}
+
+.legal-main h2 {
+  font-size: 1.45rem;
+  margin: 34px 0 10px;
+}
+
+.legal-main p,
+.legal-main li {
+  line-height: 1.75;
+}
+
+.legal-main ul,
+.legal-main ol {
+  padding-left: 22px;
+}
+
+.legal-intro {
+  color: #756760;
+  font-size: 1.05rem;
+  margin: 0 0 28px;
+}
+
+.legal-notice {
+  background: #fffaf3;
+  border: 1px solid #e1c99a;
+  border-left: 4px solid #8f1d3f;
+  border-radius: 6px;
+  margin: 28px 0;
+  padding: 16px 18px;
+}
+
+.legal-footer {
+  background: #2a0813;
+  color: #d4c4bb;
+}
+
+.legal-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  padding-block: 24px;
+}
+
+@media (max-width: 560px) {
+  .legal-header-inner,
+  .legal-main,
+  .legal-footer-inner {
+    padding-inline: 18px;
+  }
+
+  .legal-back-link {
+    font-size: 0.76rem;
+  }
+}
+
+.demo-video-caption span {
+  color: #bdaea2;
+  white-space: nowrap;
+}
+
 .demo-chapters {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3294,6 +3416,16 @@ dialog[open] {
   min-width: 0;
 }
 
+.product-stage-disclaimer {
+  bottom: 2px;
+  color: #c9b8aa;
+  font-size: 0.68rem;
+  left: 18px;
+  margin: 0;
+  position: absolute;
+  z-index: 6;
+}
+
 .landing-overline {
   color: var(--landing-gold);
   font-size: 0.76rem;
@@ -3366,12 +3498,7 @@ dialog[open] {
   color: #251c1b;
   min-height: 410px;
   overflow: hidden;
-  transform: perspective(1400px) rotateY(-3deg) rotateX(1deg);
-  transition: transform 500ms ease;
-}
-
-.product-stage:hover .product-window {
-  transform: perspective(1400px) rotateY(0) rotateX(0);
+  transform: none;
 }
 
 .product-window-bar {
@@ -5133,7 +5260,6 @@ dialog[open] {
 .product-stage {
   min-height: 520px;
   overflow: visible;
-  perspective: 1200px;
   position: relative;
 }
 
@@ -5142,7 +5268,7 @@ dialog[open] {
   border-color: rgba(224, 197, 142, 0.68);
   box-shadow: 0 42px 90px rgba(0, 0, 0, 0.42), 0 0 60px rgba(143, 39, 72, 0.14);
   min-height: 432px;
-  transform: rotateY(-2deg) rotateX(1deg);
+  transform: none;
 }
 
 .product-window-bar {
@@ -6417,14 +6543,48 @@ dialog[open] {
     display: flex;
     gap: 20px;
     grid-column: 1 / -1;
+    justify-content: flex-start;
     justify-self: stretch;
     overflow-x: auto;
     padding: 4px 2px 0;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+  }
+
+  .landing-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .landing-nav a {
     flex: 0 0 auto;
+  }
+
+  .landing-brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .landing-brand-logo {
+    height: auto;
+    width: 108px;
+  }
+
+  .landing-header-actions {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .landing-header-login,
+  .landing-header-cta {
+    font-size: 0.67rem;
+    padding: 7px 9px;
+  }
+
+  .landing-nav {
+    grid-row: 2;
   }
 }
 
@@ -6562,5 +6722,2878 @@ dialog[open] {
   .landing-footer-brand img.landing-brand-logo {
     width: 118px;
     height: auto;
+  }
+}
+
+.landing-auth-recovery-actions {
+  align-items: flex-start;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.landing-auth-text-button {
+  background: transparent;
+  border: 0;
+  color: #7d1739;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 750;
+  padding: 2px 0;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: rgba(125, 23, 57, 0.32);
+  text-underline-offset: 3px;
+}
+
+.landing-auth-text-button:hover {
+  color: #a22450;
+}
+
+.landing-auth-text-button:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid rgba(200, 155, 60, 0.34);
+  outline-offset: 3px;
+}
+
+.landing-auth-forms h3,
+.landing-auth-forms p {
+  margin: 0;
+}
+
+.legacy-data-shell {
+  max-width: 620px;
+}
+
+.legacy-data-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.legacy-data-actions #ignoreLegacyDataButton {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 560px) {
+  .legacy-data-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .legacy-data-actions #ignoreLegacyDataButton {
+    grid-column: auto;
+  }
+}
+
+/* Theme application Oenaris - inspiration cave premium */
+body.app-access-granted {
+  --ink: #251815;
+  --muted: #73655d;
+  --line: #ead8c3;
+  --paper: #f7efe5;
+  --panel: #fffaf3;
+  --accent: #8e183d;
+  --accent-dark: #571025;
+  --gold: #c49a52;
+  --bronze: #9f6f31;
+  --green: #4d7a68;
+  --sage: #dfeae3;
+  --shadow: 0 22px 54px rgba(62, 33, 24, 0.14);
+  --soft-shadow: 0 14px 34px rgba(62, 33, 24, 0.1);
+  background:
+    radial-gradient(circle at 64% -8%, rgba(196, 154, 82, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 18%, rgba(87, 16, 37, 0.06), transparent 34%),
+    linear-gradient(135deg, #fffaf4 0%, #f8efe4 48%, #efe3d4 100%);
+}
+
+body.app-access-granted::before {
+  background:
+    linear-gradient(90deg, rgba(255, 250, 243, 0.76), rgba(255, 250, 243, 0.18)),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.5), transparent 30%);
+  opacity: 0.9;
+}
+
+body.app-access-granted .ambient-vines::before {
+  background-image: url("data:image/svg+xml,%3Csvg width='980' height='720' viewBox='0 0 980 720' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c49a52' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' opacity='.25'%3E%3Cpath d='M170 482c150-115 310-150 480-80 86 35 162 34 255-12'/%3E%3Cpath d='M224 482c116-82 255-100 421-44 92 31 172 25 238-18'/%3E%3Cpath d='M286 482c95-51 205-61 330-31 90 22 169 18 236-12'/%3E%3Cpath d='M748 46c-46 78-52 145-17 201 35 57 29 111-17 163'/%3E%3Cpath d='M734 102c-43-15-76-43-98-84 45 1 79 29 98 84Z'/%3E%3Cpath d='M771 181c47-7 86 5 116 36-42 17-81 4-116-36Z'/%3E%3Cpath d='M706 296c-39-11-69-36-88-74 41 0 71 24 88 74Z'/%3E%3Cpath d='M900 24c-42 68-46 127-14 176 31 49 25 96-16 141'/%3E%3Cpath d='M884 83c-35-13-61-36-78-70 37 1 64 24 78 70Z'/%3E%3Cpath d='M920 154c35 0 63 14 84 41-34 10-62-4-84-41Z'/%3E%3C/g%3E%3Cg fill='%23c49a52' opacity='.14'%3E%3Cellipse cx='883' cy='101' rx='16' ry='20'/%3E%3Cellipse cx='912' cy='111' rx='16' ry='20'/%3E%3Cellipse cx='895' cy='135' rx='16' ry='20'/%3E%3Cellipse cx='925' cy='144' rx='16' ry='20'/%3E%3Cellipse cx='908' cy='170' rx='16' ry='20'/%3E%3C/g%3E%3C/svg%3E");
+  height: 760px;
+  opacity: 0.72;
+  right: -90px;
+  top: -42px;
+  width: min(70vw, 980px);
+}
+
+.app-access-granted .app-layout {
+  grid-template-columns: 320px minmax(0, 1fr);
+}
+
+.app-access-granted.sidebar-collapsed .app-layout {
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.app-access-granted .app-sidebar {
+  background:
+    radial-gradient(circle at 20% 4%, rgba(216, 181, 110, 0.2), transparent 24%),
+    linear-gradient(180deg, rgba(87, 16, 37, 0.98) 0%, rgba(48, 8, 23, 0.98) 46%, rgba(24, 6, 14, 0.99) 100%);
+  border-right: 1px solid rgba(255, 238, 207, 0.16);
+  box-shadow: 22px 0 44px rgba(30, 11, 17, 0.24);
+  color: #fff7ec;
+  gap: 16px;
+  padding: 22px 20px;
+}
+
+.app-access-granted .app-sidebar::before {
+  background-image:
+    linear-gradient(180deg, transparent 0%, rgba(20, 5, 11, 0.08) 48%, rgba(20, 5, 11, 0.86) 100%),
+    url("data:image/svg+xml,%3Csvg width='320' height='390' viewBox='0 0 320 390' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c49a52' stroke-width='2' opacity='.2'%3E%3Cpath d='M42 238c36-72 123-95 194-51 47 29 61 86 35 143'/%3E%3Cpath d='M64 265c31-48 94-61 144-31 31 18 45 56 33 94'/%3E%3Cpath d='M80 296h190M74 330h198M94 365h158'/%3E%3Cpath d='M42 238c32 25 66 41 103 49 41 9 81 4 119-15'/%3E%3C/g%3E%3Cg fill='%230b0205' opacity='.34'%3E%3Crect x='0' y='250' width='320' height='140'/%3E%3Cellipse cx='104' cy='318' rx='62' ry='72'/%3E%3Cellipse cx='186' cy='326' rx='72' ry='80'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  opacity: 0.96;
+}
+
+.app-access-granted .app-sidebar::after {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09), transparent 28%),
+    radial-gradient(circle at 10% 10%, rgba(255, 238, 207, 0.12), transparent 26%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.app-access-granted .sidebar-header {
+  align-items: center;
+  min-height: 58px;
+}
+
+.app-access-granted .sidebar-brand {
+  background: rgba(92, 18, 42, 0.72);
+  border: 1px solid rgba(216, 181, 110, 0.64);
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px rgba(216, 181, 110, 0.08), 0 12px 24px rgba(0, 0, 0, 0.22);
+  height: 54px;
+  overflow: hidden;
+  width: 54px;
+}
+
+.app-access-granted .sidebar-brand img {
+  border-radius: 999px;
+  transform: scale(1.06);
+}
+
+.app-access-granted .sidebar-title strong {
+  color: #ffe4aa;
+  font-family: var(--display-font);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.app-access-granted .sidebar-title span {
+  color: rgba(255, 250, 243, 0.88);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.app-access-granted .sidebar-section-title {
+  border-bottom: 1px solid rgba(255, 238, 207, 0.12);
+  color: rgba(255, 238, 207, 0.6);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin: 18px 2px 8px;
+  padding: 0 0 8px;
+}
+
+.app-access-granted .sidebar-add-action {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), transparent),
+    linear-gradient(135deg, #a92755, #70152f 56%, #4b0d20);
+  border: 1px solid rgba(255, 238, 207, 0.14);
+  border-radius: 13px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 18px 34px rgba(21, 4, 12, 0.34);
+  color: #fffaf3;
+  min-height: 58px;
+}
+
+.app-access-granted .sidebar-item,
+.app-access-granted .sidebar-collapse {
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: rgba(255, 250, 243, 0.88);
+  min-height: 46px;
+  padding-inline: 13px;
+}
+
+.app-access-granted .sidebar-item:hover,
+.app-access-granted .sidebar-collapse:hover {
+  background: rgba(255, 250, 243, 0.08);
+  border-color: rgba(255, 238, 207, 0.12);
+  color: #fffaf3;
+}
+
+.app-access-granted .sidebar-item.is-active {
+  background:
+    linear-gradient(90deg, rgba(255, 250, 243, 0.18), rgba(255, 250, 243, 0.06));
+  border-color: rgba(255, 238, 207, 0.2);
+  box-shadow: inset 3px 0 0 #e5bf72, 0 10px 24px rgba(0, 0, 0, 0.18);
+  color: #fffaf3;
+}
+
+.app-access-granted .sidebar-icon {
+  color: currentColor;
+  height: 30px;
+  width: 30px;
+}
+
+.app-access-granted .sidebar-item.is-active .sidebar-icon {
+  background: rgba(255, 238, 207, 0.14);
+  color: #ffe4aa;
+}
+
+.app-access-granted .plan-badge,
+.app-access-granted .scan-credit-badge {
+  border-color: rgba(255, 238, 207, 0.2);
+}
+
+.app-access-granted .plan-badge {
+  background: rgba(255, 238, 207, 0.14);
+  color: #ffe4aa;
+}
+
+.app-access-granted .scan-credit-badge {
+  background: rgba(255, 250, 243, 0.1);
+  color: rgba(255, 250, 243, 0.86);
+}
+
+.app-access-granted .app-shell {
+  width: min(1368px, calc(100% - 64px));
+  padding: 28px 0 54px;
+}
+
+.app-access-granted .topbar {
+  align-items: center;
+  background:
+    linear-gradient(100deg, rgba(255, 250, 243, 0.98) 0%, rgba(255, 250, 243, 0.94) 48%, rgba(255, 246, 234, 0.86) 100%);
+  border: 1px solid rgba(196, 154, 82, 0.34);
+  border-radius: 28px;
+  box-shadow: 0 22px 56px rgba(62, 33, 24, 0.13);
+  margin-bottom: 26px;
+  min-height: 276px;
+  overflow: hidden;
+  padding: 34px;
+  position: relative;
+}
+
+.app-access-granted .topbar::before {
+  background:
+    linear-gradient(90deg, rgba(255, 250, 243, 0.96), rgba(255, 250, 243, 0.68) 46%, rgba(255, 250, 243, 0.18)),
+    url("data:image/svg+xml,%3Csvg width='920' height='300' viewBox='0 0 920 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c49a52' stroke-width='1.6' opacity='.16'%3E%3Cpath d='M84 230c95-76 204-96 328-59 83 25 154 21 213-12'/%3E%3Cpath d='M139 230c81-49 172-58 272-27 78 24 145 22 201-8'/%3E%3Cpath d='M188 230c75-30 153-35 235-15 74 18 134 18 181-1'/%3E%3Cpath d='M520 72c35 35 58 77 69 126'/%3E%3Cpath d='M620 31c-28 55-31 101-8 137 26 41 20 79-16 114'/%3E%3Cpath d='M604 82c-31-8-55-28-72-60 34-2 58 18 72 60Z'/%3E%3Cpath d='M642 137c34-5 62 6 84 32-31 11-59 0-84-32Z'/%3E%3Cpath d='M772 5c-36 59-40 110-12 152 27 41 21 81-18 119'/%3E%3Cpath d='M756 58c-31-11-54-31-69-61 33 1 56 21 69 61Z'/%3E%3Cpath d='M794 117c33 0 60 13 80 38-31 10-58-3-80-38Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.app-access-granted .topbar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-access-granted .back-to-site-link {
+  color: #6f1230;
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.app-access-granted .eyebrow {
+  color: var(--bronze);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
+
+.app-access-granted .app-shell h1 {
+  color: #64102b;
+  font-size: clamp(3.4rem, 6.4vw, 5.35rem);
+  letter-spacing: 0;
+  margin-bottom: 20px;
+  position: relative;
+  text-shadow: 0 18px 34px rgba(100, 16, 43, 0.13);
+}
+
+.app-access-granted .topbar h1::after {
+  background: #c49a52;
+  bottom: -12px;
+  content: "";
+  height: 3px;
+  left: 0;
+  position: absolute;
+  width: 38px;
+}
+
+.app-access-granted .hero-subtitle {
+  color: #3f312d;
+  font-size: clamp(1rem, 1.8vw, 1.16rem);
+  line-height: 1.62;
+  max-width: 560px;
+}
+
+.app-access-granted .top-actions {
+  align-content: center;
+  align-items: center;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, max-content);
+  justify-items: end;
+  min-width: min(100%, 360px);
+}
+
+.app-access-granted .top-actions .primary-action {
+  grid-column: 1 / -1;
+  min-width: 280px;
+}
+
+.app-access-granted .primary-action,
+.app-access-granted .sidebar-add-action {
+  border-radius: 999px;
+}
+
+.app-access-granted .primary-action {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent),
+    linear-gradient(135deg, #a82754, #72162f 58%, #4c0d20);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 16px 30px rgba(87, 16, 37, 0.28);
+  min-height: 52px;
+}
+
+.app-access-granted .ghost-action,
+.app-access-granted .card-action {
+  background: rgba(255, 250, 243, 0.82);
+  border: 1px solid rgba(196, 154, 82, 0.26);
+  color: #62112b;
+}
+
+.app-access-granted .ghost-action:hover,
+.app-access-granted .card-action:hover {
+  background: #fffaf3;
+  border-color: rgba(143, 24, 61, 0.22);
+  box-shadow: 0 12px 24px rgba(62, 33, 24, 0.12);
+}
+
+.app-access-granted .stats-grid {
+  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+
+.app-access-granted .stats-grid article {
+  align-items: center;
+  background:
+    linear-gradient(145deg, rgba(255, 253, 249, 0.96), rgba(255, 247, 235, 0.9));
+  border: 1px solid rgba(196, 154, 82, 0.22);
+  border-radius: 18px;
+  box-shadow: 0 16px 36px rgba(62, 33, 24, 0.1);
+  display: grid;
+  gap: 2px 18px;
+  grid-template-columns: 74px minmax(0, 1fr);
+  min-height: 132px;
+  padding: 20px;
+}
+
+.app-access-granted .stats-grid article::after {
+  display: none;
+}
+
+.app-access-granted .stat-emblem {
+  align-items: center;
+  align-self: center;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(241, 230, 216, 0.88));
+  border: 1px solid rgba(196, 154, 82, 0.2);
+  border-radius: 999px;
+  color: #b3843b;
+  display: inline-flex;
+  grid-row: 1 / span 3;
+  height: 72px;
+  justify-content: center;
+  width: 58px;
+}
+
+.app-access-granted .stat-emblem .ui-icon {
+  height: 26px;
+  stroke-width: 1.65;
+  width: 26px;
+}
+
+.app-access-granted .stat-label {
+  color: #725d52;
+  font-size: 0.79rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.app-access-granted .stats-grid strong {
+  color: #67112d;
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.app-access-granted .stats-grid small {
+  color: #806e63;
+  font-size: 0.88rem;
+}
+
+.app-access-granted .toolbar {
+  background: rgba(255, 250, 243, 0.92);
+  border: 1px solid rgba(196, 154, 82, 0.22);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(62, 33, 24, 0.09);
+  padding: 16px;
+}
+
+.app-access-granted .view-dashboard .toolbar {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-access-granted .search-field span {
+  color: #b07b34;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.app-access-granted .view-dashboard .search-field input {
+  min-height: 54px;
+}
+
+.app-access-granted input,
+.app-access-granted select,
+.app-access-granted textarea {
+  background: rgba(255, 253, 249, 0.92);
+  border: 1px solid rgba(196, 154, 82, 0.25);
+  border-radius: 13px;
+  color: #251815;
+}
+
+.app-access-granted input::placeholder,
+.app-access-granted textarea::placeholder {
+  color: #a99a91;
+}
+
+.app-access-granted input:focus,
+.app-access-granted select:focus,
+.app-access-granted textarea:focus {
+  border-color: rgba(143, 24, 61, 0.54);
+  outline: 3px solid rgba(196, 154, 82, 0.24);
+}
+
+.app-access-granted .content-layout {
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 430px;
+}
+
+.app-access-granted .inventory-panel,
+.app-access-granted .side-panel,
+.app-access-granted .module-panel,
+.app-access-granted .tools-panel article,
+.app-access-granted .settings-panel article {
+  background:
+    linear-gradient(145deg, rgba(255, 253, 249, 0.96), rgba(255, 247, 235, 0.88));
+  border: 1px solid rgba(196, 154, 82, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 18px 42px rgba(62, 33, 24, 0.1);
+}
+
+.app-access-granted .inventory-panel {
+  padding: 22px;
+}
+
+.app-access-granted .side-panel {
+  gap: 18px;
+  padding: 18px;
+}
+
+.app-access-granted .panel-heading h2,
+.app-access-granted .side-panel h2 {
+  color: #6b122f;
+  font-size: 1.45rem;
+}
+
+.app-access-granted .panel-heading span {
+  color: #7b685e;
+}
+
+.app-access-granted .wine-card {
+  background:
+    linear-gradient(135deg, rgba(255, 253, 249, 0.98), rgba(255, 249, 241, 0.94));
+  border: 1px solid rgba(196, 154, 82, 0.18);
+  border-radius: 18px;
+  box-shadow: none;
+  grid-template-columns: 122px minmax(0, 1fr) 176px;
+  padding: 14px;
+}
+
+.app-access-granted .wine-card:hover {
+  border-color: rgba(143, 24, 61, 0.2);
+  box-shadow: 0 18px 38px rgba(62, 33, 24, 0.12);
+}
+
+.app-access-granted .wine-card::before {
+  display: none;
+}
+
+.app-access-granted .wine-photo,
+.app-access-granted .photo-placeholder {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 249, 0.72), rgba(235, 218, 198, 0.38)),
+    #f3eadf;
+  border: 1px solid rgba(196, 154, 82, 0.2);
+  border-radius: 12px;
+  min-height: 150px;
+  width: 122px;
+}
+
+.app-access-granted .wine-domain {
+  color: #6f625c;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.app-access-granted .wine-title {
+  color: #65112d;
+  font-size: 1.24rem;
+  line-height: 1.12;
+}
+
+.app-access-granted .color-chip,
+.app-access-granted .wine-vintage,
+.app-access-granted .wine-meta span,
+.app-access-granted .compact-stat,
+.app-access-granted .tag-badge,
+.app-access-granted .pill {
+  background: rgba(255, 250, 243, 0.76);
+  border: 1px solid rgba(196, 154, 82, 0.18);
+}
+
+.app-access-granted .wine-facts {
+  background: rgba(255, 250, 243, 0.68);
+  border: 1px solid rgba(196, 154, 82, 0.16);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.app-access-granted .wine-facts > strong {
+  color: #68122e;
+  font-size: 1.28rem;
+}
+
+.app-access-granted .watch-card,
+.app-access-granted .movement-card,
+.app-access-granted .wishlist-card,
+.app-access-granted .advice-card,
+.app-access-granted .beta-card,
+.app-access-granted .tasting-card {
+  background: rgba(255, 253, 249, 0.8);
+  border: 1px solid rgba(196, 154, 82, 0.18);
+  border-radius: 14px;
+  box-shadow: none;
+  overflow: hidden;
+  padding: 12px 14px 12px 62px;
+  position: relative;
+}
+
+.app-access-granted .watch-card::before,
+.app-access-granted .movement-card::before,
+.app-access-granted .wishlist-card::before,
+.app-access-granted .advice-card::before {
+  align-items: center;
+  background: #c49a52;
+  border-radius: 10px;
+  color: #fffaf3;
+  content: "i";
+  display: flex;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 900;
+  height: 40px;
+  justify-content: center;
+  left: 12px;
+  position: absolute;
+  top: 12px;
+  width: 40px;
+}
+
+.app-access-granted .movement-card::before {
+  content: "J";
+}
+
+.app-access-granted .wishlist-card::before {
+  content: "+";
+}
+
+.app-access-granted .advice-card::before {
+  content: "?";
+}
+
+.app-access-granted .watch-card.info::before {
+  background: #4d7a68;
+}
+
+.app-access-granted .watch-card.warning::before {
+  background: #c49a52;
+  content: "!";
+}
+
+.app-access-granted .watch-card.danger::before {
+  background: #9d2840;
+  content: "!";
+}
+
+.app-access-granted .watch-card.info,
+.app-access-granted .watch-card.warning,
+.app-access-granted .watch-card.danger {
+  border-left: 1px solid rgba(196, 154, 82, 0.18);
+}
+
+.app-access-granted .watch-card strong,
+.app-access-granted .movement-card strong,
+.app-access-granted .wishlist-card strong,
+.app-access-granted .advice-card strong {
+  color: #332420;
+  font-weight: 850;
+}
+
+.app-access-granted .empty-state {
+  background: rgba(255, 250, 243, 0.55);
+  border-color: rgba(196, 154, 82, 0.28);
+}
+
+.app-access-granted .app-footer {
+  color: #847166;
+}
+
+@media (max-width: 1180px) {
+  .app-access-granted .content-layout {
+    grid-template-columns: minmax(0, 1fr) 370px;
+  }
+
+  .app-access-granted .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .app-access-granted .app-layout,
+  .app-access-granted.sidebar-collapsed .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-access-granted .app-sidebar {
+    max-width: min(88vw, 340px);
+    width: min(88vw, 340px);
+  }
+
+  .app-access-granted .mobile-menu-button {
+    background:
+      linear-gradient(135deg, #a82754, #64102b);
+    border: 1px solid rgba(255, 238, 207, 0.18);
+    color: #fffaf3;
+  }
+
+  .app-access-granted .app-shell {
+    width: min(100% - 28px, 1368px);
+  }
+
+  .app-access-granted .topbar {
+    align-items: start;
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 28px;
+  }
+
+  .app-access-granted .top-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: stretch;
+    width: 100%;
+  }
+
+  .app-access-granted .top-actions .primary-action {
+    min-width: 0;
+  }
+
+  .app-access-granted .content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-access-granted .app-shell {
+    width: min(100% - 18px, 1368px);
+  }
+
+  .app-access-granted .topbar {
+    border-radius: 22px;
+    padding: 22px 18px;
+  }
+
+  .app-access-granted .app-shell h1 {
+    font-size: clamp(2.75rem, 17vw, 4rem);
+  }
+
+  .app-access-granted .top-actions,
+  .app-access-granted .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-access-granted .stats-grid article {
+    grid-template-columns: 64px minmax(0, 1fr);
+    min-height: 112px;
+    padding: 16px;
+  }
+
+  .app-access-granted .stat-emblem {
+    height: 62px;
+    width: 52px;
+  }
+
+  .app-access-granted .wine-card {
+    grid-template-columns: 100px minmax(0, 1fr);
+  }
+
+  .app-access-granted .wine-facts {
+    grid-column: 1 / -1;
+  }
+
+  .app-access-granted .wine-photo,
+  body.app-access-granted[data-card-style="visual"] .wine-photo,
+  body.app-access-granted[data-card-style="classic"] .wine-photo {
+    min-height: 132px;
+    width: 100%;
+  }
+}
+
+/* Theme precision pass - closer to the supplied Oenaris reference */
+body.app-access-granted {
+  background:
+    radial-gradient(circle at 45% 12%, rgba(104, 28, 46, 0.04), transparent 28%),
+    radial-gradient(circle at 80% 8%, rgba(196, 154, 82, 0.09), transparent 24%),
+    linear-gradient(180deg, #fffdf9 0%, #fbf6ef 42%, #f6eee4 100%);
+}
+
+body.app-access-granted::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.82), rgba(255, 250, 243, 0.42) 56%, rgba(255, 250, 243, 0.12)),
+    radial-gradient(circle at 46% 28%, rgba(255, 255, 255, 0.62), transparent 34%);
+  opacity: 0.78;
+}
+
+body.app-access-granted .ambient-vines {
+  display: none;
+}
+
+.app-access-granted .main-workspace {
+  background:
+    radial-gradient(circle at 34% 10%, rgba(255, 255, 255, 0.9), transparent 26%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.78), rgba(247, 239, 229, 0.88));
+}
+
+.app-access-granted .app-sidebar {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(168, 39, 84, 0.28), transparent 34%),
+    radial-gradient(circle at 78% 28%, rgba(255, 238, 207, 0.055), transparent 24%),
+    linear-gradient(180deg, #430819 0%, #270411 50%, #130207 100%);
+  border-right-color: rgba(255, 238, 207, 0.13);
+  box-shadow: 18px 0 42px rgba(25, 6, 12, 0.36);
+}
+
+.app-access-granted .app-sidebar::before {
+  background-image:
+    linear-gradient(180deg, rgba(20, 3, 9, 0) 0%, rgba(20, 3, 9, 0.1) 35%, rgba(20, 3, 9, 0.56) 68%, rgba(20, 3, 9, 0.92) 100%),
+    url("data:image/svg+xml,%3Csvg width='320' height='430' viewBox='0 0 320 430' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3CradialGradient id='barrel' cx='.45' cy='.42' r='.7'%3E%3Cstop offset='0' stop-color='%23864a28' stop-opacity='.54'/%3E%3Cstop offset='.68' stop-color='%23301816' stop-opacity='.64'/%3E%3Cstop offset='1' stop-color='%2310090b' stop-opacity='.94'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23d1a45e' stroke-linecap='round' stroke-linejoin='round' opacity='.22'%3E%3Cpath d='M13 214c46-83 131-116 217-88 70 23 101 82 80 158'/%3E%3Cpath d='M42 236c42-55 108-77 174-55 52 17 77 60 65 113'/%3E%3Cpath d='M76 252h203M51 292h234M30 334h255M42 378h225'/%3E%3Cpath d='M25 214c42 34 87 55 137 64 51 10 98 3 142-21'/%3E%3Cpath d='M122 156c8-41 35-69 78-84M158 144c48-34 87-43 119-27'/%3E%3C/g%3E%3Cg opacity='.86'%3E%3Cellipse cx='92' cy='346' rx='76' ry='88' fill='url(%23barrel)'/%3E%3Cellipse cx='190' cy='350' rx='88' ry='98' fill='url(%23barrel)'/%3E%3Cellipse cx='273' cy='363' rx='62' ry='72' fill='url(%23barrel)'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c88c4a' stroke-width='3' opacity='.22'%3E%3Cellipse cx='92' cy='346' rx='61' ry='72'/%3E%3Cellipse cx='190' cy='350' rx='70' ry='81'/%3E%3Cellipse cx='273' cy='363' rx='49' ry='58'/%3E%3C/g%3E%3Cg fill='%230e0307' opacity='.5'%3E%3Crect x='0' y='385' width='320' height='45'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: center bottom;
+  background-size: 100% auto;
+  opacity: 1;
+}
+
+.app-access-granted .app-sidebar::after {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.095), transparent 21%),
+    linear-gradient(180deg, rgba(255, 238, 207, 0.035), transparent 38%),
+    radial-gradient(circle at 4% 17%, rgba(216, 181, 110, 0.1), transparent 22%);
+}
+
+.app-access-granted .sidebar-brand {
+  background: #4d0b1d;
+  box-shadow: 0 0 0 4px rgba(216, 181, 110, 0.11), 0 16px 30px rgba(0, 0, 0, 0.28);
+}
+
+.app-access-granted .sidebar-add-action {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent),
+    linear-gradient(135deg, #ad2b58 0%, #781630 58%, #4a0a1d 100%);
+  border-radius: 12px;
+}
+
+.app-access-granted .sidebar-item.is-active {
+  background:
+    linear-gradient(90deg, rgba(255, 250, 243, 0.19), rgba(255, 250, 243, 0.07));
+  border-color: rgba(255, 238, 207, 0.18);
+  box-shadow: inset 4px 0 0 #efc96f, 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.app-access-granted .topbar {
+  background:
+    linear-gradient(95deg, rgba(255, 253, 249, 0.98) 0%, rgba(255, 252, 247, 0.96) 47%, rgba(255, 248, 240, 0.92) 100%);
+  border-color: rgba(214, 181, 145, 0.5);
+  box-shadow: 0 18px 42px rgba(80, 47, 30, 0.11);
+  min-height: 320px;
+}
+
+.app-access-granted .topbar::before {
+  background:
+    linear-gradient(90deg, rgba(255, 253, 249, 0.98) 0%, rgba(255, 253, 249, 0.78) 38%, rgba(255, 253, 249, 0.34) 64%, rgba(255, 253, 249, 0.06) 100%),
+    url("data:image/svg+xml,%3Csvg width='1260' height='320' viewBox='0 0 1260 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d7bda2' stroke-width='1.45' stroke-linecap='round' stroke-linejoin='round' opacity='.48'%3E%3Cpath d='M374 237c130-92 270-118 420-79 92 24 170 19 236-15'/%3E%3Cpath d='M422 238c112-62 238-73 378-32 86 25 159 24 220-3'/%3E%3Cpath d='M484 238c93-35 188-42 286-21 81 17 148 16 202-1'/%3E%3Cpath d='M545 239c76-16 153-17 232-5 61 9 112 7 154-6'/%3E%3Cpath d='M496 186c78-41 158-47 241-19M566 154c64-26 129-27 196-2M632 129c46-13 92-10 138 9'/%3E%3Cpath d='M740 94c35 32 59 68 70 108'/%3E%3Cpath d='M808 94c19 35 28 71 28 110'/%3E%3Cpath d='M880 93c-12 41-16 82-12 123'/%3E%3Cpath d='M952 90c-42 50-57 98-45 145'/%3E%3C/g%3E%3Cg fill='none' stroke='%23cfae8d' stroke-width='1.9' stroke-linecap='round' opacity='.56'%3E%3Cpath d='M880 55c-34 56-38 106-12 150 27 45 20 84-20 119'/%3E%3Cpath d='M857 105c-36-10-63-34-81-72 38 0 65 24 81 72Z'/%3E%3Cpath d='M904 160c40-6 73 7 99 38-37 14-70 1-99-38Z'/%3E%3Cpath d='M984 30c-47 70-54 133-20 188 32 52 23 93-26 124'/%3E%3Cpath d='M968 85c-44-16-78-45-101-88 47 2 81 32 101 88Z'/%3E%3Cpath d='M1012 150c45-4 83 11 114 45-42 13-80-2-114-45Z'/%3E%3Cpath d='M1122 8c-32 67-34 125-6 174 23 41 13 76-31 105'/%3E%3Cpath d='M1100 61c-35-14-61-39-78-76 38 3 64 28 78 76Z'/%3E%3Cpath d='M1140 125c38 2 69 18 92 49-37 9-68-7-92-49Z'/%3E%3C/g%3E%3Cg fill='%23cfb08e' opacity='.34'%3E%3Cellipse cx='1170' cy='75' rx='13' ry='17'/%3E%3Cellipse cx='1195' cy='87' rx='13' ry='17'/%3E%3Cellipse cx='1163' cy='103' rx='13' ry='17'/%3E%3Cellipse cx='1189' cy='116' rx='13' ry='17'/%3E%3Cellipse cx='1215' cy='104' rx='13' ry='17'/%3E%3Cellipse cx='1180' cy='139' rx='13' ry='17'/%3E%3Cellipse cx='1207' cy='150' rx='13' ry='17'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: right center;
+  background-size: auto 100%;
+}
+
+.app-access-granted .topbar::after {
+  background:
+    radial-gradient(ellipse at 58% 59%, rgba(216, 191, 164, 0.28), transparent 24%),
+    radial-gradient(ellipse at 82% 8%, rgba(216, 181, 110, 0.12), transparent 24%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.app-access-granted .topbar > * {
+  z-index: 2;
+}
+
+.app-access-granted .stats-grid article,
+.app-access-granted .toolbar,
+.app-access-granted .inventory-panel,
+.app-access-granted .side-panel,
+.app-access-granted .module-panel,
+.app-access-granted .tools-panel article,
+.app-access-granted .settings-panel article {
+  background:
+    linear-gradient(145deg, rgba(255, 254, 251, 0.98), rgba(255, 250, 245, 0.94));
+  border-color: rgba(224, 204, 184, 0.78);
+  box-shadow: 0 14px 34px rgba(70, 42, 27, 0.105);
+}
+
+.app-access-granted .stat-emblem {
+  background:
+    linear-gradient(145deg, #fffdf9 0%, #f6ede3 100%);
+  border-color: rgba(224, 204, 184, 0.72);
+  box-shadow: inset 0 0 0 8px rgba(238, 226, 213, 0.45);
+  color: #bd8e43;
+}
+
+.app-access-granted .toolbar {
+  border-radius: 20px;
+}
+
+.app-access-granted .wine-card {
+  background:
+    linear-gradient(135deg, rgba(255, 254, 251, 0.98), rgba(255, 251, 246, 0.96));
+  border-color: rgba(224, 204, 184, 0.78);
+}
+
+@media (max-width: 980px) {
+  .app-access-granted .topbar {
+    min-height: 0;
+  }
+
+  .app-access-granted .topbar::before {
+    background-position: 70% top;
+    opacity: 0.68;
+  }
+}
+
+/* Dashboard visual refit - scoped to the Oenaris cellar dashboard */
+body.app-access-granted {
+  --dash-raisins-950: #3b0718;
+  --dash-raisins-900: #4c091e;
+  --dash-raisins-800: #660d2b;
+  --dash-raisins-700: #8c1741;
+  --dash-gold: #c6994b;
+  --dash-ivory: #fcf8f2;
+  --dash-ivory-strong: #fffdf9;
+  --dash-cream: #f6efe6;
+  --dash-line: #e8d7c4;
+  --dash-ink: #321f1d;
+  --dash-muted: #806f68;
+  --dash-serif: "Cormorant Garamond", "Playfair Display", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --dash-sans: Aptos, "Segoe UI Variable Text", Inter, ui-sans-serif, system-ui, sans-serif;
+  --dash-card-shadow: 0 14px 34px rgba(64, 35, 24, 0.085);
+  --dash-panel-shadow: 0 20px 48px rgba(64, 35, 24, 0.105);
+}
+
+body.app-access-granted.view-dashboard {
+  background:
+    radial-gradient(circle at 48% 0%, rgba(198, 153, 75, 0.085), transparent 30%),
+    linear-gradient(180deg, #fffdfa 0%, #faf4ec 58%, #f3eadf 100%);
+  color: var(--dash-ink);
+  font-family: var(--dash-sans);
+}
+
+body.app-access-granted.view-dashboard::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.84), rgba(252, 248, 242, 0.24)),
+    radial-gradient(circle at 52% 18%, rgba(255, 255, 255, 0.58), transparent 32%);
+}
+
+.view-dashboard .app-layout {
+  grid-template-columns: 320px minmax(0, 1fr);
+}
+
+.view-dashboard.sidebar-collapsed .app-layout {
+  grid-template-columns: 88px minmax(0, 1fr);
+}
+
+.view-dashboard .app-sidebar {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(140, 23, 65, 0.32), transparent 30%),
+    linear-gradient(180deg, var(--dash-raisins-950) 0%, #260411 54%, #130107 100%);
+  border-right: 1px solid rgba(252, 248, 242, 0.1);
+  box-shadow: 18px 0 42px rgba(23, 3, 9, 0.34);
+  padding: 22px 20px;
+}
+
+.view-dashboard .app-sidebar::before {
+  background-image:
+    linear-gradient(180deg, rgba(15, 2, 7, 0) 0%, rgba(15, 2, 7, 0.08) 42%, rgba(15, 2, 7, 0.7) 78%, rgba(15, 2, 7, 0.94) 100%),
+    url("data:image/svg+xml,%3Csvg width='320' height='430' viewBox='0 0 320 430' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3CradialGradient id='b' cx='.45' cy='.42' r='.74'%3E%3Cstop offset='0' stop-color='%23884a2b' stop-opacity='.42'/%3E%3Cstop offset='.66' stop-color='%23371c19' stop-opacity='.54'/%3E%3Cstop offset='1' stop-color='%23100609' stop-opacity='.92'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23c6994b' stroke-linecap='round' stroke-linejoin='round' opacity='.2'%3E%3Cpath d='M16 218c48-88 138-118 221-84 65 27 91 85 68 156'/%3E%3Cpath d='M47 244c43-57 108-75 173-51 47 18 68 58 55 106'/%3E%3Cpath d='M55 289h230M34 333h249M44 378h219'/%3E%3Cpath d='M24 219c42 32 89 52 141 61 49 8 94 0 136-24'/%3E%3C/g%3E%3Cg opacity='.9'%3E%3Cellipse cx='88' cy='350' rx='76' ry='88' fill='url(%23b)'/%3E%3Cellipse cx='188' cy='354' rx='88' ry='98' fill='url(%23b)'/%3E%3Cellipse cx='274' cy='368' rx='62' ry='72' fill='url(%23b)'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c6994b' stroke-width='3' opacity='.18'%3E%3Cellipse cx='88' cy='350' rx='59' ry='70'/%3E%3Cellipse cx='188' cy='354' rx='70' ry='80'/%3E%3Cellipse cx='274' cy='368' rx='48' ry='57'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% auto;
+  opacity: 1;
+}
+
+.view-dashboard .sidebar-title strong {
+  color: #f0cc78;
+  font-family: var(--dash-serif);
+  font-size: 1.28rem;
+  font-weight: 700;
+}
+
+.view-dashboard .sidebar-title span {
+  color: rgba(252, 248, 242, 0.82);
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.view-dashboard .sidebar-add-action {
+  border-radius: 12px;
+  min-height: 54px;
+}
+
+.view-dashboard .sidebar-item,
+.view-dashboard .sidebar-collapse {
+  border-radius: 13px;
+  color: rgba(252, 248, 242, 0.86);
+  font-size: 0.95rem;
+  font-weight: 650;
+  min-height: 45px;
+}
+
+.view-dashboard .sidebar-icon .ui-icon {
+  stroke-width: 1.7;
+}
+
+.view-dashboard .sidebar-section-title {
+  color: rgba(252, 248, 242, 0.52);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+.view-dashboard .sidebar-item.is-active {
+  background: rgba(252, 248, 242, 0.12);
+  border: 1px solid rgba(252, 248, 242, 0.14);
+  box-shadow: inset 4px 0 0 #f0c96d, 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.view-dashboard .app-shell {
+  width: min(1360px, calc(100% - 72px));
+  padding-block: 30px 54px;
+}
+
+.view-dashboard .topbar {
+  align-items: center;
+  background:
+    linear-gradient(95deg, rgba(252, 248, 242, 0.98) 0%, rgba(252, 248, 242, 0.95) 45%, rgba(252, 248, 242, 0.82) 100%);
+  border: 1px solid rgba(232, 215, 196, 0.96);
+  border-radius: 30px;
+  box-shadow: 0 20px 48px rgba(64, 35, 24, 0.11);
+  margin-bottom: 26px;
+  min-height: 306px;
+  padding: 32px 34px;
+}
+
+.view-dashboard .topbar::before {
+  background:
+    linear-gradient(90deg, rgba(252, 248, 242, 0.99) 0%, rgba(252, 248, 242, 0.78) 38%, rgba(252, 248, 242, 0.34) 64%, rgba(252, 248, 242, 0.04) 100%),
+    url("data:image/svg+xml,%3Csvg width='1260' height='320' viewBox='0 0 1260 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23cdb493' stroke-width='1.45' stroke-linecap='round' stroke-linejoin='round' opacity='.42'%3E%3Cpath d='M372 238c132-92 273-118 424-78 91 24 169 18 236-16'/%3E%3Cpath d='M420 238c113-62 239-72 379-31 86 25 159 23 220-4'/%3E%3Cpath d='M484 238c92-35 188-42 286-21 82 18 148 17 202-1'/%3E%3Cpath d='M546 239c76-16 153-17 232-5 61 9 112 7 154-6'/%3E%3Cpath d='M500 187c78-41 158-47 241-19M566 154c64-26 129-27 196-2M632 130c46-13 92-10 138 9'/%3E%3Cpath d='M740 94c35 32 59 68 70 108'/%3E%3Cpath d='M808 94c19 35 28 71 28 110'/%3E%3Cpath d='M880 93c-12 41-16 82-12 123'/%3E%3Cpath d='M952 90c-42 50-57 98-45 145'/%3E%3C/g%3E%3Cg fill='none' stroke='%23caa985' stroke-width='1.85' stroke-linecap='round' opacity='.5'%3E%3Cpath d='M880 55c-34 56-38 106-12 150 27 45 20 84-20 119'/%3E%3Cpath d='M857 105c-36-10-63-34-81-72 38 0 65 24 81 72Z'/%3E%3Cpath d='M904 160c40-6 73 7 99 38-37 14-70 1-99-38Z'/%3E%3Cpath d='M984 30c-47 70-54 133-20 188 32 52 23 93-26 124'/%3E%3Cpath d='M968 85c-44-16-78-45-101-88 47 2 81 32 101 88Z'/%3E%3Cpath d='M1012 150c45-4 83 11 114 45-42 13-80-2-114-45Z'/%3E%3Cpath d='M1122 8c-32 67-34 125-6 174 23 41 13 76-31 105'/%3E%3Cpath d='M1100 61c-35-14-61-39-78-76 38 3 64 28 78 76Z'/%3E%3Cpath d='M1140 125c38 2 69 18 92 49-37 9-68-7-92-49Z'/%3E%3C/g%3E%3Cg fill='%23caa985' opacity='.28'%3E%3Cellipse cx='1170' cy='75' rx='13' ry='17'/%3E%3Cellipse cx='1195' cy='87' rx='13' ry='17'/%3E%3Cellipse cx='1163' cy='103' rx='13' ry='17'/%3E%3Cellipse cx='1189' cy='116' rx='13' ry='17'/%3E%3Cellipse cx='1215' cy='104' rx='13' ry='17'/%3E%3Cellipse cx='1180' cy='139' rx='13' ry='17'/%3E%3Cellipse cx='1207' cy='150' rx='13' ry='17'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: right center;
+  background-size: auto 100%;
+}
+
+.view-dashboard .topbar::after {
+  background: radial-gradient(ellipse at 58% 58%, rgba(205, 180, 147, 0.26), transparent 26%);
+}
+
+.view-dashboard .back-to-site-link {
+  color: var(--dash-raisins-800);
+  font-size: 0.86rem;
+  font-weight: 760;
+}
+
+.view-dashboard .eyebrow {
+  color: var(--dash-gold);
+  font-size: 0.78rem;
+  font-weight: 820;
+  letter-spacing: 0.11em;
+}
+
+.view-dashboard .topbar h1 {
+  color: var(--dash-raisins-800);
+  font-family: var(--dash-serif);
+  font-size: clamp(4rem, 6vw, 5.1rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin-bottom: 18px;
+  text-shadow: none;
+}
+
+.view-dashboard .topbar h1::after {
+  background: var(--dash-gold);
+  bottom: -14px;
+  height: 3px;
+  width: 38px;
+}
+
+.view-dashboard .hero-subtitle {
+  color: var(--dash-ink);
+  font-size: 1.04rem;
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+.view-dashboard .top-actions {
+  gap: 14px;
+  grid-template-columns: repeat(2, max-content);
+}
+
+.view-dashboard .top-actions .ghost-action {
+  min-height: 46px;
+  min-width: 132px;
+}
+
+.view-dashboard .top-actions .primary-action {
+  grid-column: 1 / -1;
+  justify-self: end;
+  min-width: 286px;
+}
+
+.view-dashboard .primary-action {
+  background: linear-gradient(135deg, #a22450 0%, var(--dash-raisins-800) 58%, #4b0a1e 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 14px 26px rgba(102, 13, 43, 0.28);
+}
+
+.view-dashboard .ghost-action,
+.view-dashboard .card-action {
+  background: rgba(255, 253, 249, 0.82);
+  border: 1px solid rgba(232, 215, 196, 0.92);
+  color: var(--dash-raisins-800);
+}
+
+.view-dashboard .stats-grid {
+  gap: 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+
+.view-dashboard .stats-grid article {
+  background: linear-gradient(145deg, #fffdfa 0%, #fbf5ed 100%);
+  border: 1px solid rgba(232, 215, 196, 0.94);
+  border-radius: 20px;
+  box-shadow: var(--dash-card-shadow);
+  display: grid;
+  gap: 2px 17px;
+  grid-template-columns: 64px minmax(0, 1fr);
+  height: 118px;
+  min-height: 118px;
+  padding: 17px 19px;
+}
+
+.view-dashboard .stats-grid article::after {
+  display: none;
+}
+
+.view-dashboard .stat-emblem {
+  background: linear-gradient(145deg, #fffdf9 0%, #f3eadf 100%);
+  border: 1px solid rgba(232, 215, 196, 0.82);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 8px rgba(238, 229, 218, 0.52);
+  color: var(--dash-gold);
+  grid-row: 1 / span 3;
+  height: 70px;
+  width: 56px;
+}
+
+.view-dashboard .stat-label {
+  color: #765f55;
+  font-size: 0.75rem;
+  font-weight: 820;
+  letter-spacing: 0.06em;
+}
+
+.view-dashboard .stats-grid strong {
+  color: var(--dash-raisins-800);
+  font-family: var(--dash-serif);
+  font-size: 1.82rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.view-dashboard .stats-grid small {
+  color: var(--dash-muted);
+  font-size: 0.82rem;
+  margin-top: 2px;
+}
+
+.view-dashboard .toolbar {
+  align-items: center;
+  background: linear-gradient(145deg, #fffdfa 0%, #fbf5ed 100%);
+  border: 1px solid rgba(232, 215, 196, 0.94);
+  border-radius: 20px;
+  box-shadow: var(--dash-card-shadow);
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+}
+
+.view-dashboard .toolbar label:not(.search-field),
+.view-dashboard .compact-stats {
+  display: none;
+}
+
+.view-dashboard .toolbar .reset-action {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0;
+  grid-column: auto;
+  height: 48px;
+  justify-self: end;
+  min-height: 48px;
+  padding: 0;
+  width: 48px;
+}
+
+.view-dashboard .toolbar .reset-action::before {
+  background:
+    linear-gradient(var(--dash-raisins-800), var(--dash-raisins-800)) 50% 31% / 18px 2px no-repeat,
+    linear-gradient(var(--dash-raisins-800), var(--dash-raisins-800)) 50% 50% / 18px 2px no-repeat,
+    linear-gradient(var(--dash-raisins-800), var(--dash-raisins-800)) 50% 69% / 18px 2px no-repeat;
+  content: "";
+  height: 28px;
+  width: 28px;
+}
+
+.view-dashboard .search-field {
+  position: relative;
+}
+
+.view-dashboard .search-field::before {
+  border: 2px solid rgba(128, 111, 104, 0.6);
+  border-radius: 999px;
+  content: "";
+  height: 13px;
+  left: 17px;
+  pointer-events: none;
+  position: absolute;
+  top: 38px;
+  width: 13px;
+  z-index: 1;
+}
+
+.view-dashboard .search-field::after {
+  background: rgba(128, 111, 104, 0.6);
+  content: "";
+  height: 8px;
+  left: 29px;
+  pointer-events: none;
+  position: absolute;
+  top: 51px;
+  transform: rotate(-45deg);
+  width: 2px;
+  z-index: 1;
+}
+
+.view-dashboard .search-field span {
+  color: var(--dash-gold);
+  font-size: 0.76rem;
+  font-weight: 820;
+  letter-spacing: 0.11em;
+}
+
+.view-dashboard .search-field input {
+  background: rgba(255, 253, 249, 0.78);
+  border: 1px solid rgba(232, 215, 196, 0.95);
+  border-radius: 13px;
+  min-height: 50px;
+  padding-left: 46px;
+}
+
+.view-dashboard .content-layout {
+  gap: 20px;
+  grid-template-columns: minmax(0, 1.88fr) minmax(330px, 0.92fr);
+}
+
+.view-dashboard .inventory-panel,
+.view-dashboard .side-panel {
+  background: linear-gradient(145deg, #fffdfa 0%, #fbf5ed 100%);
+  border: 1px solid rgba(232, 215, 196, 0.94);
+  border-radius: 20px;
+  box-shadow: var(--dash-panel-shadow);
+}
+
+.view-dashboard .inventory-panel {
+  min-height: 286px;
+  padding: 20px;
+}
+
+.view-dashboard .side-panel {
+  gap: 14px;
+  padding: 18px;
+}
+
+.view-dashboard .panel-heading {
+  margin-bottom: 14px;
+}
+
+.view-dashboard .panel-heading h2,
+.view-dashboard .side-panel h2 {
+  color: var(--dash-raisins-800);
+  font-family: var(--dash-serif);
+  font-size: 1.42rem;
+  font-weight: 650;
+  margin-bottom: 0;
+}
+
+.view-dashboard .wine-card {
+  background: rgba(255, 253, 249, 0.82);
+  border-color: rgba(232, 215, 196, 0.96);
+  border-radius: 16px;
+  grid-template-columns: 118px minmax(0, 1fr) 170px;
+  padding: 12px;
+}
+
+.view-dashboard .wine-photo,
+.view-dashboard .photo-placeholder {
+  border-radius: 12px;
+  min-height: 146px;
+  width: 118px;
+}
+
+.view-dashboard .wine-title {
+  color: var(--dash-raisins-800);
+  font-family: var(--dash-serif);
+  font-size: 1.26rem;
+  font-weight: 650;
+}
+
+.view-dashboard .wine-facts {
+  border-color: rgba(232, 215, 196, 0.82);
+}
+
+.view-dashboard .watch-card {
+  min-height: 62px;
+  padding-block: 10px;
+}
+
+@media (max-width: 1180px) {
+  .view-dashboard .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-dashboard .content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 980px) {
+  .view-dashboard .app-layout,
+  .view-dashboard.sidebar-collapsed .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .view-dashboard .app-shell {
+    width: min(100% - 28px, 1360px);
+  }
+
+  .view-dashboard .topbar {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .view-dashboard .app-shell {
+    width: min(100% - 18px, 1360px);
+  }
+
+  .view-dashboard .topbar {
+    border-radius: 22px;
+    padding: 22px 18px;
+  }
+
+  .view-dashboard .topbar h1 {
+    font-size: clamp(2.8rem, 17vw, 4rem);
+  }
+
+  .view-dashboard .top-actions,
+  .view-dashboard .stats-grid,
+  .view-dashboard .toolbar,
+  .view-dashboard .wine-card {
+    grid-template-columns: 1fr;
+  }
+
+  .view-dashboard .toolbar .reset-action {
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .view-dashboard .wine-photo,
+  .view-dashboard .photo-placeholder {
+    max-width: 168px;
+    width: 100%;
+  }
+}
+
+/* Static image backgrounds supplied for the Oenaris app */
+.app-access-granted .app-sidebar {
+  background:
+    linear-gradient(180deg, rgba(59, 7, 24, 0.1), rgba(19, 1, 7, 0.2)),
+    url("./assets/oenaris-sidebar-bg.jpg") center bottom / cover no-repeat,
+    var(--dash-raisins-950);
+}
+
+.app-access-granted .app-sidebar::before,
+.app-access-granted .app-sidebar::after {
+  display: none;
+}
+
+.app-access-granted .topbar {
+  background:
+    url("./assets/oenaris-dashboard-hero-bg.jpg") center / 100% 100% no-repeat,
+    var(--dash-ivory);
+}
+
+.app-access-granted .topbar::before,
+.app-access-granted .topbar::after {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .app-access-granted .topbar {
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+/* Supplied Oenaris dashboard icons */
+.app-access-granted .stat-emblem img {
+  display: block;
+  filter: drop-shadow(0 8px 12px rgba(80, 36, 27, 0.14));
+  height: 46px;
+  object-fit: contain;
+  width: 46px;
+}
+
+.app-access-granted .stat-emblem img[src*="icon-bottle-premium"] {
+  height: 58px;
+  width: 30px;
+}
+
+.app-access-granted .stat-emblem img[src*="icon-glass"] {
+  height: 52px;
+  width: 32px;
+}
+
+.app-access-granted .bottle-illustration--asset {
+  align-items: center;
+  display: flex;
+  height: 132px;
+  justify-content: center;
+  transform: none;
+  width: 72px;
+}
+
+.app-access-granted .default-bottle-icon {
+  display: block;
+  filter: drop-shadow(0 14px 18px rgba(73, 23, 26, 0.2));
+  height: 124px;
+  max-width: 58px;
+  object-fit: contain;
+}
+
+.app-access-granted .watch-card::before,
+.app-access-granted .wishlist-card::before,
+.app-access-granted .advice-card::before {
+  background: transparent url("./assets/icon-grape.png") center / contain no-repeat;
+  box-shadow: none;
+  content: "";
+}
+
+.app-access-granted .watch-card[data-alert-type="ready"]::before {
+  background-image: url("./assets/icon-drink.png");
+}
+
+.app-access-granted .watch-card[data-alert-type="soon"]::before,
+.app-access-granted .watch-card[data-alert-type="drink-window-end"]::before,
+.app-access-granted .watch-card[data-alert-type="expired"]::before {
+  background-image: url("./assets/icon-glass.png");
+}
+
+.app-access-granted .watch-card[data-alert-type="low-stock"]::before {
+  background-image: url("./assets/icon-low-stock.png");
+}
+
+.app-access-granted .watch-card[data-alert-type="high-value"]::before {
+  background-image: url("./assets/icon-coins.png");
+}
+
+.app-access-granted .wishlist-card::before {
+  background-image: url("./assets/icon-buy.png");
+}
+
+.app-access-granted .watch-card.info::before,
+.app-access-granted .watch-card.warning::before,
+.app-access-granted .watch-card.danger::before {
+  background-color: transparent;
+  content: "";
+}
+
+/* Fine positioning for supplied alert icons */
+.app-access-granted .watch-card {
+  padding-left: 70px;
+}
+
+.app-access-granted .watch-card::before {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 44px;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+}
+
+.app-access-granted .watch-card[data-alert-type="ready"]::before,
+.app-access-granted .watch-card[data-alert-type="low-stock"]::before {
+  background-size: 40px 40px;
+  height: 44px;
+  left: 13px;
+  width: 44px;
+}
+
+.app-access-granted .watch-card[data-alert-type="ready"]::before {
+  background-position: center 52%;
+}
+
+.app-access-granted .watch-card[data-alert-type="low-stock"]::before {
+  background-position: center 51%;
+}
+
+/* Premium wine fiche cards supplied for Oenaris */
+.app-access-granted .wine-list {
+  container-name: wine-list;
+  container-type: inline-size;
+  gap: 18px;
+}
+
+.app-access-granted .wine-card {
+  align-items: stretch;
+  background:
+    url("./assets/wine-card-shell-bg.webp") center / 100% 100% no-repeat,
+    linear-gradient(145deg, #fffdfa 0%, #fbf6ee 100%);
+  border: 0;
+  border-radius: 28px;
+  box-shadow: 0 18px 42px rgba(62, 38, 24, 0.12);
+  gap: clamp(14px, 1.8vw, 28px);
+  grid-template-columns: minmax(150px, 22%) minmax(0, 1fr) minmax(190px, 27%);
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(16px, 2vw, 28px);
+}
+
+.app-access-granted .wine-card:hover {
+  box-shadow: 0 22px 50px rgba(62, 38, 24, 0.16);
+  transform: translateY(-2px);
+}
+
+.app-access-granted .wine-card::before {
+  background: url("./assets/wine-landscape-divider.webp") center / contain no-repeat;
+  border-radius: 0;
+  content: "";
+  height: 48%;
+  left: 36%;
+  opacity: 0.34;
+  pointer-events: none;
+  position: absolute;
+  top: 30%;
+  width: 42%;
+  z-index: 0;
+}
+
+.app-access-granted .wine-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-access-granted .wine-photo {
+  align-self: start;
+  aspect-ratio: 0.49;
+  background: url("./assets/wine-photo-frame-bg.webp") center / 100% 100% no-repeat;
+  border: 0;
+  border-radius: clamp(22px, 2.35cqi, 38px);
+  box-shadow: none;
+  min-height: 0;
+  padding: clamp(12px, 1.4vw, 18px);
+  width: 100%;
+}
+
+.app-access-granted .wine-photo-inner {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.app-access-granted .wine-photo img {
+  border-radius: 16px;
+  filter: drop-shadow(0 20px 18px rgba(38, 17, 13, 0.18));
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
+.app-access-granted .wine-photo .default-bottle-icon {
+  height: min(92%, 260px);
+  max-width: 116px;
+}
+
+.app-access-granted .bottle-illustration--asset {
+  height: 100%;
+  width: 100%;
+}
+
+.app-access-granted .wine-card-body {
+  align-content: center;
+  gap: clamp(8px, 1vw, 12px);
+  min-width: 0;
+  padding-block: 4px;
+}
+
+.app-access-granted .wine-kicker {
+  align-items: center;
+  gap: 14px;
+}
+
+.app-access-granted .color-chip,
+.app-access-granted .region-chip {
+  border-radius: 999px;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: 0.82rem;
+  font-weight: 760;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  min-height: 36px;
+  padding: 7px 14px;
+}
+
+.app-access-granted .color-dot {
+  background: currentColor;
+  box-shadow: none;
+  height: clamp(14px, 1.25cqi, 20px);
+  -webkit-mask: radial-gradient(circle at 68% 40%, transparent 0 40%, #000 43%);
+  mask: radial-gradient(circle at 68% 40%, transparent 0 40%, #000 43%);
+  width: clamp(14px, 1.25cqi, 20px);
+}
+
+.app-access-granted .color-chip {
+  background: linear-gradient(135deg, #9e204b, #5d0b27);
+  border: 1px solid rgba(65, 8, 24, 0.22);
+  box-shadow: inset 0 0 0 2px rgba(255, 250, 243, 0.16);
+  color: #fffaf3;
+}
+
+.app-access-granted .wine-card[data-color="Blanc"] .color-chip {
+  background: linear-gradient(135deg, #f5e8c8, #c99a47);
+  color: #5d4625;
+}
+
+.app-access-granted .wine-card[data-color="Rose"] .color-chip {
+  background: linear-gradient(135deg, #f1a6b7, #a22950);
+}
+
+.app-access-granted .wine-card[data-color="Effervescent"] .color-chip {
+  background: linear-gradient(135deg, #eef5f1, #8aa995);
+  color: #355a4c;
+}
+
+.app-access-granted .wine-card[data-color="Liquoreux"] .color-chip {
+  background: linear-gradient(135deg, #f3d88b, #b98425);
+  color: #56380f;
+}
+
+.app-access-granted .region-chip {
+  background: rgba(255, 252, 247, 0.68);
+  border: 1px solid rgba(203, 161, 92, 0.36);
+  color: #735e50;
+}
+
+.app-access-granted .color-dot {
+  background: currentColor;
+  box-shadow: 0 0 0 4px rgba(255, 250, 243, 0.18);
+  height: 9px;
+  width: 9px;
+}
+
+.app-access-granted .wine-title-row {
+  align-items: end;
+  gap: 10px;
+  margin: 0;
+}
+
+.app-access-granted .wine-title-row > div {
+  min-width: 0;
+}
+
+.app-access-granted .wine-domain {
+  color: #75675f;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(1rem, 1.6cqi, 1.42rem);
+  font-weight: 650;
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+
+.app-access-granted .wine-title {
+  color: #680d2d;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(2rem, 4.1cqi, 3.8rem);
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 0.92;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-access-granted .wine-vintage {
+  background: rgba(255, 252, 247, 0.74);
+  border: 1px solid rgba(203, 161, 92, 0.7);
+  border-radius: 999px;
+  box-shadow: inset 14px 0 0 -12px rgba(203, 161, 92, 0.9), inset -14px 0 0 -12px rgba(203, 161, 92, 0.9);
+  color: #6a1230;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(0.96rem, 1.55cqi, 1.28rem);
+  font-weight: 760;
+  margin-left: auto;
+  padding: 8px 16px;
+}
+
+.app-access-granted .wine-meta {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 350px);
+  margin: 4px 0 0;
+}
+
+.app-access-granted .wine-info-pill,
+.app-access-granted .wine-meta .pill {
+  align-items: center;
+  background: rgba(255, 252, 247, 0.7);
+  border: 1px solid rgba(224, 204, 184, 0.92);
+  border-radius: 999px;
+  color: #6f625b;
+  display: inline-flex;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(0.88rem, 1.35cqi, 1.08rem);
+  font-weight: 640;
+  gap: 10px;
+  max-width: 100%;
+  min-height: 38px;
+  overflow-wrap: anywhere;
+  padding: 7px 14px;
+}
+
+.app-access-granted .wine-info-pill::before {
+  color: #c6994b;
+  flex: 0 0 auto;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.app-access-granted .wine-info-pill--appellation::before {
+  content: "◎";
+}
+
+.app-access-granted .wine-info-pill--location::before {
+  content: "⌂";
+}
+
+.app-access-granted .wine-info-pill--window::before {
+  content: "◷";
+}
+
+.app-access-granted .wine-card-divider {
+  background: url("./assets/wine-landscape-divider.webp") center / contain no-repeat;
+  height: 38px;
+  margin: -4px 0 -2px;
+  opacity: 0.78;
+  width: 100%;
+}
+
+.app-access-granted .wine-notes {
+  align-items: center;
+  background: url("./assets/wine-note-panel-bg.webp") center / 100% 100% no-repeat;
+  border: 0;
+  color: #655a55;
+  display: flex;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(0.9rem, 1.35cqi, 1.08rem);
+  font-style: italic;
+  line-height: 1.35;
+  margin: 0;
+  min-height: 70px;
+  padding: 16px 18px 15px 46px;
+  position: relative;
+}
+
+.app-access-granted .wine-notes::before {
+  color: rgba(198, 153, 75, 0.82);
+  content: "“";
+  font-family: Georgia, serif;
+  font-size: 2.8rem;
+  left: 18px;
+  line-height: 1;
+  position: absolute;
+  top: 13px;
+}
+
+.app-access-granted .tag-list {
+  margin-top: -4px;
+}
+
+.app-access-granted .tag-badge {
+  background: rgba(255, 252, 247, 0.72);
+  border-color: rgba(203, 161, 92, 0.22);
+  color: #6b594e;
+}
+
+.app-access-granted .wine-facts {
+  align-content: start;
+  background: url("./assets/wine-action-panel-bg.webp") center / 100% 100% no-repeat;
+  border: 0;
+  border-radius: 28px;
+  box-shadow: none;
+  display: grid;
+  gap: 14px;
+  justify-items: stretch;
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(16px, 1.8vw, 26px);
+}
+
+.app-access-granted .wine-facts > .pill {
+  align-items: center;
+  background: rgba(223, 239, 228, 0.92);
+  border: 1px solid rgba(104, 148, 121, 0.24);
+  border-radius: 999px;
+  color: #4b8064;
+  display: inline-flex;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(0.92rem, 1.35cqi, 1.14rem);
+  font-weight: 760;
+  justify-self: center;
+  min-height: 40px;
+  padding: 7px 16px;
+}
+
+.app-access-granted .wine-facts > .pill::before {
+  content: "✓";
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 1.1rem;
+  margin-right: 10px;
+}
+
+.app-access-granted .wine-facts > .pill.wait,
+.app-access-granted .wine-facts > .pill.soon {
+  background: rgba(255, 241, 214, 0.94);
+  border-color: rgba(198, 153, 75, 0.3);
+  color: #996c24;
+}
+
+.app-access-granted .wine-facts > .pill.danger {
+  background: rgba(248, 222, 218, 0.95);
+  border-color: rgba(164, 43, 61, 0.25);
+  color: #9d2840;
+}
+
+.app-access-granted .wine-stock-block {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.app-access-granted .wine-stock-block strong {
+  color: #680d2d;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(1.9rem, 3.5cqi, 3.3rem);
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 0.92;
+  max-width: 100%;
+}
+
+.app-access-granted .wine-stock-block small {
+  color: #7d6d64;
+  font-size: 0.86rem;
+}
+
+.app-access-granted .fact-value {
+  color: #6a5b53;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: clamp(1.2rem, 1.9cqi, 1.75rem);
+  font-weight: 740;
+}
+
+.app-access-granted .wine-facts-divider {
+  background: linear-gradient(90deg, rgba(198, 153, 75, 0.72), rgba(198, 153, 75, 0.18));
+  height: 1px;
+  margin: 6px 0 10px;
+  position: relative;
+}
+
+.app-access-granted .wine-facts-divider::after {
+  background: #fffaf3;
+  border: 1px solid rgba(198, 153, 75, 0.72);
+  content: "";
+  height: 9px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 9px;
+}
+
+.app-access-granted .wine-primary-actions {
+  gap: 12px;
+}
+
+.app-access-granted .wine-primary-actions .card-action,
+.app-access-granted .wine-actions-menu summary {
+  background: rgba(255, 252, 247, 0.74);
+  border: 1px solid rgba(198, 153, 75, 0.42);
+  border-radius: 16px;
+  color: #68112d;
+  font-family: var(--dash-serif, var(--font-display));
+  font-size: 0.92rem;
+  font-weight: 760;
+  min-height: 46px;
+}
+
+.app-access-granted .wine-actions-menu summary {
+  background: linear-gradient(135deg, #a22450, #650d2b);
+  border-color: rgba(198, 153, 75, 0.72);
+  box-shadow: 0 12px 24px rgba(104, 13, 45, 0.22);
+  color: #fffaf3;
+}
+
+.app-access-granted .wine-actions-menu div {
+  background: rgba(255, 252, 247, 0.96);
+  border: 1px solid rgba(224, 204, 184, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(62, 38, 24, 0.12);
+  padding: 10px;
+}
+
+.app-access-granted .wine-actions-menu .card-action {
+  border-radius: 12px;
+}
+
+@media (max-width: 1180px) {
+  .app-access-granted .wine-card {
+    grid-template-columns: minmax(150px, 210px) minmax(0, 1fr);
+  }
+
+  .app-access-granted .wine-facts {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(150px, 0.5fr) minmax(120px, 0.35fr) minmax(240px, 1fr);
+    align-items: center;
+  }
+
+  .app-access-granted .wine-facts > .pill,
+  .app-access-granted .wine-stock-block,
+  .app-access-granted .fact-value {
+    margin: 0;
+  }
+
+  .app-access-granted .wine-facts-divider {
+    display: none;
+  }
+
+  .app-access-granted .wine-primary-actions,
+  .app-access-granted .wine-actions-menu {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-access-granted .wine-card,
+  .view-dashboard .wine-card {
+    background:
+      linear-gradient(145deg, rgba(255, 253, 249, 0.98), rgba(251, 246, 238, 0.96));
+    border: 1px solid rgba(224, 204, 184, 0.88);
+    border-radius: 22px;
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .app-access-granted .wine-card::before {
+    opacity: 0.18;
+    width: 100%;
+    left: 0;
+    top: 30%;
+  }
+
+  .app-access-granted .wine-photo {
+    justify-self: center;
+    max-width: 210px;
+    min-height: 286px;
+  }
+
+  .app-access-granted .wine-title {
+    font-size: clamp(2rem, 15vw, 3rem);
+  }
+
+  .app-access-granted .wine-vintage {
+    margin-left: 0;
+  }
+
+  .app-access-granted .wine-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .app-access-granted .wine-facts {
+    background: rgba(255, 252, 247, 0.72);
+    border: 1px solid rgba(224, 204, 184, 0.88);
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .app-access-granted .wine-primary-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Wine fiche: proportions and finish matched to the supplied reference */
+.app-access-granted .wine-card {
+  align-items: stretch;
+  background:
+    url("./assets/wine-card-shell-bg.webp") center / calc(100% + 108px) calc(100% + 80px) no-repeat,
+    #fffdf9;
+  border: 1px solid rgba(198, 153, 75, 0.62);
+  border-radius: 26px;
+  box-shadow: 0 12px 28px rgba(72, 45, 31, 0.1);
+  gap: clamp(24px, 3cqi, 50px);
+  grid-template-columns: minmax(180px, 24.8%) minmax(0, 1fr) minmax(240px, 30%);
+  padding: clamp(24px, 2.6cqi, 42px);
+  padding-bottom: clamp(18px, 1.9cqi, 30px);
+}
+
+.app-access-granted .wine-card:hover {
+  box-shadow: 0 16px 34px rgba(72, 45, 31, 0.14);
+  transform: translateY(-1px);
+}
+
+.app-access-granted .wine-photo {
+  align-self: start;
+  aspect-ratio: 0.486;
+  border: 1px solid rgba(190, 142, 62, 0.82);
+  border-radius: clamp(20px, 1.8cqi, 29px);
+  box-shadow: 0 8px 20px rgba(72, 45, 31, 0.12);
+  padding: clamp(10px, 1cqi, 16px);
+}
+
+.app-access-granted .wine-photo .default-bottle-icon {
+  border-radius: 0;
+  height: 86%;
+  max-height: none;
+  max-width: 78%;
+  width: auto;
+}
+
+.app-access-granted .wine-card-body {
+  align-content: start;
+  align-self: stretch;
+  gap: clamp(10px, 1.1cqi, 16px);
+  padding: clamp(14px, 1.85cqi, 30px) 0 4px;
+}
+
+.app-access-granted .wine-kicker {
+  gap: clamp(12px, 1.5cqi, 24px);
+}
+
+.app-access-granted .color-chip,
+.app-access-granted .region-chip {
+  font-size: clamp(0.84rem, 1.45cqi, 1.45rem);
+  min-height: clamp(36px, 3.7cqi, 56px);
+  padding: 7px clamp(18px, 2.35cqi, 38px);
+}
+
+.app-access-granted .wine-title-row {
+  align-items: end;
+  gap: 12px;
+  margin-top: clamp(10px, 1.35cqi, 22px);
+}
+
+.app-access-granted .wine-domain {
+  font-size: clamp(1.2rem, 2.7cqi, 2.7rem);
+  line-height: 1.08;
+  margin-bottom: 8px;
+}
+
+.app-access-granted .wine-title {
+  font-size: clamp(2.45rem, 5.5cqi, 5.5rem);
+  line-height: 0.94;
+  overflow-wrap: normal;
+}
+
+.app-access-granted .wine-vintage {
+  font-size: clamp(1rem, 1.9cqi, 1.9rem);
+  padding: 9px clamp(16px, 1.8cqi, 28px);
+}
+
+.app-access-granted .wine-vintage::before,
+.app-access-granted .wine-vintage::after {
+  background: #c39649;
+  content: "";
+  height: 6px;
+  transform: rotate(45deg);
+  width: 6px;
+}
+
+.app-access-granted .wine-meta {
+  gap: clamp(8px, 0.85cqi, 13px);
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: clamp(16px, 2.6cqi, 42px);
+  max-width: 350px;
+  min-width: min(220px, 100%);
+  width: 66%;
+}
+
+.app-access-granted .wine-info-pill,
+.app-access-granted .wine-meta .pill {
+  font-size: clamp(0.94rem, 1.85cqi, 1.85rem);
+  gap: clamp(9px, 1cqi, 16px);
+  min-height: clamp(42px, 4.2cqi, 64px);
+  padding: 8px clamp(13px, 1.35cqi, 22px);
+}
+
+.app-access-granted .wine-info-pill::before {
+  display: none;
+}
+
+.app-access-granted .wine-info-pill .ui-icon {
+  color: #c39649;
+  flex: 0 0 auto;
+  height: clamp(20px, 2cqi, 30px);
+  stroke-width: 1.75;
+  width: clamp(20px, 2cqi, 30px);
+}
+
+.app-access-granted .wine-info-pill > span {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 0;
+}
+
+.app-access-granted .wine-card-divider {
+  height: clamp(50px, 5.2cqi, 80px);
+  margin: auto 0 -2px;
+  transform: translateY(-32px);
+}
+
+.app-access-granted .wine-notes {
+  border: 1px solid rgba(218, 187, 143, 0.72);
+  border-radius: 18px;
+  font-size: clamp(1rem, 1.85cqi, 1.85rem);
+  margin-bottom: -20px;
+  min-height: clamp(90px, 9.7cqi, 150px);
+  padding: clamp(18px, 2cqi, 30px) clamp(20px, 2.1cqi, 34px) clamp(16px, 1.8cqi, 28px) clamp(50px, 4.2cqi, 68px);
+  transform: translateY(-20px);
+}
+
+.app-access-granted .wine-notes::before {
+  font-size: clamp(2.8rem, 3.7cqi, 3.7rem);
+  left: clamp(18px, 1.8cqi, 28px);
+  top: clamp(14px, 1.5cqi, 24px);
+}
+
+.app-access-granted .wine-facts {
+  align-self: stretch;
+  border: 1px solid rgba(218, 187, 143, 0.82);
+  border-radius: clamp(22px, 1.9cqi, 31px);
+  gap: clamp(12px, 1.3cqi, 20px);
+  padding: clamp(24px, 2.7cqi, 44px);
+}
+
+.app-access-granted .wine-facts > .pill.wine-status {
+  font-size: clamp(1rem, 2.1cqi, 2.1rem);
+  gap: 12px;
+  min-height: clamp(42px, 4.2cqi, 64px);
+  padding: 9px clamp(22px, 2.4cqi, 38px);
+}
+
+.app-access-granted .wine-facts > .pill.wine-status::before {
+  display: none;
+}
+
+.app-access-granted .wine-status .ui-icon {
+  height: clamp(20px, 2cqi, 30px);
+  stroke-width: 2.2;
+  width: clamp(20px, 2cqi, 30px);
+}
+
+.app-access-granted .wine-stock-block {
+  gap: 6px;
+  margin-top: clamp(8px, 1cqi, 16px);
+}
+
+.app-access-granted .wine-stock-block strong {
+  font-size: clamp(2.35rem, 4.3cqi, 4.35rem);
+  line-height: 0.98;
+}
+
+.app-access-granted .wine-stock-block small {
+  font-size: clamp(0.86rem, 1.2cqi, 1.2rem);
+}
+
+.app-access-granted .fact-value {
+  font-size: clamp(1.35rem, 2.7cqi, 2.7rem);
+  margin-top: clamp(8px, 1cqi, 16px);
+}
+
+.app-access-granted .wine-facts-divider {
+  margin: clamp(8px, 1cqi, 16px) 0 clamp(6px, 0.8cqi, 13px);
+}
+
+.app-access-granted .wine-primary-actions {
+  gap: clamp(10px, 1cqi, 16px);
+}
+
+.app-access-granted .wine-primary-actions .card-action,
+.app-access-granted .wine-actions-menu summary {
+  align-items: center;
+  display: flex;
+  font-size: clamp(0.96rem, 1.65cqi, 1.65rem);
+  gap: 9px;
+  justify-content: center;
+  min-height: clamp(50px, 5.2cqi, 80px);
+  padding-inline: clamp(10px, 1.1cqi, 18px);
+}
+
+.app-access-granted .wine-primary-actions .ui-icon,
+.app-access-granted .wine-actions-menu summary .ui-icon {
+  height: clamp(20px, 1.9cqi, 29px);
+  stroke-width: 1.8;
+  width: clamp(20px, 1.9cqi, 29px);
+}
+
+.app-access-granted .wine-actions-menu summary {
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(104, 13, 45, 0.18);
+}
+
+@container wine-list (max-width: 900px) {
+  .app-access-granted .wine-card {
+    grid-template-columns: minmax(180px, 28%) minmax(0, 1fr);
+  }
+
+  .app-access-granted .wine-facts {
+    background: rgba(255, 252, 247, 0.9);
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(160px, 1fr) auto;
+  }
+
+  .app-access-granted .wine-facts-divider {
+    display: none;
+  }
+
+  .app-access-granted .wine-primary-actions {
+    grid-column: 1 / 3;
+  }
+
+  .app-access-granted .wine-actions-menu {
+    align-self: end;
+    grid-column: 3;
+  }
+}
+
+@container wine-list (max-width: 640px) {
+  .app-access-granted .wine-card {
+    border-radius: 22px;
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .app-access-granted .wine-photo {
+    justify-self: center;
+    max-width: 230px;
+    width: 100%;
+  }
+
+  .app-access-granted .wine-card-body {
+    padding-top: 4px;
+  }
+
+  .app-access-granted .wine-meta {
+    max-width: none;
+    width: 100%;
+  }
+
+  .app-access-granted .wine-facts {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .app-access-granted .wine-primary-actions,
+  .app-access-granted .wine-actions-menu {
+    grid-column: auto;
+  }
+}
+
+/* Contextual wine cards: compact dashboard preview and detailed inventory fiche */
+.app-access-granted .wine-card--dashboard,
+.app-access-granted .wine-card--inventory {
+  overflow: visible;
+}
+
+.app-access-granted .wine-card--dashboard {
+  background: rgba(255, 253, 249, 0.94);
+  border: 1px solid rgba(210, 178, 128, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 7px 18px rgba(72, 45, 31, 0.08);
+  gap: 16px;
+  grid-template-columns: 96px minmax(0, 1fr) 152px;
+  min-height: 148px;
+  padding: 12px;
+}
+
+.app-access-granted .wine-card--dashboard::before {
+  display: none;
+}
+
+.app-access-granted .wine-card--dashboard:hover {
+  box-shadow: 0 9px 22px rgba(72, 45, 31, 0.11);
+  transform: translateY(-1px);
+}
+
+.app-access-granted .wine-card--dashboard .wine-photo {
+  align-self: stretch;
+  aspect-ratio: auto;
+  border-radius: 12px;
+  box-shadow: none;
+  height: 124px;
+  min-height: 0;
+  padding: 7px;
+  width: 96px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-photo .default-bottle-icon {
+  height: 94%;
+  max-width: 58px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-card-body {
+  align-content: center;
+  gap: 7px;
+  padding: 0;
+}
+
+.app-access-granted .wine-card--dashboard .wine-kicker {
+  gap: 7px;
+}
+
+.app-access-granted .wine-card--dashboard .color-chip {
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.68rem;
+  min-height: 24px;
+  padding: 4px 9px;
+}
+
+.app-access-granted .wine-card--dashboard .region-chip {
+  background: transparent;
+  border: 0;
+  color: #8a7669;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.7rem;
+  justify-content: flex-start;
+  min-height: 24px;
+  overflow: hidden;
+  padding: 3px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-access-granted .wine-card--dashboard .wine-title-row {
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 0;
+}
+
+.app-access-granted .wine-card--dashboard .wine-domain {
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.76rem;
+  font-weight: 650;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-access-granted .wine-card--dashboard .wine-title {
+  display: -webkit-box;
+  font-size: clamp(1.14rem, 2.4cqi, 1.46rem);
+  line-height: 1.05;
+  max-height: 2.1em;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.app-access-granted .wine-card--dashboard .wine-vintage {
+  background: rgba(255, 252, 247, 0.76);
+  box-shadow: none;
+  flex: 0 0 auto;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.7rem;
+  margin-left: 8px;
+  padding: 5px 8px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-vintage::before,
+.app-access-granted .wine-card--dashboard .wine-vintage::after {
+  display: none;
+}
+
+.app-access-granted .wine-card--dashboard .wine-meta {
+  display: block;
+  margin: 1px 0 0;
+  max-width: none;
+  min-width: 0;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--dashboard .wine-info-pill {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #7a695f;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.72rem;
+  gap: 6px;
+  justify-content: flex-start;
+  min-height: 22px;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--dashboard .wine-info-pill .ui-icon {
+  height: 14px;
+  width: 14px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-info-pill > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-access-granted .wine-card--dashboard .wine-info-pill--appellation,
+.app-access-granted .wine-card--dashboard .wine-info-pill--window,
+.app-access-granted .wine-card--dashboard .wine-meta .pill,
+.app-access-granted .wine-card--dashboard .wine-card-divider,
+.app-access-granted .wine-card--dashboard .wine-notes,
+.app-access-granted .wine-card--dashboard .tag-list,
+.app-access-granted .wine-card--dashboard .fact-value,
+.app-access-granted .wine-card--dashboard .wine-facts-divider,
+.app-access-granted .wine-card--dashboard .wine-primary-actions .card-action[data-action="consume"],
+.app-access-granted .wine-card--dashboard .wine-actions-menu {
+  display: none;
+}
+
+.app-access-granted .wine-card--dashboard .wine-facts {
+  align-content: center;
+  align-items: center;
+  background: rgba(255, 250, 243, 0.76);
+  border: 1px solid rgba(218, 187, 143, 0.55);
+  border-radius: 13px;
+  display: grid;
+  gap: 8px;
+  grid-column: auto;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-width: 0;
+  padding: 10px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-facts > .pill.wine-status {
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.72rem;
+  gap: 5px;
+  min-height: 27px;
+  padding: 4px 9px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-status .ui-icon {
+  height: 14px;
+  width: 14px;
+}
+
+.app-access-granted .wine-card--dashboard .wine-stock-block {
+  margin: 0;
+  text-align: center;
+}
+
+.app-access-granted .wine-card--dashboard .wine-stock-block strong {
+  font-size: 1.22rem;
+  line-height: 1.05;
+}
+
+.app-access-granted .wine-card--dashboard .wine-primary-actions {
+  display: block;
+  grid-column: auto;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--dashboard .wine-primary-actions .card-action {
+  border-radius: 10px;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.76rem;
+  min-height: 34px;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--dashboard .wine-primary-actions .ui-icon {
+  height: 15px;
+  width: 15px;
+}
+
+.app-access-granted .wine-card--inventory {
+  background:
+    url("./assets/wine-card-shell-bg.webp") center / calc(100% + 70px) calc(100% + 52px) no-repeat,
+    #fffdf9;
+  border-radius: 20px;
+  box-shadow: 0 9px 22px rgba(72, 45, 31, 0.09);
+  gap: clamp(18px, 2.1cqi, 30px);
+  grid-template-columns: clamp(142px, 17cqi, 172px) minmax(0, 1fr) clamp(205px, 23cqi, 232px);
+  min-height: 286px;
+  padding: clamp(16px, 1.7cqi, 24px);
+}
+
+.app-access-granted .wine-card--inventory::before {
+  height: 43%;
+  left: 36%;
+  opacity: 0.2;
+  top: 30%;
+  width: 38%;
+}
+
+.app-access-granted .wine-card--inventory .wine-photo {
+  align-self: stretch;
+  aspect-ratio: auto;
+  border-radius: 18px;
+  height: 254px;
+  padding: 10px;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--inventory .wine-photo .default-bottle-icon {
+  height: 91%;
+  max-width: 82px;
+}
+
+.app-access-granted .wine-card--inventory .wine-card-body {
+  align-content: start;
+  gap: 8px;
+  padding: 5px 0 0;
+}
+
+.app-access-granted .wine-card--inventory .wine-kicker {
+  gap: 8px;
+}
+
+.app-access-granted .wine-card--inventory .color-chip,
+.app-access-granted .wine-card--inventory .region-chip {
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.7rem;
+  min-height: 28px;
+  padding: 5px 11px;
+}
+
+.app-access-granted .wine-card--inventory .wine-title-row {
+  align-items: end;
+  flex-wrap: nowrap;
+  margin-top: 2px;
+}
+
+.app-access-granted .wine-card--inventory .wine-domain {
+  font-size: clamp(0.96rem, 1.35cqi, 1.16rem);
+  line-height: 1.15;
+  margin-bottom: 3px;
+}
+
+.app-access-granted .wine-card--inventory .wine-title {
+  display: -webkit-box;
+  font-size: clamp(1.65rem, 3cqi, 2.35rem);
+  line-height: 0.98;
+  max-height: 1.96em;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.app-access-granted .wine-card--inventory .wine-vintage {
+  flex: 0 0 auto;
+  font-size: 0.88rem;
+  padding: 6px 11px;
+}
+
+.app-access-granted .wine-card--inventory .wine-vintage::before,
+.app-access-granted .wine-card--inventory .wine-vintage::after {
+  height: 4px;
+  width: 4px;
+}
+
+.app-access-granted .wine-card--inventory .wine-meta {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 5px;
+  max-width: none;
+  min-width: 0;
+  width: 100%;
+}
+
+.app-access-granted .wine-card--inventory .wine-info-pill,
+.app-access-granted .wine-card--inventory .wine-meta .pill {
+  border-radius: 10px;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.72rem;
+  gap: 6px;
+  min-height: 32px;
+  padding: 5px 8px;
+}
+
+.app-access-granted .wine-card--inventory .wine-info-pill--window {
+  grid-column: 1 / -1;
+}
+
+.app-access-granted .wine-card--inventory .wine-info-pill .ui-icon {
+  height: 16px;
+  width: 16px;
+}
+
+.app-access-granted .wine-card--inventory .wine-card-divider {
+  display: none;
+}
+
+.app-access-granted .wine-card--inventory .wine-notes {
+  border-radius: 12px;
+  display: -webkit-box;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.75rem;
+  line-height: 1.35;
+  margin: 1px 0 0;
+  min-height: 46px;
+  overflow: hidden;
+  padding: 10px 11px 9px 32px;
+  transform: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.app-access-granted .wine-card--inventory .wine-notes::before {
+  font-size: 1.9rem;
+  left: 10px;
+  top: 8px;
+}
+
+.app-access-granted .wine-card--inventory .tag-list {
+  margin-top: 0;
+  max-height: 24px;
+  overflow: hidden;
+}
+
+.app-access-granted .wine-card--inventory .tag-badge {
+  font-size: 0.66rem;
+  padding: 3px 7px;
+}
+
+.app-access-granted .wine-card--inventory .wine-facts {
+  align-content: center;
+  border-radius: 18px;
+  gap: 10px;
+  grid-column: auto;
+  grid-template-columns: 1fr;
+  min-width: 0;
+  padding: 18px;
+}
+
+.app-access-granted .wine-card--inventory .wine-facts > .pill.wine-status {
+  font-size: 0.84rem;
+  gap: 7px;
+  min-height: 34px;
+  padding: 6px 13px;
+}
+
+.app-access-granted .wine-card--inventory .wine-status .ui-icon {
+  height: 17px;
+  width: 17px;
+}
+
+.app-access-granted .wine-card--inventory .wine-stock-block {
+  margin-top: 3px;
+}
+
+.app-access-granted .wine-card--inventory .wine-stock-block strong {
+  font-size: clamp(1.75rem, 2.65cqi, 2.35rem);
+  line-height: 1;
+}
+
+.app-access-granted .wine-card--inventory .fact-value {
+  font-size: clamp(1.12rem, 1.7cqi, 1.38rem);
+  margin-top: 0;
+}
+
+.app-access-granted .wine-card--inventory .wine-facts-divider {
+  margin: 3px 0 2px;
+}
+
+.app-access-granted .wine-card--inventory .wine-primary-actions {
+  gap: 7px;
+}
+
+.app-access-granted .wine-card--inventory .wine-primary-actions .card-action,
+.app-access-granted .wine-card--inventory .wine-actions-menu summary {
+  border-radius: 10px;
+  font-family: var(--dash-sans, var(--font-ui));
+  font-size: 0.76rem;
+  gap: 6px;
+  min-height: 38px;
+  padding-inline: 7px;
+}
+
+.app-access-granted .wine-card--inventory .wine-primary-actions .ui-icon,
+.app-access-granted .wine-card--inventory .wine-actions-menu summary .ui-icon {
+  height: 16px;
+  width: 16px;
+}
+
+.app-access-granted .wine-card--inventory .wine-actions-menu summary {
+  box-shadow: 0 5px 12px rgba(104, 13, 45, 0.16);
+}
+
+@container wine-list (max-width: 760px) {
+  .app-access-granted .wine-card--dashboard {
+    grid-template-columns: 84px minmax(0, 1fr) 132px;
+  }
+
+  .app-access-granted .wine-card--dashboard .wine-photo {
+    height: 116px;
+    width: 84px;
+  }
+
+  .app-access-granted .wine-card--inventory {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+
+  .app-access-granted .wine-card--inventory .wine-photo {
+    height: 246px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-facts {
+    align-items: center;
+    background: rgba(255, 252, 247, 0.9);
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(130px, 1fr) auto;
+    padding: 12px 14px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-facts > .pill,
+  .app-access-granted .wine-card--inventory .wine-stock-block,
+  .app-access-granted .wine-card--inventory .fact-value {
+    margin: 0;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-facts-divider {
+    display: none;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-primary-actions {
+    grid-column: 1 / 3;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-actions-menu {
+    grid-column: 3;
+  }
+}
+
+@container wine-list (max-width: 520px) {
+  .app-access-granted .wine-card--dashboard {
+    gap: 10px;
+    grid-template-columns: 72px minmax(0, 1fr);
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .app-access-granted .wine-card--dashboard .wine-photo {
+    grid-row: 1;
+    height: 108px;
+    width: 72px;
+  }
+
+  .app-access-granted .wine-card--dashboard .wine-facts {
+    align-items: center;
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr) 86px;
+    justify-items: start;
+    padding: 8px;
+  }
+
+  .app-access-granted .wine-card--dashboard .wine-stock-block {
+    justify-self: center;
+  }
+
+  .app-access-granted .wine-card--dashboard .wine-primary-actions {
+    justify-self: stretch;
+  }
+
+  .app-access-granted .wine-card--inventory {
+    background: rgba(255, 253, 249, 0.97);
+    border-radius: 18px;
+    gap: 12px;
+    grid-template-columns: 96px minmax(0, 1fr);
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .app-access-granted .wine-card--inventory::before {
+    display: none;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-photo {
+    align-self: start;
+    border-radius: 13px;
+    height: 176px;
+    padding: 7px;
+    width: 96px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-card-body {
+    min-width: 0;
+    padding-top: 0;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-kicker {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .app-access-granted .wine-card--inventory .color-chip,
+  .app-access-granted .wine-card--inventory .region-chip {
+    font-size: 0.62rem;
+    min-height: 23px;
+    padding: 3px 7px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-title {
+    font-size: 1.35rem;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-vintage {
+    font-size: 0.65rem;
+    margin-left: 4px;
+    padding: 4px 6px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-info-pill,
+  .app-access-granted .wine-card--inventory .wine-meta .pill {
+    font-size: 0.66rem;
+    min-height: 27px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-info-pill--window {
+    grid-column: auto;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-notes,
+  .app-access-granted .wine-card--inventory .tag-list {
+    display: none;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-facts {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 10px;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-stock-block strong {
+    font-size: 1.2rem;
+  }
+
+  .app-access-granted .wine-card--inventory .fact-value {
+    font-size: 1rem;
+  }
+
+  .app-access-granted .wine-card--inventory .wine-primary-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .app-access-granted .wine-card--inventory .wine-actions-menu {
+    grid-column: 1 / -1;
   }
 }

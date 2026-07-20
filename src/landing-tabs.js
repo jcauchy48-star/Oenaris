@@ -2,7 +2,8 @@
   "use strict";
 
   const DEFAULT_TAB = "accueil";
-  const INSTALL_FLOW_KEY = "oenova-install-flow-confirmed";
+  const INSTALL_FLOW_KEY = "oenaris-install-flow-confirmed";
+  const LEGACY_INSTALL_FLOW_KEY = "oenova-install-flow-confirmed";
   const tabs = [...document.querySelectorAll("[data-site-tab]")];
   const panels = [...document.querySelectorAll("[data-site-panel]")];
   const tabNames = new Set(tabs.map((tab) => tab.dataset.siteTab));
@@ -107,5 +108,11 @@
   setActiveTab(params.get("tab"), { updateUrl: false, scroll: false });
   renderInstallState();
 
-  global.OenovaLandingTabs = Object.freeze({ setActiveTab, isInstalled, INSTALL_FLOW_KEY });
+  global.OenarisLandingTabs = Object.freeze({
+    setActiveTab,
+    isInstalled,
+    INSTALL_FLOW_KEY,
+    LEGACY_INSTALL_FLOW_KEY
+  });
+  global.OenovaLandingTabs = global.OenarisLandingTabs;
 })(window);

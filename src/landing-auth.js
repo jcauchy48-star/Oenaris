@@ -1,7 +1,7 @@
 (function initializeLandingAuth(global) {
   "use strict";
 
-  const auth = global.OenovaAuth;
+  const auth = global.OenarisAuth;
   const elements = {
     panel: document.querySelector("#landingAuthPanel"),
     tabsContainer: document.querySelector(".landing-auth-tabs"),
@@ -10,12 +10,17 @@
     forms: document.querySelectorAll("[data-landing-auth-form]"),
     signUpForm: document.querySelector("#landingSignUpForm"),
     signInForm: document.querySelector("#landingSignInForm"),
+    resetForm: document.querySelector("#landingResetForm"),
     signUpName: document.querySelector("#landingSignUpName"),
     signUpEmail: document.querySelector("#landingSignUpEmail"),
     signUpPassword: document.querySelector("#landingSignUpPassword"),
     signUpConfirmation: document.querySelector("#landingSignUpConfirmation"),
     signInEmail: document.querySelector("#landingSignInEmail"),
     signInPassword: document.querySelector("#landingSignInPassword"),
+    resetEmail: document.querySelector("#landingResetEmail"),
+    forgotPasswordButton: document.querySelector("#landingForgotPasswordButton"),
+    resendConfirmationButton: document.querySelector("#landingResendConfirmationButton"),
+    modeTargets: document.querySelectorAll("[data-landing-auth-mode-target]"),
     status: document.querySelector("#landingAuthStatus"),
     sessionPanel: document.querySelector("#landingSessionPanel"),
     sessionEmail: document.querySelector("#landingSessionEmail"),
@@ -25,6 +30,7 @@
     anonymousOnly: document.querySelectorAll("[data-auth-anonymous-only]"),
     sessionEmails: document.querySelectorAll("[data-session-email]")
   };
+  let activeMode = "signup";
 
   if (!auth || !elements.panel) return;
 
@@ -41,7 +47,9 @@
   }
 
   function setActiveMode(mode) {
-    const nextMode = mode === "signin" ? "signin" : "signup";
+    const nextMode = ["signin", "signup", "reset"].includes(mode) ? mode : "signup";
+    activeMode = nextMode;
+    elements.tabsContainer.hidden = nextMode === "reset";
     elements.tabs.forEach((tab) => {
       const isActive = tab.dataset.landingAuthTab === nextMode;
       tab.classList.toggle("is-active", isActive);
@@ -52,6 +60,14 @@
       form.hidden = form.dataset.landingAuthForm !== nextMode;
     });
     setStatus("");
+  }
+
+  function setModeAndUrl(mode) {
+    setActiveMode(mode);
+    const url = new URL(global.location.href);
+    url.searchParams.set("tab", "compte");
+    url.searchParams.set("mode", mode);
+    global.history.replaceState({ tab: "compte" }, "", url);
   }
 
   function getFriendlyError(error) {
@@ -75,7 +91,7 @@
     );
     const email = session?.user?.email || "Compte Oenaris connecté";
     elements.sessionPanel.hidden = !isSignedIn;
-    elements.tabsContainer.hidden = isSignedIn;
+    elements.tabsContainer.hidden = isSignedIn || activeMode === "reset";
     elements.formsContainer.hidden = isSignedIn;
     elements.sessionOnly.forEach((element) => { element.hidden = !isSignedIn; });
     elements.anonymousOnly.forEach((element) => { element.hidden = isSignedIn; });
@@ -138,11 +154,52 @@
     }
   }
 
+  async function handlePasswordReset(event) {
+    event.preventDefault();
+    const email = elements.resetEmail.value.trim().toLowerCase();
+    if (!elements.resetEmail.validity.valid) return setStatus("Saisissez une adresse email valide.", "error");
+
+    setBusy(true);
+    setStatus("Envoi du lien de réinitialisation…", "info");
+    try {
+      await auth.resetPasswordForEmail(email);
+      elements.resetForm.reset();
+      setStatus("Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.", "success");
+    } catch (error) {
+      setStatus(getFriendlyError(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleResendConfirmation() {
+    const email = elements.signInEmail.value.trim().toLowerCase();
+    if (!elements.signInEmail.validity.valid) return setStatus("Saisissez votre email avant de demander un nouvel envoi.", "error");
+
+    setBusy(true);
+    setStatus("Demande de renvoi en cours…", "info");
+    try {
+      await auth.resendConfirmationEmail(email);
+      setStatus("Si un compte existe avec cette adresse, un nouvel email de confirmation a été envoyé.", "success");
+    } catch (error) {
+      setStatus(getFriendlyError(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleSignOut() {
     setBusy(true);
     try {
       await auth.signOut();
-      sessionStorage.removeItem(global.OenovaLandingTabs?.INSTALL_FLOW_KEY || "oenova-install-flow-confirmed");
+      const installKeys = [
+        global.OenarisLandingTabs?.INSTALL_FLOW_KEY || "oenaris-install-flow-confirmed",
+        global.OenarisLandingTabs?.LEGACY_INSTALL_FLOW_KEY || "oenova-install-flow-confirmed"
+      ];
+      installKeys.forEach((key) => {
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
+      });
       showSignedInSession(null);
       setActiveMode("signin");
       setStatus("Vous êtes déconnecté.", "success");
@@ -162,9 +219,18 @@
     });
     elements.signUpForm.addEventListener("submit", handleSignUp);
     elements.signInForm.addEventListener("submit", handleSignIn);
+    elements.resetForm.addEventListener("submit", handlePasswordReset);
+    elements.forgotPasswordButton.addEventListener("click", () => {
+      elements.resetEmail.value = elements.signInEmail.value.trim();
+      setModeAndUrl("reset");
+    });
+    elements.resendConfirmationButton.addEventListener("click", handleResendConfirmation);
+    elements.modeTargets.forEach((target) => {
+      target.addEventListener("click", () => setModeAndUrl(target.dataset.landingAuthModeTarget));
+    });
     elements.signOutButton.addEventListener("click", handleSignOut);
     const requestedMode = new URLSearchParams(global.location.search).get("mode");
-    setActiveMode(requestedMode === "signin" ? "signin" : "signup");
+    setActiveMode(["signin", "reset"].includes(requestedMode) ? requestedMode : "signup");
 
     await global.CAVE_CLOUD_CONFIG_READY;
     if (!auth.isCloudConfigured()) {
