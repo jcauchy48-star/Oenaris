@@ -27,6 +27,7 @@ const landingTabs = read("src/landing-tabs.js");
 const landingAuth = read("src/landing-auth.js");
 const pwaRegister = read("src/pwa-register.js");
 const serviceWorker = read("service-worker.js");
+const readme = read("README.md");
 const wineAdviceFunction = read("supabase/functions/wine-advice/index.ts");
 const wineToolsFunction = read("supabase/functions/wine-tools/index.ts");
 const supabaseFunctionsWorkflow = read(".github/workflows/supabase-functions.yml");
@@ -48,6 +49,8 @@ assert.match(landingHtml, /Retours bêta/, "landing page must include transparen
 assert.match(landingHtml, /Votre cave privée, enfin maîtrisée\./, "landing page must repeat the official tagline");
 assert.match(landingHtml, /class="demo-video"/, "landing demo must include the explainer video");
 assert.match(landingHtml, /assets\/oenaris-demo-fr\.vtt/, "landing demo must include French captions");
+assert.match(landingHtml, /Aperçu illustratif — données fictives/, "landing mockup must identify fictitious data");
+assert.match(landingHtml, /Démonstration illustrative\./, "landing video must be identified as illustrative");
 assert.ok(fs.statSync(path.join(root, "assets", "oenaris-demo.mp4")).size > 0, "demo video must exist");
 assert.ok(fs.statSync(path.join(root, "assets", "oenaris-demo-poster.jpg")).size > 0, "demo poster must exist");
 assert.ok(fs.existsSync(path.join(root, "icon.svg")), "PWA icon must exist");
@@ -57,6 +60,7 @@ assert.ok(fs.existsSync(path.join(root, "assets", "logo-oenaris-icon.svg")), "Oe
 assert.doesNotMatch(landingHtml, /Oenova|OENOVA/, "landing must not expose the former brand");
 assert.doesNotMatch(appHtml, /Oenova|OENOVA/, "application HTML must not expose the former brand");
 assert.doesNotMatch(JSON.stringify(manifest), /Oenova|OENOVA/, "manifest must not expose the former brand");
+assert.doesNotMatch(readme, /Oenova|OENOVA/, "README must not expose the former brand");
 assert.match(landingHtml, /data-site-tab="accueil"/);
 ["fonctionnalites", "demo", "tarifs", "securite", "telecharger", "compte"].forEach((tabName) => {
   assert.match(landingHtml, new RegExp(`data-site-tab="${tabName}"`), `landing must expose the ${tabName} tab`);
@@ -67,7 +71,7 @@ assert.ok(fs.existsSync(path.join(root, "app.html")), "app.html must remain pres
 assert.match(landingHtml, /src="src\/auth-client\.js"/, "landing page must load shared auth");
 assert.match(landingHtml, /src="src\/landing-tabs\.js"/, "landing page must load tab navigation");
 assert.match(landingHtml, /src="src\/landing-auth\.js"/, "landing page must load landing auth");
-assert.match(landingHtml, /src="src\/pwa-register\.js"/, "landing page must refresh the PWA cache");
+assert.match(landingHtml, /src="src\/pwa-register\.js\?v=47"/, "landing page must refresh the PWA cache");
 assert.match(appHtml, /id="appAccessGate"/, "app.html must provide an access gate");
 assert.match(appHtml, /id="appLayout" hidden/, "application UI must start hidden");
 assert.match(appHtml, /Oenaris/, "app.html must expose the Oenaris brand");
@@ -77,16 +81,16 @@ assert.match(appHtml, /Scanner une étiquette/);
 assert.match(appHtml, /src="cloud-config-loader\.js"/, "app.html must load cloud config");
 assert.match(appHtml, /src="src\/shared-helpers\.js"/, "app.html must load shared helpers");
 assert.match(appHtml, /src="src\/auth-client\.js"/, "app.html must load shared auth");
-assert.match(appHtml, /src="src\/pwa-register\.js"/, "app.html must register the shared service worker");
-assert.match(appHtml, /src="app\.js"/, "app.html must load the application script");
-assert.ok(appHtml.indexOf('src="src/auth-client.js"') < appHtml.indexOf('src="app.js"'), "shared auth must load before app.js");
+assert.match(appHtml, /src="src\/pwa-register\.js\?v=47"/, "app.html must register the shared service worker");
+assert.match(appHtml, /src="app\.js\?v=47"/, "app.html must load the application script");
+assert.ok(appHtml.indexOf('src="src/auth-client.js"') < appHtml.indexOf('src="app.js?v=47"'), "shared auth must load before app.js");
 assert.ok(landingHtml.indexOf('src="src/auth-client.js"') < landingHtml.indexOf('src="src/landing-auth.js"'), "shared auth must load before landing auth");
 assert.ok(landingHtml.indexOf('src="src/landing-tabs.js"') < landingHtml.indexOf('src="src/landing-auth.js"'), "tab navigation must load before landing auth");
 assert.equal(manifest.start_url, "./app.html", "PWA must start on app.html");
 assert.equal(manifest.name, "Oenaris");
 assert.equal(manifest.short_name, "Oenaris");
-assert.match(pwaRegister, /service-worker\.js\?v=36/, "service worker registration must be cache-busted");
-assert.match(serviceWorker, /oenaris-v36/, "service worker cache must be incremented");
+assert.match(pwaRegister, /service-worker\.js\?v=47/, "service worker registration must be cache-busted");
+assert.match(serviceWorker, /oenaris-v47/, "service worker cache must be incremented");
 assert.doesNotMatch(pwaRegister, /Oenova|OENOVA/, "PWA registration must not expose the former brand");
 assert.match(app, /function requestRemoteWineAdvice\(/, "frontend must support the secured wine advice endpoint");
 assert.match(app, /wineAdviceApiEnabled === true/, "remote AI must require explicit activation");
@@ -109,13 +113,20 @@ assert.match(supabaseFunctionsWorkflow, /secrets\.SUPABASE_ACCESS_TOKEN/, "Supab
 assert.match(supabaseFunctionsWorkflow, /functions deploy wine-tools/, "Supabase workflow must deploy complementary wine tools");
 assert.doesNotMatch(landingHtml + appHtml + app, /OPENAI_API_KEY/, "frontend must never expose the OpenAI key name or value");
 
-["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
+["getCloudConfig", "isCloudConfigured", "loadSupabaseClient", "getSupabaseClient", "signUpWithEmail", "signInWithEmail", "resetPasswordForEmail", "resendConfirmationEmail", "signOut", "getCurrentSession", "onAuthStateChanged"].forEach((functionName) => {
   assert.match(authClient, new RegExp(`function ${functionName}\\(`), `shared auth must define ${functionName}`);
 });
 assert.match(landingAuth, /Compte créé\. Vérifiez votre email/);
 assert.doesNotMatch(landingAuth, /location\.assign\("\.\/app\.html/);
 assert.match(authClient, /\.\/index\.html\?tab=compte&mode=signin/);
+assert.match(authClient, /\.\/index\.html\?tab=compte&mode=reset/);
+assert.match(authClient, /global\.OenarisAuth = Object\.freeze/, "OenarisAuth must be the primary shared auth object");
+assert.match(landingTabs, /global\.OenarisLandingTabs = Object\.freeze/, "OenarisLandingTabs must be the primary tab object");
+assert.doesNotMatch(app + landingAuth, /OenovaAuth|OenovaLandingTabs/, "application code must use the Oenaris objects");
 assert.match(landingTabs, /sessionStorage\.setItem\(INSTALL_FLOW_KEY/);
+assert.match(landingTabs, /const INSTALL_FLOW_KEY = "oenaris-install-flow-confirmed"/);
+assert.match(app, /const INSTALL_FLOW_KEY = "oenaris-install-flow-confirmed"/);
+assert.match(app, /LEGACY_INSTALL_FLOW_KEY/, "legacy install state must remain readable during migration");
 assert.match(landingTabs, /function setActiveTab\(/);
 assert.doesNotMatch(authClient, /localStorage\.(setItem|removeItem)/);
 assert.doesNotMatch(authClient, /service_role/);
@@ -134,6 +145,16 @@ assert.match(app, /function hasUsableCloudSession\(/);
 assert.match(app, /async function bootstrapApplication\(/);
 assert.match(app, /function showAppAccessGate\(/);
 assert.match(app, /function hasCompletedInstallFlow\(/);
+assert.match(app, /function getUserScopedKey\(/, "user data must use scoped storage keys");
+assert.match(app, /`oenaris:\$\{storageScopeUserId\}:\$\{suffix\}`/, "scoped keys must include the Supabase user id");
+assert.match(app, /async function offerLegacyDataMigration\(/, "legacy data migration must require a visible decision");
+assert.match(appHtml, /id="legacyDataDialog"/, "legacy data migration must have a visible dialog");
+assert.match(appHtml, /Importer dans ce compte/);
+assert.match(appHtml, /Exporter avant migration/);
+assert.match(appHtml, /Ignorer/);
+assert.doesNotMatch(app, /scanLimit: 3|bottleLimit: 50|"3 scans IA \/ mois"/, "beta pricing must not promise former limits");
+assert.match(app, /name: "Découverte"/);
+assert.match(app, /monthlyPrice: "Gratuit pendant la bêta"/);
 const loadCellarBlock = app.match(/function loadCellar\(\) \{[\s\S]*?\n\}/)?.[0] || "";
 assert.ok(loadCellarBlock, "loadCellar must exist");
 assert.doesNotMatch(loadCellarBlock, /sampleWines/, "empty or invalid storage must not inject demo wines");
@@ -146,6 +167,10 @@ assert.ok(precacheBlock, "service worker must define cachedFiles");
 assert.doesNotMatch(precacheBlock[1], /cloud-config\.js/);
 assert.match(precacheBlock[1], /\.\/index\.html/, "landing page must be cached");
 assert.match(precacheBlock[1], /\.\/app\.html/, "application page must be cached");
+["privacy.html", "terms.html", "legal.html", "data-deletion.html"].forEach((legalPage) => {
+  assert.ok(fs.existsSync(path.join(root, legalPage)), `${legalPage} must exist`);
+  assert.match(precacheBlock[1], new RegExp(`\\.\\/${legalPage}`), `${legalPage} must be cached`);
+});
 assert.match(precacheBlock[1], /\.\/src\/auth-client\.js/, "shared auth must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-tabs\.js/, "landing tabs must be cached");
 assert.match(precacheBlock[1], /\.\/src\/landing-auth\.js/, "landing auth must be cached");
@@ -153,7 +178,25 @@ assert.match(precacheBlock[1], /\.\/src\/pwa-register\.js/, "shared PWA registra
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris\.svg/, "main logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-horizontal\.svg/, "horizontal logo must be cached");
 assert.match(precacheBlock[1], /\.\/assets\/logo-oenaris-icon\.svg/, "app icon must be cached");
-assert.match(serviceWorker, /oenaris-v36/);
+assert.match(precacheBlock[1], /\.\/assets\/oenaris-dashboard-hero-bg\.jpg/, "dashboard hero background must be cached");
+assert.match(precacheBlock[1], /\.\/assets\/oenaris-sidebar-bg\.jpg/, "sidebar background must be cached");
+[
+  "icon-bottle-premium.png",
+  "icon-buy.png",
+  "icon-coins.png",
+  "icon-drink.png",
+  "icon-glass.png",
+  "icon-grape.png",
+  "icon-low-stock.png",
+  "wine-action-panel-bg.webp",
+  "wine-card-shell-bg.webp",
+  "wine-landscape-divider.webp",
+  "wine-note-panel-bg.webp",
+  "wine-photo-frame-bg.webp"
+].forEach((assetName) => {
+  assert.match(precacheBlock[1], new RegExp(`\\.\\/assets\\/${assetName}`), `${assetName} must be cached`);
+});
+assert.match(serviceWorker, /oenaris-v47/);
 assert.match(serviceWorker, /request\.destination === "video"/, "large videos must bypass service worker caching");
 assert.match(serviceWorker, /response\.ok/);
 assert.doesNotMatch(serviceWorker, /catch\(\(\) => caches\.match\("\.\/index\.html"\)\)/);

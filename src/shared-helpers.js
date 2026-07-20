@@ -1,4 +1,4 @@
-(function initOenovaSharedHelpers(root) {
+(function initOenarisSharedHelpers(root) {
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -41,10 +41,11 @@
     estimateDataUrlBytes
   };
 
-  root.OenovaHelpers = {
-    ...(root.OenovaHelpers || {}),
+  root.OenarisHelpers = {
+    ...(root.OenarisHelpers || {}),
     ...helpers
   };
+  root.OenovaHelpers = root.OenarisHelpers;
 
   if (typeof module !== "undefined" && module.exports) {
     module.exports = helpers;

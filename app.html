@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.webmanifest?v=34">
     <link rel="icon" href="icon.svg?v=34" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon.svg?v=34">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=47">
   </head>
   <body>
     <section class="app-access-gate" id="appAccessGate" aria-labelledby="appAccessTitle" aria-live="polite">
@@ -48,9 +48,12 @@
       <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M5 7h14M5 17h14"/><path d="M8 7a2 2 0 1 0 0 .1M16 17a2 2 0 1 0 0 .1"/></symbol>
       <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4 12h2m12 0h2M12 4v2m0 12v2M6.3 6.3l1.4 1.4m8.6 8.6 1.4 1.4m0-11.4-1.4 1.4m-8.6 8.6-1.4 1.4"/></symbol>
       <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
-      <symbol id="icon-more" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01"/></symbol>
+      <symbol id="icon-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></symbol>
       <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></symbol>
       <symbol id="icon-glass" viewBox="0 0 24 24"><path d="M8 3h8l-1 8a3 3 0 0 1-6 0L8 3Z"/><path d="M12 14v6M9 20h6"/></symbol>
+      <symbol id="icon-location" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M5 5h14v15H5zM8 3v4M16 3v4M5 9h14"/><path d="m9 14 2 2 4-4"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
       <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z"/></symbol>
       <symbol id="icon-library" viewBox="0 0 24 24"><path d="M5 4h5v16H5zM14 4h5v16h-5z"/><path d="M8 8h1M17 8h1M8 16h1M17 16h1"/></symbol>
       <symbol id="icon-scan" viewBox="0 0 24 24"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 8h8v8H8zM10 12h4"/></symbol>
@@ -72,8 +75,8 @@
             <span>Cave privée</span>
           </div>
           <div class="sidebar-badges" aria-label="Abonnement et scans" data-client-hidden>
-            <span id="sidebarPlanBadge" class="plan-badge">Gratuit</span>
-            <span id="sidebarScanBadge" class="scan-credit-badge">3 scans</span>
+            <span id="sidebarPlanBadge" class="plan-badge">Découverte</span>
+            <span id="sidebarScanBadge" class="scan-credit-badge">Bêta</span>
           </div>
           <button class="icon-button sidebar-close" id="sidebarCloseButton" type="button" aria-label="Fermer la navigation">
             <svg class="ui-icon"><use href="#icon-close"></use></svg>
@@ -194,7 +197,7 @@
         </article>
         <article data-client-hidden>
           <h2>Coffre de sauvegarde</h2>
-          <p>Créer une sauvegarde locale, restaurer une ancienne copie ou exporter un rapport technique.</p>
+          <p>Créer une sauvegarde, restaurer une ancienne copie ou exporter un rapport technique.</p>
           <div class="tool-actions">
             <button class="ghost-action" id="createBackupButton" type="button" data-icon="SAVE">Sauvegarde</button>
             <button class="ghost-action" id="restoreBackupButton" type="button" data-icon="REST">Restaurer</button>
@@ -306,12 +309,12 @@
           </div>
         </article>
         <article>
-          <h2>Préférences locales</h2>
-          <p>L'application reste locale pour l'instant : vos données sont stockées dans le navigateur, avec sauvegarde et restauration manuelles.</p>
+          <h2>Préférences de cet appareil</h2>
+          <p>Votre compte protège l’accès à votre cave. Vos réglages restent propres à cet appareil et vos données sont exportables à tout moment.</p>
         </article>
         <article class="danger-zone" data-client-hidden>
           <h2>Zone sensible</h2>
-          <p>Supprime toutes les données locales après double confirmation. Pensez à créer une sauvegarde avant cette action.</p>
+          <p>Supprime les données de ce compte sur cet appareil après double confirmation. Pensez à créer une sauvegarde avant cette action.</p>
           <button class="ghost-action danger-action" id="clearDataButton" type="button" data-icon="DEL">Tout supprimer</button>
         </article>
       </section>
@@ -323,22 +326,26 @@
 
       <section class="stats-grid" data-view-section="dashboard stats" aria-label="Resume de la cave">
         <article>
-          <span>Bouteilles</span>
+          <span class="stat-emblem" aria-hidden="true"><img src="assets/icon-bottle-premium.png" alt="" loading="lazy" width="40" height="40"></span>
+          <span class="stat-label">Bouteilles</span>
           <strong id="statBottles">0</strong>
           <small>Stock actif</small>
         </article>
         <article>
-          <span>Références</span>
+          <span class="stat-emblem" aria-hidden="true"><img src="assets/icon-grape.png" alt="" loading="lazy" width="40" height="40"></span>
+          <span class="stat-label">Références</span>
           <strong id="statRefs">0</strong>
           <small>Cuvées suivies</small>
         </article>
         <article>
-          <span>Valeur estimée</span>
+          <span class="stat-emblem" aria-hidden="true"><img src="assets/icon-coins.png" alt="" loading="lazy" width="40" height="40"></span>
+          <span class="stat-label">Valeur estimée</span>
           <strong id="statValue">0 €</strong>
           <small>Patrimoine cave</small>
         </article>
         <article>
-          <span>À boire bientôt</span>
+          <span class="stat-emblem" aria-hidden="true"><img src="assets/icon-glass.png" alt="" loading="lazy" width="40" height="40"></span>
+          <span class="stat-label">À boire bientôt</span>
           <strong id="statReady">0</strong>
           <small>Priorités plaisir</small>
         </article>
@@ -563,13 +570,13 @@
       <section class="module-panel library-panel" data-view-section="library" aria-label="Bibliothèque de vins">
         <div class="panel-title-row">
           <div>
-            <p class="eyebrow">Références locales</p>
+            <p class="eyebrow">Vos références</p>
             <h2>Bibliothèque de vins</h2>
             <p>Des fiches réutilisables, alimentées par vos ajouts et synchronisables avec la bibliothèque commune Supabase.</p>
           </div>
           <div class="module-actions">
             <span id="libraryCount" class="pill neutral">0 référence</span>
-            <span id="librarySyncStatus" class="pill neutral">Mode local</span>
+            <span id="librarySyncStatus" class="pill neutral">Compte requis</span>
             <button class="card-action" id="libraryImportButton" type="button" data-client-hidden>Importer des références</button>
           </div>
         </div>
@@ -604,7 +611,7 @@
             <h2>Scanner une bouteille</h2>
             <p>Photo mobile ou import PC. Le scan préremplit une fiche, mais vous validez toujours avant ajout.</p>
           </div>
-          <span id="scanCreditsLabel" class="pill warning">IA non configurée · Analyse locale</span>
+          <span id="scanCreditsLabel" class="pill warning">IA non configurée · Détection limitée</span>
         </div>
         <div class="scan-layout">
           <article class="scan-card">
@@ -634,22 +641,16 @@
         <div class="panel-title-row">
           <div>
             <p class="eyebrow">Offre bêta</p>
-            <h2>Abonnement</h2>
-            <p>Préparation commerciale sans paiement réel tant qu'aucun backend sécurisé n'est configuré.</p>
+            <h2>Découverte</h2>
+            <p>Oenaris est gratuit pendant la bêta. Aucun paiement n’est actif.</p>
           </div>
           <div class="subscription-summary">
-            <span id="subscriptionPlanBadge" class="plan-badge">Gratuit</span>
-            <span id="subscriptionScanCredits" class="scan-credit-badge">3 scans restants</span>
+            <span id="subscriptionPlanBadge" class="plan-badge">Découverte</span>
+            <span id="subscriptionScanCredits" class="scan-credit-badge">Bêta gratuite</span>
           </div>
         </div>
         <div id="pricingPlans" class="pricing-grid"></div>
-        <div class="panel-title-row scan-pack-heading">
-          <div>
-            <h2>Packs scans IA</h2>
-            <p>Achat ponctuel prévu pour plus tard via backend.</p>
-          </div>
-          <button class="card-action" id="billingPortalButton" type="button">Portail de facturation</button>
-        </div>
+        <button class="card-action" id="billingPortalButton" type="button" hidden>Aucun paiement actif</button>
         <div id="scanPacks" class="scan-pack-grid"></div>
       </section>
 
@@ -658,14 +659,14 @@
           <div>
             <p class="eyebrow">Compte client</p>
             <h2>Connexion et synchronisation cloud</h2>
-            <p>Le mode local reste disponible. Avec un compte, votre cave personnelle est sauvegardée dans Supabase et synchronisée après chaque modification.</p>
+            <p>Votre cave est associée à votre espace Oenaris. Votre compte prépare l’accès multi-supports et la sauvegarde de votre cave.</p>
           </div>
           <span id="cloudConfigStatus" class="pill warning">Cloud non configuré</span>
         </div>
 
         <article id="accountStatusCard" class="account-status-card">
           <div>
-            <span class="pill neutral" id="accountProvider">Mode local</span>
+            <span class="pill neutral" id="accountProvider">Connexion requise</span>
             <h3 id="accountEmail">Aucun compte connecté</h3>
             <p>Dernière synchronisation : <strong id="cloudLastSync">Jamais</strong></p>
             <p id="cloudLastError" class="muted-note"></p>
@@ -725,7 +726,7 @@
           </article>
           <article class="account-card">
             <h3>Restaurer depuis le cloud</h3>
-            <p>Récupère la dernière version cloud après création automatique d'une sauvegarde locale.</p>
+            <p>Récupère la dernière version cloud après création automatique d’une sauvegarde sur cet appareil.</p>
             <button class="ghost-action" id="restoreCloudButton" type="button">Restaurer depuis le cloud</button>
           </article>
         </div>
@@ -741,7 +742,7 @@
           <div class="wine-list" id="wineList"></div>
           <div class="empty-state" id="emptyState" hidden>
             <h3 id="emptyStateTitle">Votre cave est vide</h3>
-            <p id="emptyStateMessage">Ajoutez votre première bouteille.</p>
+            <p id="emptyStateMessage">Ajoutez votre première bouteille pour commencer.</p>
             <div class="empty-state-actions">
               <button class="primary-action" id="emptyAddButton" type="button"><svg class="ui-icon"><use href="#icon-plus"></use></svg>Ajouter une bouteille</button>
               <button class="ghost-action" id="emptyScanButton" type="button"><svg class="ui-icon"><use href="#icon-scan"></use></svg>Scanner une étiquette</button>
@@ -1100,7 +1101,7 @@
         <ul class="changelog-list">
           <li>Interface bêta plus chaleureuse et responsive.</li>
           <li>Fiche bouteille détaillée avec journal de cave et notes.</li>
-          <li>À acheter, sommelier personnel local, rapport technique et sauvegardes.</li>
+          <li>À acheter, sommelier personnel intégré, rapport technique et sauvegardes.</li>
           <li>Import/export JSON et CSV, impression PDF et PWA hors ligne.</li>
         </ul>
       </div>
@@ -1117,13 +1118,27 @@
       </div>
     </dialog>
 
+    <dialog id="legacyDataDialog" aria-labelledby="legacyDataTitle">
+      <div class="confirm-shell legacy-data-shell">
+        <p class="eyebrow">Données existantes</p>
+        <h2 id="legacyDataTitle">Rattacher les données de cet appareil ?</h2>
+        <p>Des données existantes ont été trouvées sur cet appareil. Voulez-vous les rattacher à ce compte Oenaris ?</p>
+        <p class="muted-note">Aucune ancienne donnée ne sera supprimée automatiquement.</p>
+        <div class="legacy-data-actions">
+          <button class="primary-action" id="importLegacyDataButton" type="button">Importer dans ce compte</button>
+          <button class="ghost-action" id="exportLegacyDataButton" type="button">Exporter avant migration</button>
+          <button class="card-action" id="ignoreLegacyDataButton" type="button">Ignorer</button>
+        </div>
+      </div>
+    </dialog>
+
     <section class="print-view" id="printView" aria-hidden="true"></section>
 
     <script src="cloud-config.js"></script>
     <script src="cloud-config-loader.js"></script>
     <script src="src/shared-helpers.js"></script>
     <script src="src/auth-client.js"></script>
-    <script src="src/pwa-register.js"></script>
-    <script src="app.js"></script>
+    <script src="src/pwa-register.js?v=47"></script>
+    <script src="app.js?v=47"></script>
   </body>
 </html>

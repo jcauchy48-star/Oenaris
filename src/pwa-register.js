@@ -5,7 +5,7 @@
 
   global.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("./service-worker.js?v=36")
+      .register("./service-worker.js?v=47")
       .then((registration) => registration.update())
       .catch((error) => {
         global.dispatchEvent(new CustomEvent("oenaris:service-worker-error", { detail: error }));

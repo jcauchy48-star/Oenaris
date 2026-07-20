@@ -20,6 +20,42 @@ const AUTH_STATE_KEY = "mini-cave-a-vin-auth-state";
 const CLOUD_SYNC_STATE_KEY = "mini-cave-a-vin-cloud-sync-state";
 const UI_PREFS_LEGACY_KEYS = ["mini-cave-a-vin-ui-pr\u003ff\u003frences", "mini-cave-a-vin-ui-préférences"];
 const APP_VERSION = "bêta 0.1.0";
+const USER_STORAGE_SUFFIXES = new Map([
+  [STORAGE_KEY, "wines"],
+  [MOVEMENTS_KEY, "movements"],
+  [WISHLIST_KEY, "wishlist"],
+  [TASTING_NOTES_KEY, "tasting-notes"],
+  [ERROR_LOGS_KEY, "error-logs"],
+  [BACKUP_KEY, "backup"],
+  [MODIFICATION_COUNT_KEY, "modification-count"],
+  [UI_PREFS_KEY, "ui-preferences"],
+  [LIBRARY_KEY, "library"],
+  [LIBRARY_SYNC_QUEUE_KEY, "library-sync-queue"],
+  [CELLAR_LAYOUTS_KEY, "cellar-layouts"],
+  [AI_QUEUE_KEY, "ai-enrichment-queue"],
+  [ADVICE_FEEDBACK_KEY, "advice-feedback"],
+  [SUBSCRIPTION_KEY, "subscription"],
+  [MIGRATION_STATE_KEY, "migration-state"],
+  [AUTH_STATE_KEY, "auth-state"],
+  [CLOUD_SYNC_STATE_KEY, "cloud-sync-state"]
+]);
+const LEGACY_ACCOUNT_DATA_KEYS = [
+  STORAGE_KEY,
+  MOVEMENTS_KEY,
+  WISHLIST_KEY,
+  TASTING_NOTES_KEY,
+  ERROR_LOGS_KEY,
+  BACKUP_KEY,
+  MODIFICATION_COUNT_KEY,
+  UI_PREFS_KEY,
+  LIBRARY_KEY,
+  LIBRARY_SYNC_QUEUE_KEY,
+  CELLAR_LAYOUTS_KEY,
+  AI_QUEUE_KEY,
+  ADVICE_FEEDBACK_KEY,
+  SUBSCRIPTION_KEY,
+  CLOUD_SYNC_STATE_KEY
+];
 const SCHEMA_VERSION = 4;
 const PHOTO_WARNING_BYTES = 900000;
 const FILTER_RENDER_DELAY = 180;
@@ -29,7 +65,8 @@ const VISIBLE_WINE_PAGE_SIZE = 36;
 const DASHBOARD_WINE_LIMIT = 4;
 const CLOUD_REQUEST_TIMEOUT = 9000;
 const CLOUD_SYNC_DEBOUNCE = 1800;
-const INSTALL_FLOW_KEY = "oenova-install-flow-confirmed";
+const INSTALL_FLOW_KEY = "oenaris-install-flow-confirmed";
+const LEGACY_INSTALL_FLOW_KEY = "oenova-install-flow-confirmed";
 const currentYear = new Date().getFullYear();
 
 const VALID_VIEWS = ["dashboard", "inventory", "cellar", "advice", "assistant", "wishlist", "history", "stats", "library", "scanner", "subscription", "account", "tools", "settings"];
@@ -109,8 +146,8 @@ const WINE_REFERENCE_ENRICHMENT_SCHEMA = {
 const DEFAULT_SUBSCRIPTION_STATE = {
   plan: "free",
   billingCycle: null,
-  scanCredits: 3,
-  monthlyScanLimit: 3,
+  scanCredits: 0,
+  monthlyScanLimit: 0,
   usedScansThisMonth: 0,
   renewalDate: null,
   isPaymentConfigured: false,
@@ -119,60 +156,20 @@ const DEFAULT_SUBSCRIPTION_STATE = {
 const PRICING_PLANS = [
   {
     id: "free",
-    name: "Gratuit",
-    monthlyPrice: "0 €",
-    yearlyPrice: "0 €",
-    bottleLimit: 50,
-    scanLimit: 3,
-    badge: "Local",
-    features: ["50 bouteilles", "3 scans IA / mois", "Bibliothèque personnelle", "Exports JSON et CSV"]
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    monthlyPrice: "4,99 €/mois",
-    yearlyPrice: "39,99 €/an",
+    name: "Découverte",
+    monthlyPrice: "Gratuit pendant la bêta",
+    yearlyPrice: "Aucun paiement actif",
     bottleLimit: Infinity,
-    scanLimit: 20,
-    badge: "Recommandé",
-    recommended: true,
-    features: ["Bouteilles illimitées", "20 scans IA / mois", "Sommelier personnel", "Stats avancées", "Sauvegarde cloud future"]
-  },
-  {
-    id: "premium_plus",
-    name: "Premium Plus",
-    monthlyPrice: "7,99 €/mois",
-    yearlyPrice: "69,99 €/an",
-    bottleLimit: Infinity,
-    scanLimit: 60,
-    badge: "Intensif",
-    features: ["Tout Premium", "Scans IA renforcés", "Recommandations avancées", "Multi-caves futur"]
-  },
-  {
-    id: "family",
-    name: "Famille",
-    monthlyPrice: "9,99 €/mois",
-    yearlyPrice: "89,99 €/an",
-    bottleLimit: Infinity,
-    scanLimit: 80,
-    badge: "Partage",
-    features: ["Cave partagée future", "Plusieurs utilisateurs", "Rôles", "Historique collaboratif"]
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    monthlyPrice: "19,99 à 49,99 €/mois",
-    yearlyPrice: "Sur devis",
-    bottleLimit: Infinity,
-    scanLimit: 200,
-    badge: "Professionnel",
-    features: ["Restaurants et cavistes", "Exports avancés", "Multi-utilisateurs", "Gestion professionnelle"]
+    scanLimit: 0,
+    badge: "Bêta",
+    features: [
+      "Compte Oenaris requis",
+      "Inventaire et cave virtuelle",
+      "Exports JSON, CSV et PDF",
+      "Scanner assisté",
+      "Installation PWA"
+    ]
   }
-];
-const SCAN_PACKS = [
-  { id: "scan_10", scans: 10, price: "1,99 €", label: "10 scans" },
-  { id: "scan_50", scans: 50, price: "6,99 €", label: "50 scans" },
-  { id: "scan_100", scans: 100, price: "11,99 €", label: "100 scans" }
 ];
 const CSV_COLUMNS = [
   "domain", "cuvee", "color", "region", "appellation", "vintage", "quantity",
@@ -561,6 +558,7 @@ let aiEnrichmentQueue = [];
 let adviceFeedback = [];
 let subscriptionState = { ...DEFAULT_SUBSCRIPTION_STATE };
 let authState = normalizeAuthState();
+let storageScopeUserId = "";
 let authSession = { accessToken: "", refreshToken: "" };
 let cloudSyncState = normalizeCloudSyncState();
 let uiPreferences = { ...DEFAULT_UI_PREFERENCES };
@@ -797,6 +795,10 @@ const elements = {
   feedbackButton: document.querySelector("#feedbackButton"),
   changelogButton: document.querySelector("#changelogButton"),
   clearDataButton: document.querySelector("#clearDataButton"),
+  legacyDataDialog: document.querySelector("#legacyDataDialog"),
+  importLegacyDataButton: document.querySelector("#importLegacyDataButton"),
+  exportLegacyDataButton: document.querySelector("#exportLegacyDataButton"),
+  ignoreLegacyDataButton: document.querySelector("#ignoreLegacyDataButton"),
   wineDetailDialog: document.querySelector("#wineDetailDialog"),
   closeDetailButton: document.querySelector("#closeDetailButton"),
   detailTitle: document.querySelector("#detailTitle"),
@@ -896,17 +898,103 @@ bootstrapApplication().catch((error) => {
   showAppAccessGate("error", error);
 });
 
+function setStorageScope(userId) {
+  storageScopeUserId = cleanString(userId).replace(/[^a-zA-Z0-9_-]/g, "");
+}
+
+function getUserScopedKey(baseKey) {
+  if (!storageScopeUserId) throw new Error("Une session Oenaris valide est nécessaire avant d'accéder aux données.");
+  const suffix = USER_STORAGE_SUFFIXES.get(baseKey)
+    || cleanString(baseKey).replace(/^mini-cave-a-vin-?/, "")
+    || "data";
+  return `oenaris:${storageScopeUserId}:${suffix}`;
+}
+
+const scopedStorage = {
+  getItem(baseKey) {
+    if (!storageScopeUserId) return null;
+    return localStorage.getItem(getUserScopedKey(baseKey));
+  },
+  setItem(baseKey, value) {
+    if (!storageScopeUserId) return;
+    localStorage.setItem(getUserScopedKey(baseKey), value);
+  },
+  removeItem(baseKey) {
+    if (!storageScopeUserId) return;
+    localStorage.removeItem(getUserScopedKey(baseKey));
+  }
+};
+
+function getLegacyStorageValue(baseKey) {
+  const directValue = localStorage.getItem(baseKey);
+  if (directValue !== null) return directValue;
+  if (baseKey !== UI_PREFS_KEY) return null;
+  return UI_PREFS_LEGACY_KEYS.map((key) => localStorage.getItem(key)).find((value) => value !== null) ?? null;
+}
+
+function collectLegacyAccountData() {
+  return LEGACY_ACCOUNT_DATA_KEYS.reduce((legacyData, baseKey) => {
+    const value = getLegacyStorageValue(baseKey);
+    if (value !== null) legacyData[baseKey] = value;
+    return legacyData;
+  }, {});
+}
+
+function hasScopedAccountData() {
+  return LEGACY_ACCOUNT_DATA_KEYS.some((baseKey) => scopedStorage.getItem(baseKey) !== null);
+}
+
+function saveLegacyMigrationDecision(decision) {
+  saveMigrationState({
+    legacyDecision: decision,
+    decidedAt: new Date().toISOString()
+  });
+}
+
+async function offerLegacyDataMigration() {
+  if (hasScopedAccountData() || scopedStorage.getItem(MIGRATION_STATE_KEY)) return;
+  const legacyData = collectLegacyAccountData();
+  if (!Object.keys(legacyData).length || !elements.legacyDataDialog) return;
+
+  await new Promise((resolve) => {
+    const finish = (decision) => {
+      saveLegacyMigrationDecision(decision);
+      elements.legacyDataDialog.close();
+      resolve(decision);
+    };
+    elements.importLegacyDataButton.onclick = () => {
+      Object.entries(legacyData).forEach(([baseKey, value]) => scopedStorage.setItem(baseKey, value));
+      finish("imported");
+    };
+    elements.ignoreLegacyDataButton.onclick = () => finish("ignored");
+    elements.exportLegacyDataButton.onclick = () => {
+      const exportPayload = {
+        app: BRAND_NAME,
+        exportedAt: new Date().toISOString(),
+        source: "pre-account-device-data",
+        values: legacyData
+      };
+      downloadFile(JSON.stringify(exportPayload, null, 2), `oenaris-donnees-existantes-${today()}.json`, "application/json");
+    };
+    elements.legacyDataDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      finish("ignored");
+    }, { once: true });
+    elements.legacyDataDialog.showModal();
+  });
+}
+
 async function bootstrapApplication() {
   await window.CAVE_CLOUD_CONFIG_READY;
   cloudConfig = getCloudConfig();
-  if (!window.OenovaAuth?.isCloudConfigured?.()) {
+  if (!window.OenarisAuth?.isCloudConfigured?.()) {
     showAppAccessGate("unavailable");
     return;
   }
 
   let session;
   try {
-    session = await window.OenovaAuth.getCurrentSession();
+    session = await window.OenarisAuth.getCurrentSession();
   } catch (error) {
     showAppAccessGate("error", error);
     return;
@@ -916,6 +1004,8 @@ async function bootstrapApplication() {
     return;
   }
 
+  setStorageScope(session.user.id);
+  await offerLegacyDataMigration();
   saveAuthFromSupabase({ session });
   if (!isAppInstalled() && !hasCompletedInstallFlow()) {
     showAppAccessGate("install");
@@ -957,7 +1047,7 @@ function loadAuthorizedLocalState() {
   cloudSyncState = loadCloudSyncState();
   uiPreferences = loadUiPreferences();
   pendingLibrarySyncQueue = loadPendingLibrarySyncQueue();
-  modificationsSinceBackup = toNumber(localStorage.getItem(MODIFICATION_COUNT_KEY), 0);
+  modificationsSinceBackup = toNumber(scopedStorage.getItem(MODIFICATION_COUNT_KEY), 0);
   preferredActiveView = CLIENT_VISIBLE_VIEWS.includes(requestedInitialView)
     ? requestedInitialView
     : VALID_VIEWS.includes(uiPreferences.activeView)
@@ -985,7 +1075,8 @@ function hasValidAppSession(session) {
 
 function hasCompletedInstallFlow() {
   return initialRouteParams.get("installation") === "continue"
-    && sessionStorage.getItem(INSTALL_FLOW_KEY) === "true";
+    && [INSTALL_FLOW_KEY, LEGACY_INSTALL_FLOW_KEY]
+      .some((key) => sessionStorage.getItem(key) === "true" || localStorage.getItem(key) === "true");
 }
 
 function unlockApplication() {
@@ -1000,14 +1091,14 @@ function showAppAccessGate(state, error) {
     account: {
       eyebrow: "Compte requis",
       title: `Accès réservé aux comptes ${BRAND_NAME}`,
-      message: "Connectez-vous ou créez votre compte pour accéder à votre cave privée. Votre cave locale existante reste conservée sur cet appareil.",
+      message: "Connectez-vous ou créez votre compte pour accéder à votre cave privée. Les données existantes de cet appareil restent conservées.",
       primary: ["Se connecter", "./index.html?tab=compte&mode=signin"],
       secondary: ["Créer un compte", "./index.html?tab=compte&mode=signup"]
     },
     install: {
-      eyebrow: "Installation requise",
-      title: `Installez ${BRAND_NAME} avant de continuer`,
-      message: "Ouvrez l'onglet Installer pour ajouter la PWA. Si votre navigateur ne propose pas l'installation, le parcours vous permettra de continuer dans le navigateur.",
+      eyebrow: "Installation guidée",
+      title: `Installez ${BRAND_NAME} pour profiter de l’expérience complète`,
+      message: "Si votre navigateur ne propose pas l’installation, vous pouvez continuer après avoir suivi le parcours d’installation.",
       primary: ["Voir les étapes d'installation", "./index.html?tab=telecharger"],
       secondary: ["Retour au compte", "./index.html?tab=compte"]
     },
@@ -1206,8 +1297,8 @@ function bindEvents() {
 }
 
 function installRuntimeGuards() {
-  if (window.__oenovaRuntimeGuardsInstalled) return;
-  window.__oenovaRuntimeGuardsInstalled = true;
+  if (window.__oenarisRuntimeGuardsInstalled) return;
+  window.__oenarisRuntimeGuardsInstalled = true;
   window.addEventListener("error", (event) => {
     logError(event.error || event.message, "window.error");
   });
@@ -1325,9 +1416,7 @@ function setSidebarCollapsed(isCollapsed) {
 
 function loadUiPreferences() {
   try {
-    const stored = localStorage.getItem(UI_PREFS_KEY)
-      || UI_PREFS_LEGACY_KEYS.map((key) => localStorage.getItem(key)).find(Boolean)
-      || "{}";
+    const stored = scopedStorage.getItem(UI_PREFS_KEY) || "{}";
     const parsed = JSON.parse(stored);
     const preferences = parsed && typeof parsed === "object" ? parsed : {};
     return normalizeUiPreferences(preferences);
@@ -1345,7 +1434,7 @@ function saveUiPreferences() {
     sidebarCollapsed: document.body.classList.contains("sidebar-collapsed"),
     sidebarMode: document.body.classList.contains("sidebar-collapsed") ? "collapsed" : "open"
   };
-  localStorage.setItem(UI_PREFS_KEY, JSON.stringify(uiPreferences));
+  scopedStorage.setItem(UI_PREFS_KEY, JSON.stringify(uiPreferences));
 }
 
 function normalizeUiPreferences(preferences = {}) {
@@ -1579,7 +1668,7 @@ function getFilterCacheKey() {
 
 // Storage et migration
 function loadCellar() {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const stored = scopedStorage.getItem(STORAGE_KEY);
   if (!stored) {
     return [];
   }
@@ -1599,7 +1688,7 @@ function migrateWines(rawWines) {
 }
 
 function saveCellar(nextWines = wines) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+  scopedStorage.setItem(STORAGE_KEY, JSON.stringify({
     schemaVersion: SCHEMA_VERSION,
     updatedAt: new Date().toISOString(),
     wines: nextWines
@@ -1608,7 +1697,7 @@ function saveCellar(nextWines = wines) {
 }
 
 function loadMovements() {
-  const stored = localStorage.getItem(MOVEMENTS_KEY);
+  const stored = scopedStorage.getItem(MOVEMENTS_KEY);
   if (!stored) return [];
 
   try {
@@ -1620,7 +1709,7 @@ function loadMovements() {
 }
 
 function saveMovements(nextMovements = movements) {
-  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(nextMovements));
+  scopedStorage.setItem(MOVEMENTS_KEY, JSON.stringify(nextMovements));
   markPersonalDataChanged("movements");
 }
 
@@ -1629,7 +1718,7 @@ function loadWishlist() {
 }
 
 function saveWishlist(nextWishlist = wishlist) {
-  localStorage.setItem(WISHLIST_KEY, JSON.stringify(nextWishlist));
+  scopedStorage.setItem(WISHLIST_KEY, JSON.stringify(nextWishlist));
   markPersonalDataChanged("wishlist");
 }
 
@@ -1638,7 +1727,7 @@ function loadTastingNotes() {
 }
 
 function saveTastingNotes(nextNotes = tastingNotes) {
-  localStorage.setItem(TASTING_NOTES_KEY, JSON.stringify(nextNotes));
+  scopedStorage.setItem(TASTING_NOTES_KEY, JSON.stringify(nextNotes));
   markPersonalDataChanged("tasting-notes");
 }
 
@@ -1647,7 +1736,7 @@ function loadErrorLogs() {
 }
 
 function saveErrorLogs(nextLogs = errorLogs) {
-  localStorage.setItem(ERROR_LOGS_KEY, JSON.stringify(nextLogs));
+  scopedStorage.setItem(ERROR_LOGS_KEY, JSON.stringify(nextLogs));
 }
 
 function loadWineLibrary() {
@@ -1655,7 +1744,7 @@ function loadWineLibrary() {
 }
 
 function saveWineLibrary(nextLibrary = wineLibrary) {
-  localStorage.setItem(LIBRARY_KEY, JSON.stringify(nextLibrary));
+  scopedStorage.setItem(LIBRARY_KEY, JSON.stringify(nextLibrary));
 }
 
 function loadLocalCellarLayouts() {
@@ -1663,7 +1752,7 @@ function loadLocalCellarLayouts() {
 }
 
 function saveLocalCellarLayouts(nextLayouts = cellarLayouts) {
-  localStorage.setItem(CELLAR_LAYOUTS_KEY, JSON.stringify(nextLayouts.map(normalizeCellarLayout)));
+  scopedStorage.setItem(CELLAR_LAYOUTS_KEY, JSON.stringify(nextLayouts.map(normalizeCellarLayout)));
   markPersonalDataChanged("cellar-layouts");
 }
 
@@ -1694,7 +1783,7 @@ function loadAiEnrichmentQueue() {
 
 function saveAiEnrichmentQueue(nextQueue = aiEnrichmentQueue) {
   aiEnrichmentQueue = nextQueue.map(normalizeAiEnrichmentRequest);
-  localStorage.setItem(AI_QUEUE_KEY, JSON.stringify(aiEnrichmentQueue));
+  scopedStorage.setItem(AI_QUEUE_KEY, JSON.stringify(aiEnrichmentQueue));
 }
 
 function loadAdviceFeedback() {
@@ -1703,7 +1792,7 @@ function loadAdviceFeedback() {
 
 function saveAdviceFeedbackStore(nextFeedback = adviceFeedback) {
   adviceFeedback = nextFeedback.map(normalizeAdviceFeedback);
-  localStorage.setItem(ADVICE_FEEDBACK_KEY, JSON.stringify(adviceFeedback));
+  scopedStorage.setItem(ADVICE_FEEDBACK_KEY, JSON.stringify(adviceFeedback));
 }
 
 function loadPendingLibrarySyncQueue() {
@@ -1712,12 +1801,12 @@ function loadPendingLibrarySyncQueue() {
 
 function savePendingLibrarySyncQueue(nextQueue = pendingLibrarySyncQueue) {
   pendingLibrarySyncQueue = nextQueue.map(normalizeLibraryReference);
-  localStorage.setItem(LIBRARY_SYNC_QUEUE_KEY, JSON.stringify(pendingLibrarySyncQueue));
+  scopedStorage.setItem(LIBRARY_SYNC_QUEUE_KEY, JSON.stringify(pendingLibrarySyncQueue));
 }
 
 function loadSubscriptionState() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(SUBSCRIPTION_KEY) || "{}");
+    const parsed = JSON.parse(scopedStorage.getItem(SUBSCRIPTION_KEY) || "{}");
     return normalizeSubscriptionState(parsed);
   } catch {
     return { ...DEFAULT_SUBSCRIPTION_STATE };
@@ -1725,12 +1814,12 @@ function loadSubscriptionState() {
 }
 
 function saveSubscriptionState(nextState = subscriptionState) {
-  localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(nextState));
+  scopedStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(nextState));
 }
 
 function loadJsonArray(key) {
   try {
-    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    const value = JSON.parse(scopedStorage.getItem(key) || "[]");
     return Array.isArray(value) ? value : [];
   } catch {
     return [];
@@ -1965,14 +2054,13 @@ function normalizeLibraryReference(reference = {}) {
 
 function normalizeSubscriptionState(state = {}) {
   const plan = PRICING_PLANS.some((item) => item.id === state.plan) ? state.plan : DEFAULT_SUBSCRIPTION_STATE.plan;
-  const limits = getPlanLimits(plan);
   return {
     ...DEFAULT_SUBSCRIPTION_STATE,
     ...state,
     plan,
     billingCycle: ["monthly", "yearly"].includes(state.billingCycle) ? state.billingCycle : null,
-    scanCredits: Math.max(0, toNumber(state.scanCredits, limits.scanLimit)),
-    monthlyScanLimit: Math.max(0, toNumber(state.monthlyScanLimit, limits.scanLimit)),
+    scanCredits: 0,
+    monthlyScanLimit: 0,
     usedScansThisMonth: Math.max(0, toNumber(state.usedScansThisMonth, 0)),
     renewalDate: cleanString(state.renewalDate) || null,
     isPaymentConfigured: Boolean(state.isPaymentConfigured),
@@ -1982,10 +2070,10 @@ function normalizeSubscriptionState(state = {}) {
 
 function loadAuthState() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(AUTH_STATE_KEY) || "{}");
+    const parsed = JSON.parse(scopedStorage.getItem(AUTH_STATE_KEY) || "{}");
     const normalized = normalizeAuthState(parsed);
     if (parsed?.accessToken || parsed?.refreshToken) {
-      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(normalized));
+      scopedStorage.setItem(AUTH_STATE_KEY, JSON.stringify(normalized));
     }
     return normalized;
   } catch {
@@ -1995,13 +2083,13 @@ function loadAuthState() {
 
 function saveAuthState(nextState = authState) {
   authState = normalizeAuthState(nextState);
-  localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(authState));
+  scopedStorage.setItem(AUTH_STATE_KEY, JSON.stringify(authState));
 }
 
 function clearAuthState() {
   authState = normalizeAuthState();
   authSession = { accessToken: "", refreshToken: "" };
-  localStorage.removeItem(AUTH_STATE_KEY);
+  scopedStorage.removeItem(AUTH_STATE_KEY);
 }
 
 function normalizeAuthState(state = {}) {
@@ -2018,7 +2106,7 @@ function normalizeAuthState(state = {}) {
 
 function loadCloudSyncState() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(CLOUD_SYNC_STATE_KEY) || "{}");
+    const parsed = JSON.parse(scopedStorage.getItem(CLOUD_SYNC_STATE_KEY) || "{}");
     return normalizeCloudSyncState(parsed);
   } catch {
     return normalizeCloudSyncState();
@@ -2027,7 +2115,7 @@ function loadCloudSyncState() {
 
 function saveCloudSyncState(nextState = cloudSyncState) {
   cloudSyncState = normalizeCloudSyncState(nextState);
-  localStorage.setItem(CLOUD_SYNC_STATE_KEY, JSON.stringify(cloudSyncState));
+  scopedStorage.setItem(CLOUD_SYNC_STATE_KEY, JSON.stringify(cloudSyncState));
 }
 
 function normalizeCloudSyncState(state = {}) {
@@ -2047,7 +2135,7 @@ function normalizeCloudSyncState(state = {}) {
 }
 
 function getCloudConfig() {
-  if (window.OenovaAuth?.getCloudConfig) return window.OenovaAuth.getCloudConfig();
+  if (window.OenarisAuth?.getCloudConfig) return window.OenarisAuth.getCloudConfig();
   const config = window.CAVE_CLOUD_CONFIG || {};
   const supabaseUrl = cleanString(config.supabaseUrl).replace(/\/$/, "");
   const supabaseAnonKey = cleanString(config.supabaseAnonKey);
@@ -2060,7 +2148,7 @@ function getCloudConfig() {
 }
 
 function isCloudConfigured() {
-  if (window.OenovaAuth?.isCloudConfigured) return window.OenovaAuth.isCloudConfigured();
+  if (window.OenarisAuth?.isCloudConfigured) return window.OenarisAuth.isCloudConfigured();
   cloudConfig = getCloudConfig();
   return Boolean(cloudConfig.enabled);
 }
@@ -2115,7 +2203,7 @@ function migrateSubscriptionState() {
 
 function loadMigrationState() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(MIGRATION_STATE_KEY) || "{}");
+    const parsed = JSON.parse(scopedStorage.getItem(MIGRATION_STATE_KEY) || "{}");
     return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     return {};
@@ -2123,7 +2211,10 @@ function loadMigrationState() {
 }
 
 function saveMigrationState(state) {
-  localStorage.setItem(MIGRATION_STATE_KEY, JSON.stringify(state));
+  scopedStorage.setItem(MIGRATION_STATE_KEY, JSON.stringify({
+    ...loadMigrationState(),
+    ...state
+  }));
 }
 
 // Rendu
@@ -2297,10 +2388,10 @@ function renderWishlist() {
 
 function renderBetaState() {
   const storageSize = estimateStorageSize();
-  const lastBackup = localStorage.getItem(BACKUP_KEY);
+  const lastBackup = scopedStorage.getItem(BACKUP_KEY);
   elements.appVersion.textContent = `Version ${APP_VERSION}`;
   elements.betaState.innerHTML = `
-    <div class="beta-card"><strong>Dernière sauvegarde</strong><p>${lastBackup ? formatDateTime(JSON.parse(lastBackup).createdAt) : "Aucune sauvegarde locale"}</p></div>
+    <div class="beta-card"><strong>Dernière sauvegarde</strong><p>${lastBackup ? formatDateTime(JSON.parse(lastBackup).createdAt) : "Aucune sauvegarde créée"}</p></div>
     <div class="beta-card"><strong>Inventaire</strong><p>${wines.length} références · ${movements.length} mouvements</p></div>
     <div class="beta-card"><strong>Stockage estimé</strong><p>${formatBytes(storageSize)}</p></div>
     <div class="beta-card"><strong>PWA</strong><p>${navigator.serviceWorker ? "Service worker disponible" : "Service worker indisponible"}</p></div>
@@ -2315,7 +2406,7 @@ function renderWineList(filtered) {
       const isNewCellar = wines.length === 0;
       elements.emptyStateTitle.textContent = isNewCellar ? "Votre cave est vide" : "Aucun vin trouvé";
       elements.emptyStateMessage.textContent = isNewCellar
-        ? "Ajoutez votre première bouteille."
+        ? "Ajoutez votre première bouteille pour commencer."
         : "Aucune bouteille ne correspond à cette recherche. Modifiez ou réinitialisez les filtres.";
       elements.emptyScanButton.hidden = !isNewCellar;
     }
@@ -2331,19 +2422,31 @@ function renderWineList(filtered) {
     const computed = getComputedWine(wine);
     const status = computed.drinkStatus;
     const locationLabel = computed.locationLabel || "Emplacement non renseigné";
+    const hasDrinkWindow = Boolean(wine.drinkFrom || wine.drinkTo);
+    const drinkWindowLabel = !hasDrinkWindow
+      ? "Fenêtre à préciser"
+      : status.state === "ready"
+        ? "Bonne fenêtre"
+        : status.state === "soon"
+          ? "À boire bientôt"
+          : status.state === "late"
+            ? "Fenêtre dépassée"
+            : `À garder jusqu’en ${wine.drinkFrom || wine.drinkTo}`;
     const vintageLabel = wine.vintage ? escapeHtml(String(wine.vintage)) : "Non millésimé";
+    const winePhotoAlt = `Bouteille ${wine.domain} ${wine.cuvee}${wine.vintage ? ` ${wine.vintage}` : ""}`.trim();
     const photoMarkup = computed.photoThumb
-      ? `<img src="${escapeAttribute(computed.photoThumb)}" alt="" loading="lazy" width="92" height="116">`
+      ? `<img src="${escapeAttribute(computed.photoThumb)}" alt="${escapeAttribute(winePhotoAlt)}" loading="lazy" width="160" height="260">`
       : renderDefaultBottleIllustration(wine);
     const card = document.createElement("article");
-    card.className = "wine-card";
+    card.className = `wine-card ${isDashboard ? "wine-card--dashboard" : "wine-card--inventory"}`;
     card.dataset.color = wine.color;
+    card.dataset.status = status.state;
     card.innerHTML = `
-      <div class="wine-photo">${photoMarkup}</div>
+      <div class="wine-photo"><div class="wine-photo-inner">${photoMarkup}</div></div>
       <div class="wine-card-body">
         <div class="wine-kicker">
           <span class="color-chip"><span class="color-dot" aria-hidden="true"></span>${escapeHtml(formatColorLabel(wine.color))}</span>
-          <span>${escapeHtml(wine.region || "Région non renseignée")}</span>
+          <span class="region-chip">${escapeHtml(wine.region || "Région non renseignée")}</span>
         </div>
         <div class="wine-title-row">
           <div>
@@ -2353,24 +2456,28 @@ function renderWineList(filtered) {
           <span class="wine-vintage">${vintageLabel}</span>
         </div>
         <div class="wine-meta">
-          <span>${escapeHtml(wine.appellation || "Sans appellation")}</span>
-          <span>${escapeHtml(locationLabel)}</span>
+          <span class="wine-info-pill wine-info-pill--appellation"><svg class="ui-icon" aria-hidden="true"><use href="#icon-location"></use></svg><span>${escapeHtml(wine.appellation || "Sans appellation")}</span></span>
+          <span class="wine-info-pill wine-info-pill--location"><svg class="ui-icon" aria-hidden="true"><use href="#icon-cellar"></use></svg><span>${escapeHtml(locationLabel)}</span></span>
           ${computed.locationConflict ? `<span class="pill warning">Emplacement partagé</span>` : ""}
-          <span class="pill neutral">${escapeHtml(computed.drinkPriorityLabel)}</span>
+          <span class="wine-info-pill wine-info-pill--window"><svg class="ui-icon" aria-hidden="true"><use href="#icon-calendar"></use></svg><span>${escapeHtml(drinkWindowLabel)}</span></span>
         </div>
+        <div class="wine-card-divider" aria-hidden="true"></div>
         <p class="wine-notes">${escapeHtml(wine.notes || "Aucune note pour le moment.")}</p>
         <div class="tag-list">${wine.tags.map((tag) => `<span class="tag-badge">${escapeHtml(tag)}</span>`).join("")}</div>
       </div>
       <div class="wine-facts">
-        <span class="pill ${status.state === "late" ? "danger" : status.state}">${status.label}</span>
-        <strong>${wine.quantity} bouteille${wine.quantity > 1 ? "s" : ""}</strong>
+        <span class="pill wine-status ${status.state === "late" ? "danger" : status.state}"><svg class="ui-icon" aria-hidden="true"><use href="#icon-check"></use></svg><span>${escapeHtml(status.label)}</span></span>
+        <div class="wine-stock-block">
+          <strong>${wine.quantity} bouteille${wine.quantity > 1 ? "s" : ""}</strong>
+        </div>
         <span class="fact-value">${computed.formattedValue}</span>
+        <div class="wine-facts-divider" aria-hidden="true"></div>
         <div class="wine-primary-actions">
-          <button class="card-action" type="button" data-action="view" data-id="${escapeAttribute(wine.id)}">Voir</button>
-          <button class="card-action" type="button" data-action="consume" data-id="${escapeAttribute(wine.id)}">Dégustée</button>
+          <button class="card-action" type="button" data-action="view" data-id="${escapeAttribute(wine.id)}"><svg class="ui-icon" aria-hidden="true"><use href="#icon-eye"></use></svg><span>Voir</span></button>
+          <button class="card-action" type="button" data-action="consume" data-id="${escapeAttribute(wine.id)}"><svg class="ui-icon" aria-hidden="true"><use href="#icon-glass"></use></svg><span>Dégustée</span></button>
         </div>
         <details class="wine-actions-menu">
-          <summary>Plus</summary>
+          <summary><svg class="ui-icon" aria-hidden="true"><use href="#icon-more"></use></svg><span>Plus</span></summary>
           <div>
             <button class="card-action" type="button" data-action="edit" data-id="${escapeAttribute(wine.id)}">Modifier</button>
             <button class="card-action" type="button" data-action="move" data-id="${escapeAttribute(wine.id)}">Déplacer</button>
@@ -2400,14 +2507,10 @@ function renderWineList(filtered) {
   });
 }
 
-function renderDefaultBottleIllustration(wine) {
-  const label = wine.vintage ? String(wine.vintage) : wine.color.slice(0, 3).toUpperCase();
+function renderDefaultBottleIllustration() {
   return `
-    <span class="bottle-illustration" aria-hidden="true">
-      <span class="bottle-neck"></span>
-      <span class="bottle-body">
-        <span class="bottle-label">${escapeHtml(label)}</span>
-      </span>
+    <span class="bottle-illustration bottle-illustration--asset" aria-hidden="true">
+      <img class="default-bottle-icon" src="assets/icon-bottle-premium.png" alt="" loading="lazy">
     </span>
   `;
 }
@@ -2425,6 +2528,7 @@ function renderAlerts() {
   visibleAlerts.forEach((alert) => {
     const item = document.createElement("div");
     item.className = `watch-card ${alert.severity}`;
+    item.dataset.alertType = alert.type || "advice";
     item.innerHTML = `
       <strong>${escapeHtml(alert.title)}</strong>
       <p>${escapeHtml(alert.message)}</p>
@@ -2691,7 +2795,7 @@ async function deleteCurrentWine() {
 }
 
 async function deleteWine(wine, options = {}) {
-  const confirmed = await askConfirmation("Supprimer la bouteille", `Supprimer ${wineName(wine)} ? Une sauvegarde locale sera créée avant suppression.`, "Supprimer");
+  const confirmed = await askConfirmation("Supprimer la bouteille", `Supprimer ${wineName(wine)} ? Une sauvegarde sera créée avant suppression.`, "Supprimer");
   if (!confirmed) return;
 
   exportBackup("suppression");
@@ -2891,8 +2995,8 @@ function createImageThumbnail(image) {
 }
 
 function validatePhotoSize(dataUrl, limit = PHOTO_WARNING_BYTES) {
-  const bytes = window.OenovaHelpers?.estimateDataUrlBytes
-    ? window.OenovaHelpers.estimateDataUrlBytes(dataUrl)
+  const bytes = window.OenarisHelpers?.estimateDataUrlBytes
+    ? window.OenarisHelpers.estimateDataUrlBytes(dataUrl)
     : Math.ceil((String(dataUrl || "").split(",")[1]?.length || 0) * 3 / 4);
   return {
     valid: bytes <= limit,
@@ -3665,7 +3769,7 @@ function getLibrarySourceLabel(reference = {}) {
   if (reference.source === "scan") return "Scan utilisateur";
   if (reference.source === "import") return "Import";
   if (reference.source === "user") return "Ajout utilisateur";
-  return "Local";
+  return "Sur cet appareil";
 }
 
 function libraryReferenceToSupabaseRow(reference) {
@@ -3783,7 +3887,7 @@ function renderSyncStatus() {
   const hasRemoteError = Boolean(libraryRemoteState.lastError);
   elements.librarySyncStatus.className = `pill ${libraryRemoteState.isLoading || pending || hasRemoteError ? "warning" : configured ? "ready" : "neutral"}`;
   elements.librarySyncStatus.textContent = !configured
-    ? "Recherche locale"
+    ? "Recherche dans vos références"
     : libraryRemoteState.isLoading
       ? "Recherche Supabase"
       : hasRemoteError
@@ -3914,7 +4018,7 @@ async function ensureRemoteLibraryLoaded(options = {}) {
     };
     render({ targets: ["library"] });
     if (!options.silent) {
-      showStatus(`${remote.length} reference(s) lue(s) dans la base vins${added ? `, ${added} ajoutee(s) localement` : ""}.`);
+      showStatus(`${remote.length} référence(s) lue(s) dans la base vins${added ? `, ${added} ajoutée(s) à vos références` : ""}.`);
     }
     return { ok: true, count: remote.length, added };
   } catch (error) {
@@ -3939,11 +4043,11 @@ function renderLibraryAdminTools() {
       ? `${libraryRemoteState.lastCount} resultat(s) depuis Supabase`
       : isCloudConfigured()
         ? "Base Supabase connectee"
-        : "Recherche locale uniquement";
+        : "Recherche dans vos références uniquement";
   elements.libraryAdminTools.innerHTML = `
     <div>
       <strong>Bibliotheque connectee</strong>
-      <p>La barre de recherche interroge vos references locales et la base vins Supabase automatiquement.</p>
+      <p>La barre de recherche interroge vos références et la base vins Supabase automatiquement.</p>
       <p>${escapeHtml(remoteLabel)}</p>
     </div>
   `;
@@ -3962,14 +4066,14 @@ function markLibraryReferenceReviewStatus(referenceId, status) {
   if (!reference) return;
   reference.reviewStatus = status;
   reference.lastReviewedAt = new Date().toISOString();
-  reference.verifiedBy = authState.user?.email || "validation locale";
+  reference.verifiedBy = authState.user?.email || "validation sur cet appareil";
   reference.updatedAt = new Date().toISOString();
   reference.pendingSync = true;
   rebuildLibraryDerivedCaches();
   saveWineLibrary(wineLibrary);
   queueLibrarySync(reference);
   render({ targets: ["library"] });
-  showStatus(status === "verified" ? "Reference validee localement." : "Reference marquee a relire.");
+  showStatus(status === "verified" ? "Référence validée dans votre espace." : "Référence marquée à relire.");
 }
 
 function buildWineReferenceEnrichmentPrompt(reference, missingFields = getMissingWineData(reference)) {
@@ -4038,7 +4142,7 @@ async function requestWineReferenceEnrichment(reference) {
     queueAiEnrichmentForReference(reference, missing);
     logError(error, "requestWineReferenceEnrichment");
     render({ targets: ["library"] });
-    showStatus("Route IA absente : demande ajoutee a la file locale.");
+    showStatus("Route IA absente : demande conservée en attente.");
     return null;
   }
 }
@@ -5167,9 +5271,9 @@ async function scanWineLabel(imageFile) {
     if (!result) {
       result = await scanWineLabelLocally(imageFile);
       if (!apiConfigured) {
-        result.warnings = uniqueValues(["IA non configurée : analyse locale uniquement.", ...result.warnings]);
+        result.warnings = uniqueValues(["IA non configurée : détection limitée sur cet appareil.", ...result.warnings]);
       } else if (scanState.apiStatus === "unavailable") {
-        result.warnings = uniqueValues(["IA indisponible : détection locale limitée.", ...result.warnings]);
+        result.warnings = uniqueValues(["IA indisponible : détection limitée sur cet appareil.", ...result.warnings]);
       }
     }
     scanState.result = normalizeScanResult(result);
@@ -5289,7 +5393,7 @@ async function scanWineLabelLocally(imageFile) {
     ...parsed,
     rawText,
     confidenceScore: parsed.domain || parsed.cuvee ? 0.42 : 0.18,
-    warnings: ["Détection locale limitée : vérifiez les champs avant d'enregistrer."],
+    warnings: ["Détection limitée : vérifiez les champs avant d’enregistrer."],
     needsReview: true
   };
 }
@@ -5315,14 +5419,13 @@ function normalizeScanResult(result = {}) {
 
 function renderScanner() {
   if (!elements.scanPreview) return;
-  const remaining = getRemainingScans();
   if (isScanApiConfigured()) {
     elements.scanCreditsLabel.textContent = scanState.apiStatus === "unavailable"
-      ? "IA indisponible · Analyse locale"
-      : `${remaining} scan${remaining > 1 ? "s" : ""} IA disponible${remaining > 1 ? "s" : ""}`;
+      ? "IA indisponible · Détection limitée"
+      : "Analyse IA sécurisée disponible";
     elements.scanCreditsLabel.className = `pill ${scanState.apiStatus === "unavailable" ? "warning" : "ready"}`;
   } else {
-    elements.scanCreditsLabel.textContent = "IA non configurée · Analyse locale";
+    elements.scanCreditsLabel.textContent = "IA non configurée · Détection limitée";
     elements.scanCreditsLabel.className = "pill warning";
   }
   elements.scanPreview.innerHTML = scanState.imageDataUrl
@@ -5341,7 +5444,7 @@ function renderScanResult(result, error = "") {
     return;
   }
   if (!result) {
-    const title = isScanApiConfigured() ? "Scan assisté" : "Analyse locale";
+    const title = isScanApiConfigured() ? "Scan assisté" : "Détection limitée";
     const message = isScanApiConfigured()
       ? "Collez le texte visible sur l'étiquette si l'analyse automatique n'est pas disponible."
       : "IA non configurée : la détection reste limitée et s'appuie sur le texte ou le nom du fichier.";
@@ -5350,7 +5453,7 @@ function renderScanResult(result, error = "") {
   }
   elements.scanResult.innerHTML = `
     <div class="scan-result-card">
-      <span class="pill ${result._apiUsed ? "ready" : "warning"}">${result._apiUsed ? "Analyse IA" : "Détection locale limitée"}</span>
+      <span class="pill ${result._apiUsed ? "ready" : "warning"}">${result._apiUsed ? "Analyse IA" : "Détection limitée"}</span>
       <h3>${escapeHtml(result.domain || "Domaine à vérifier")}</h3>
       <p>${escapeHtml(result.cuvee || "Cuvée à compléter")} · ${result.vintage || "Non millésimé"} · ${escapeHtml(formatColorLabel(result.color))}</p>
       <div class="compact-stats">
@@ -5435,33 +5538,20 @@ function getCurrentPlan() {
   return PRICING_PLANS.find((plan) => plan.id === subscriptionState.plan) || PRICING_PLANS[0];
 }
 
-function getPlanLimits(planId = subscriptionState.plan) {
-  const plan = PRICING_PLANS.find((item) => item.id === planId) || PRICING_PLANS[0];
-  return {
-    bottleLimit: plan.bottleLimit,
-    scanLimit: plan.scanLimit
-  };
-}
-
 function getRemainingScans() {
   resetMonthlyUsageIfNeeded({ persist: false });
   return Math.max(0, toNumber(subscriptionState.scanCredits, 0));
 }
 
 function canUseScan() {
-  const remaining = getRemainingScans();
   return {
-    allowed: remaining > 0,
-    remaining,
-    reason: remaining > 0 ? "" : "Plus aucun scan IA disponible ce mois-ci."
+    allowed: true,
+    remaining: null,
+    reason: ""
   };
 }
 
 function consumeScanCredit() {
-  const availablePackCredits = toNumber(subscriptionState.scanCredits, 0);
-  if (availablePackCredits > 0) {
-    subscriptionState.scanCredits = availablePackCredits - 1;
-  }
   subscriptionState.usedScansThisMonth = toNumber(subscriptionState.usedScansThisMonth, 0) + 1;
   saveSubscriptionState(subscriptionState);
 }
@@ -5471,45 +5561,33 @@ function resetMonthlyUsageIfNeeded(options = {}) {
   if (subscriptionState.lastUsageReset === currentMonth) return;
   subscriptionState.usedScansThisMonth = 0;
   subscriptionState.lastUsageReset = currentMonth;
-  subscriptionState.monthlyScanLimit = getPlanLimits(subscriptionState.plan).scanLimit;
-  subscriptionState.scanCredits = subscriptionState.monthlyScanLimit;
+  subscriptionState.monthlyScanLimit = 0;
+  subscriptionState.scanCredits = 0;
   if (options.persist !== false) saveSubscriptionState(subscriptionState);
 }
 
 function renderSubscriptionView() {
   if (!elements.pricingPlans) return;
   const plan = getCurrentPlan();
-  const remaining = getRemainingScans();
   elements.subscriptionPlanBadge.textContent = plan.name;
-  elements.subscriptionScanCredits.textContent = `${remaining} scan${remaining > 1 ? "s" : ""} restant${remaining > 1 ? "s" : ""}`;
+  elements.subscriptionScanCredits.textContent = "Bêta gratuite";
   elements.pricingPlans.innerHTML = PRICING_PLANS.map((item) => `
-    <article class="plan-card ${item.recommended ? "recommended" : ""} ${item.id === subscriptionState.plan ? "current" : ""}">
-      <span class="pill ${item.recommended ? "warning" : "neutral"}">${escapeHtml(item.badge)}</span>
+    <article class="plan-card current">
+      <span class="pill neutral">${escapeHtml(item.badge)}</span>
       <h3>${escapeHtml(item.name)}</h3>
       <p class="plan-price">${escapeHtml(item.monthlyPrice)}</p>
       <p>${escapeHtml(item.yearlyPrice)}</p>
       <ul>${item.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>
-      <div class="plan-actions">
-        <button class="primary-action" type="button" data-plan="${escapeAttribute(item.id)}" data-billing-cycle="monthly">Choisir</button>
-        <button class="card-action" type="button" data-plan="${escapeAttribute(item.id)}" data-billing-cycle="yearly">Annuel</button>
-      </div>
-      <small>Paiement bientôt disponible via backend sécurisé.</small>
+      <small>L’offre bêta peut évoluer. Vos données restent exportables à tout moment.</small>
     </article>
   `).join("");
-  elements.scanPacks.innerHTML = SCAN_PACKS.map((pack) => `
-    <article class="scan-pack-card">
-      <h3>${escapeHtml(pack.label)}</h3>
-      <p>${escapeHtml(pack.price)}</p>
-      <button class="card-action" type="button" data-scan-pack="${escapeAttribute(pack.id)}">Acheter bientôt</button>
-    </article>
-  `).join("");
+  if (elements.scanPacks) elements.scanPacks.innerHTML = "";
 }
 
 function renderPlanBadge() {
   const plan = getCurrentPlan();
-  const remaining = getRemainingScans();
   if (elements.sidebarPlanBadge) elements.sidebarPlanBadge.textContent = plan.name;
-  if (elements.sidebarScanBadge) elements.sidebarScanBadge.textContent = `${remaining} scan${remaining > 1 ? "s" : ""}`;
+  if (elements.sidebarScanBadge) elements.sidebarScanBadge.textContent = "Bêta";
 }
 
 async function handleChoosePlan(plan, billingCycle) {
@@ -5552,10 +5630,10 @@ async function initSupabase() {
   if (supabaseInitPromise) return supabaseInitPromise;
 
   supabaseInitPromise = (async () => {
-    if (!window.OenovaAuth?.loadSupabaseClient) {
+    if (!window.OenarisAuth?.loadSupabaseClient) {
       throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
     }
-    supabaseClient = await window.OenovaAuth.loadSupabaseClient();
+    supabaseClient = await window.OenarisAuth.loadSupabaseClient();
     if (!supabaseClient) return null;
     await onAuthStateChanged();
     const session = await getCurrentSession();
@@ -5575,11 +5653,11 @@ async function initSupabase() {
 }
 
 function getSupabaseClient() {
-  return window.OenovaAuth?.getSupabaseClient?.() || supabaseClient;
+  return window.OenarisAuth?.getSupabaseClient?.() || supabaseClient;
 }
 
 async function getCurrentSession() {
-  if (window.OenovaAuth?.getCurrentSession) return window.OenovaAuth.getCurrentSession();
+  if (window.OenarisAuth?.getCurrentSession) return window.OenarisAuth.getCurrentSession();
   if (authSession.accessToken && authState.user?.id) {
     return {
       access_token: authSession.accessToken,
@@ -5597,15 +5675,28 @@ async function getCurrentUser() {
 }
 
 async function onAuthStateChanged(callback) {
-  if (!window.OenovaAuth?.onAuthStateChanged || supabaseAuthSubscription) return supabaseAuthSubscription;
-  supabaseAuthSubscription = await window.OenovaAuth.onAuthStateChanged(async (event, session) => {
+  if (!window.OenarisAuth?.onAuthStateChanged || supabaseAuthSubscription) return supabaseAuthSubscription;
+  supabaseAuthSubscription = await window.OenarisAuth.onAuthStateChanged(async (event, session) => {
     if (session) {
+      const isDifferentAccount = storageScopeUserId && storageScopeUserId !== cleanString(session.user?.id);
+      setStorageScope(session.user?.id);
+      if (isDifferentAccount) {
+        await offerLegacyDataMigration();
+        loadAuthorizedLocalState();
+        migrateAppData();
+        cellarLayouts = ensureCellarLayouts(cellarLayouts);
+        syncCellarLayoutWithWines({ persist: false });
+        rebuildCellarLayoutCache();
+        invalidateWineCaches();
+        rebuildLibraryDerivedCaches();
+      }
       saveAuthFromSupabase({ session });
       await ensureUserProfile();
       await hydrateCloudStateAfterSignIn();
       syncPendingLibraryReferences({ silent: true });
     } else if (event === "SIGNED_OUT") {
       clearAuthState();
+      setStorageScope("");
       showAppAccessGate("account");
     }
     renderAuthState();
@@ -5651,28 +5742,28 @@ function getCloudSyncStatusLabel() {
   if (!isCloudConfigured()) return "Cloud non configure";
   if (!isSignedIn()) {
     if (hasKnownUserProfile()) return "Session cloud à reconnecter";
-    return cloudSyncState.pendingChanges ? "Cave locale non migree" : "Connexion requise";
+    return cloudSyncState.pendingChanges ? "Compte à reconnecter" : "Connexion requise";
   }
   if (cloudSyncState.syncStatus === "syncing") return "Synchronisation en cours";
   if (cloudSyncState.syncStatus === "pending") return "Synchronisation en attente";
   if (cloudSyncState.syncStatus === "error") return "Erreur de synchronisation";
   if (cloudSyncState.syncStatus === "needs-decision") return "Choix requis";
   if (cloudSyncState.syncStatus === "synced") return "Cloud synchronise";
-  return cloudSyncState.pendingChanges ? "Cave locale a synchroniser" : "Cloud pret";
+  return cloudSyncState.pendingChanges ? "Cave à synchroniser" : "Cloud prêt";
 }
 
 function getCloudSyncDetailText() {
   if (cloudSyncState.lastError) return `Derniere erreur : ${cloudSyncState.lastError}`;
   if (hasKnownUserProfile() && !isSignedIn()) {
-    return "Profil connu localement, mais aucune session Supabase utilisable. Reconnectez-vous pour synchroniser.";
+    return "Profil connu, mais aucune session Supabase utilisable. Reconnectez-vous pour synchroniser.";
   }
   if (cloudSyncState.syncStatus === "needs-decision") {
-    return "Une cave existe deja dans le cloud. Choisissez envoyer la cave locale ou restaurer le cloud.";
+    return "Une cave existe déjà dans votre espace. Choisissez la version à conserver.";
   }
-  if (cloudSyncState.syncStatus === "pending") return "Modifications locales en attente d'envoi automatique.";
+  if (cloudSyncState.syncStatus === "pending") return "Modifications en attente d’envoi automatique.";
   if (cloudSyncState.syncStatus === "syncing") return "Envoi de la cave personnelle vers Supabase.";
   if (cloudSyncState.syncStatus === "local-only" && cloudSyncState.pendingChanges) {
-    return "La cave reste disponible en local. Connectez-vous pour activer la sauvegarde cloud.";
+    return "Reconnectez votre compte pour reprendre la sauvegarde de votre cave.";
   }
   if (cloudSyncState.lastRemoteAt) return `Derniere version cloud : ${formatDateTime(cloudSyncState.lastRemoteAt)}`;
   return "";
@@ -5695,7 +5786,7 @@ function renderAccountView() {
   elements.cloudConfigStatus.classList.toggle("ready", configured);
   elements.cloudConfigStatus.classList.toggle("warning", !configured);
   elements.accountEmail.textContent = accountLabel;
-  elements.accountProvider.textContent = signedIn ? `Supabase · ${syncStatusLabel}` : configured ? syncStatusLabel : "Mode local";
+  elements.accountProvider.textContent = signedIn ? `Supabase · ${syncStatusLabel}` : configured ? syncStatusLabel : "Service indisponible";
   elements.cloudLastSync.textContent = cloudSyncState.lastSyncAt ? formatDateTime(cloudSyncState.lastSyncAt) : "Jamais";
   elements.cloudLastError.textContent = cloudSyncState.lastError ? `Dernière erreur : ${cloudSyncState.lastError}` : "";
   elements.cloudLastError.textContent = getCloudSyncDetailText();
@@ -5704,7 +5795,7 @@ function renderAccountView() {
   elements.accountStatusCard.classList.toggle("is-connected", signedIn);
   elements.syncLocalToCloudButton.disabled = !configured || !signedIn;
   elements.restoreCloudButton.disabled = !configured || !signedIn;
-  elements.refreshCloudButton.disabled = !configured;
+  elements.refreshCloudButton.disabled = !configured || !signedIn;
   elements.signOutButton.disabled = !knownProfile && !signedIn;
   elements.resetPasswordButton.disabled = !configured;
   elements.resendConfirmationButton.disabled = !configured;
@@ -5733,10 +5824,6 @@ function normalizeAuthEmail(value) {
 
 function getAuthEmailCandidate() {
   return normalizeAuthEmail(elements.signInEmail?.value || elements.signUpEmail?.value || authState.user?.email || "");
-}
-
-function getAuthRedirectUrl() {
-  return `${window.location.origin}${window.location.pathname}`;
 }
 
 function setAuthHelpMessage(message = "", type = "info") {
@@ -5779,20 +5866,9 @@ async function requestPasswordReset() {
     return;
   }
   try {
-    await initSupabase();
-    const client = getSupabaseClient();
-    const redirectTo = getAuthRedirectUrl();
-    if (client?.auth?.resetPasswordForEmail) {
-      const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo });
-      if (error) throw error;
-    } else {
-      await supabaseAuthRequest(`/recover?redirect_to=${encodeURIComponent(redirectTo)}`, {
-        method: "POST",
-        body: { email },
-        allowEmpty: true
-      });
-    }
-    const message = "Si le compte existe, Supabase vient d'envoyer un email de reinitialisation.";
+    if (!window.OenarisAuth?.resetPasswordForEmail) throw new Error("Le service de réinitialisation est indisponible.");
+    await window.OenarisAuth.resetPasswordForEmail(email);
+    const message = "Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.";
     setAuthHelpMessage(message);
     showStatus(message);
   } catch (error) {
@@ -5811,24 +5887,9 @@ async function resendSignupConfirmation() {
     return;
   }
   try {
-    await initSupabase();
-    const client = getSupabaseClient();
-    const redirectTo = getAuthRedirectUrl();
-    if (client?.auth?.resend) {
-      const { error } = await client.auth.resend({
-        type: "signup",
-        email,
-        options: { emailRedirectTo: redirectTo }
-      });
-      if (error) throw error;
-    } else {
-      await supabaseAuthRequest(`/resend?redirect_to=${encodeURIComponent(redirectTo)}`, {
-        method: "POST",
-        body: { type: "signup", email },
-        allowEmpty: true
-      });
-    }
-    const message = "Si un compte non confirme existe, Supabase vient de renvoyer le mail de confirmation.";
+    if (!window.OenarisAuth?.resendConfirmationEmail) throw new Error("Le renvoi de confirmation est indisponible.");
+    await window.OenarisAuth.resendConfirmationEmail(email);
+    const message = "Si un compte existe avec cette adresse, un nouvel email de confirmation a été envoyé.";
     setAuthHelpMessage(message);
     showStatus(message);
   } catch (error) {
@@ -5873,8 +5934,8 @@ async function handleAuthSubmit(event, mode) {
 }
 
 async function signInWithEmail(email, password) {
-  if (!window.OenovaAuth?.signInWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
-  const data = await window.OenovaAuth.signInWithEmail(email, password);
+  if (!window.OenarisAuth?.signInWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
+  const data = await window.OenarisAuth.signInWithEmail(email, password);
   if (data?.session) saveAuthFromSupabase(data);
   await ensureUserProfile();
   await hydrateCloudStateAfterSignIn();
@@ -5882,8 +5943,8 @@ async function signInWithEmail(email, password) {
 }
 
 async function signUpWithEmail(email, password, displayName = "") {
-  if (!window.OenovaAuth?.signUpWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
-  const data = await window.OenovaAuth.signUpWithEmail(email, password, displayName);
+  if (!window.OenarisAuth?.signUpWithEmail) throw new Error(`Le module d'authentification ${BRAND_NAME} est indisponible.`);
+  const data = await window.OenarisAuth.signUpWithEmail(email, password, displayName);
   if (data?.session) saveAuthFromSupabase(data);
   if (data?.user && !data?.session) {
     saveAuthState({
@@ -5962,12 +6023,16 @@ async function signOut() {
 
 async function signOutUser() {
   try {
-    if (window.OenovaAuth?.signOut && isCloudConfigured()) await window.OenovaAuth.signOut();
+    if (window.OenarisAuth?.signOut && isCloudConfigured()) await window.OenarisAuth.signOut();
   } catch {
-    // La déconnexion locale reste prioritaire.
+    // L'accès doit être fermé même si la requête distante échoue.
   }
   clearAuthState();
-  sessionStorage.removeItem(INSTALL_FLOW_KEY);
+  setStorageScope("");
+  [INSTALL_FLOW_KEY, LEGACY_INSTALL_FLOW_KEY].forEach((key) => {
+    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
+  });
   showAppAccessGate("account");
 }
 
@@ -5976,6 +6041,7 @@ function saveAuthFromSupabase(data = {}) {
   const user = data.user || session?.user || {};
   const expiresIn = toNumber(data.expires_in || session?.expires_in, 3600);
   const expiresAt = toNumber(data.expires_at || session?.expires_at, 0) || Math.round(Date.now() / 1000) + expiresIn;
+  if (user.id) setStorageScope(user.id);
   authSession = {
     accessToken: cleanString(data.access_token || session?.access_token),
     refreshToken: cleanString(data.refresh_token || session?.refresh_token)
@@ -6073,11 +6139,11 @@ async function updateUserProfile(updates = {}) {
 
 async function syncLocalToCloud() {
   if (!ensureCloudReady()) return;
-  const confirmed = await askConfirmation("Envoyer la cave locale", "Cette action sauvegarde votre cave locale dans votre compte cloud. Les données cloud existantes seront remplacées par cette sauvegarde.", "Envoyer");
+  const confirmed = await askConfirmation("Sauvegarder cette cave", "Cette action sauvegarde la cave de cet appareil dans votre compte. Les données cloud existantes seront remplacées par cette sauvegarde.", "Envoyer");
   if (!confirmed) return;
   try {
     await performCloudAutoSync({ reason: "manual-push", silent: false });
-    showStatus("Cave locale envoyée vers le cloud.");
+    showStatus("Cave sauvegardée dans votre compte.");
   } catch (error) {
     handleCloudError(error, "syncLocalToCloud");
   }
@@ -6085,7 +6151,7 @@ async function syncLocalToCloud() {
 
 async function restoreFromCloud() {
   if (!ensureCloudReady()) return;
-  const confirmed = await askConfirmation("Restaurer depuis le cloud", "Cette action remplacera la cave locale par la dernière sauvegarde cloud. Une sauvegarde locale sera créée avant restauration.", "Restaurer");
+  const confirmed = await askConfirmation("Restaurer depuis le cloud", "Cette action remplacera la cave de cet appareil par la dernière sauvegarde cloud. Une sauvegarde sera créée avant restauration.", "Restaurer");
   if (!confirmed) return;
   try {
     exportBackup("avant-restauration-cloud");
@@ -6128,8 +6194,8 @@ function canUseCloudSilently() {
 }
 
 function hasLocalCellarData() {
-  const hasStoredCellar = Boolean(localStorage.getItem(STORAGE_KEY));
-  const hasStoredLayouts = Boolean(localStorage.getItem(CELLAR_LAYOUTS_KEY));
+  const hasStoredCellar = Boolean(scopedStorage.getItem(STORAGE_KEY));
+  const hasStoredLayouts = Boolean(scopedStorage.getItem(CELLAR_LAYOUTS_KEY));
   return Boolean(
     hasStoredCellar
     || movements.length
@@ -6350,7 +6416,7 @@ async function hydrateCloudStateAfterSignIn(options = {}) {
         lastError: ""
       });
       render({ targets: ["account", "sidebar"] });
-      showStatus("Cave cloud trouvee. Depuis Compte, choisissez envoyer la cave locale ou restaurer le cloud.", "success", {
+      showStatus("Une cave cloud a été trouvée. Depuis Compte, choisissez la version à conserver.", "success", {
         label: "Compte",
         action: () => setActiveView("account", { navKey: "account" })
       });
@@ -6688,7 +6754,7 @@ function renderWineAdviceResult(result) {
   };
   lastAdviceResult = normalizedResult;
   elements.adviceResult.innerHTML = `
-    <p class="advice-source">${normalizedResult.source === "ai" ? "Conseil IA sécurisé" : "Analyse locale"}</p>
+    <p class="advice-source">${normalizedResult.source === "ai" ? "Conseil IA sécurisé" : "Conseil intégré"}</p>
     ${normalizedResult.recommendations.map((item) => `
       <div class="advice-card">
         <strong>${escapeHtml(item.title)}</strong>
@@ -6833,7 +6899,7 @@ function handleAdviceFeedbackClick(event) {
   });
   adviceFeedback = [feedback, ...adviceFeedback].slice(0, 300);
   saveAdviceFeedbackStore(adviceFeedback);
-  showStatus("Merci, retour enregistre localement.");
+  showStatus("Merci, votre retour a été enregistré sur cet appareil.");
 }
 
 // Centre de contrôle, sauvegarde et rapport technique
@@ -6851,7 +6917,7 @@ function exportBackup(reason = "manuel") {
     wineLibrary,
     subscriptionState
   };
-  localStorage.setItem(BACKUP_KEY, JSON.stringify(backup));
+  scopedStorage.setItem(BACKUP_KEY, JSON.stringify(backup));
   return backup;
 }
 
@@ -6859,7 +6925,7 @@ function createManualBackup() {
   const backup = exportBackup("manuel");
   downloadFile(JSON.stringify(backup, null, 2), `cave-a-vin-backup-${today()}.json`, "application/json");
   modificationsSinceBackup = 0;
-  localStorage.setItem(MODIFICATION_COUNT_KEY, "0");
+  scopedStorage.setItem(MODIFICATION_COUNT_KEY, "0");
   renderBetaState();
   showStatus("Sauvegarde créée.");
 }
@@ -6871,7 +6937,7 @@ function restoreBackupFromFile(event) {
     try {
       const backup = JSON.parse(text);
       if (!Array.isArray(backup.wines)) throw new Error("Fichier de sauvegarde invalide.");
-      const confirmed = await askConfirmation("Restaurer une sauvegarde", "Cette restauration remplacera les données locales actuelles.", "Restaurer");
+      const confirmed = await askConfirmation("Restaurer une sauvegarde", "Cette restauration remplacera les données actuelles de ce compte sur cet appareil.", "Restaurer");
       if (!confirmed) return;
       exportBackup("avant-restauration");
       wines = backup.wines.map(normalizeWine);
@@ -6907,9 +6973,9 @@ function restoreBackupFromFile(event) {
 }
 
 async function clearAllData() {
-  const first = await askConfirmation("Supprimer toutes les données", "Cette action crée d'abord une sauvegarde locale, puis supprime la cave, la liste d’achat, les notes et le journal de cave.", "Continuer");
+  const first = await askConfirmation("Supprimer toutes les données", "Cette action crée d’abord une sauvegarde, puis supprime la cave, la liste d’achat, les notes et le journal de cave de ce compte sur cet appareil.", "Continuer");
   if (!first) return;
-  const second = await askConfirmation("Dernière confirmation", "Confirme la suppression définitive des données locales.", "Tout supprimer");
+  const second = await askConfirmation("Dernière confirmation", "Confirme la suppression définitive des données de ce compte sur cet appareil.", "Tout supprimer");
   if (!second) return;
   exportBackup("avant-suppression-totale");
   wines = [];
@@ -6934,7 +7000,7 @@ async function clearAllData() {
   saveAdviceFeedbackStore(adviceFeedback);
   saveSubscriptionState(subscriptionState);
   render();
-  showStatus("Toutes les données locales ont été supprimées.");
+  showStatus("Les données de ce compte ont été supprimées de cet appareil.");
 }
 
 function exportDiagnostic() {
@@ -7003,7 +7069,7 @@ function exportErrorLogs() {
 
 function trackModification() {
   modificationsSinceBackup += 1;
-  localStorage.setItem(MODIFICATION_COUNT_KEY, String(modificationsSinceBackup));
+  scopedStorage.setItem(MODIFICATION_COUNT_KEY, String(modificationsSinceBackup));
   if (modificationsSinceBackup >= 8) {
     showStatus("Pense à créer une sauvegarde de ta cave.", "success", { label: "Sauvegarder", action: createManualBackup });
   }
@@ -7173,10 +7239,10 @@ function csvValue(wine, column) {
 }
 
 function formatCsvValue(value) {
-  const text = window.OenovaHelpers?.formatCsvValue
-    ? window.OenovaHelpers.formatCsvValue(value)
+  const text = window.OenarisHelpers?.formatCsvValue
+    ? window.OenarisHelpers.formatCsvValue(value)
     : sanitizeCsvFormula(value);
-  if (window.OenovaHelpers?.formatCsvValue) return text;
+  if (window.OenarisHelpers?.formatCsvValue) return text;
   if (/[;,"\n\r]/.test(text)) {
     return `"${text.replaceAll('"', '""')}"`;
   }
@@ -7271,9 +7337,12 @@ function sumValueBy(items, key) {
 }
 
 function estimateStorageSize() {
+  if (!storageScopeUserId) return 0;
+  const userPrefix = `oenaris:${storageScopeUserId}:`;
   let total = 0;
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index);
+    if (!key?.startsWith(userPrefix)) continue;
     total += key.length + String(localStorage.getItem(key) || "").length;
   }
   return total * 2;

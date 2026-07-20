@@ -1,35 +1,45 @@
-# Oenaris - Technical roadmap
+# Oenaris - Feuille de route technique
 
-## Assistant cave IA
+## État de la bêta
 
-Les fonctions Supabase `wine-advice` et `wine-tools` couvrent le sommelier, le scan d'etiquette, les notes de degustation, l'audit des fiches, les suggestions d'achat et le bilan de cave. Leur activation reste conditionnee au secret OpenAI et a la variable frontend documentee dans `docs/ai-setup.md`.
+Oenaris est une PWA statique publiée sur GitHub Pages. L’application est verrouillée sans session Supabase valide et l’installation est recommandée par un parcours guidé.
 
-Le fallback local du sommelier et du scanner reste disponible si l'API est desactivee, indisponible ou sans quota.
+Les données du navigateur sont séparées par identifiant utilisateur. Un nouveau compte démarre avec une cave vide. Les données historiques non scoppées ne sont importées qu’après une confirmation visible et restent intactes à leur emplacement d’origine.
 
-## État actuel
+L’offre Découverte est gratuite pendant la bêta. Aucun paiement n’est actif.
 
-Oenaris est une PWA statique publiée sur GitHub Pages. L'accès à l'application nécessite un compte Supabase valide et passe par un parcours d'installation. Les données de cave restent disponibles localement avec `localStorage` et peuvent être synchronisées via Supabase.
+## Services optionnels
+
+- **Supabase Auth** : requis pour ouvrir l’application.
+- **Sauvegarde Supabase** : disponible lorsque le projet et les tables sont correctement configurés ; le modèle `cellar_snapshots` reste une première étape.
+- **IA** : optionnelle. Les fonctions `wine-advice` et `wine-tools` nécessitent les secrets Supabase adéquats. En cas d’indisponibilité, Oenaris utilise un conseil intégré ou une détection limitée et l’indique clairement.
+- **Paiement** : non configuré. Aucun parcours Stripe n’est actif.
 
 ## Limites connues
 
-- Compte : obligatoire pour charger l'interface et les données de cave.
-- Supabase : requis pour l'authentification. Sans configuration ou session valide, l'application reste verrouillée.
-- Mode hors ligne : disponible après une première connexion et la mise en cache de la PWA ; il ne remplace pas la création de compte.
-- IA : optionnelle. Sans les fonctions Supabase actives, le sommelier et le scanner utilisent leurs fallbacks locaux.
-- Paiement : non configuré. Les offres, abonnements et packs scans sont des écrans préparatoires.
-- Modèle cloud : `cellar_snapshots` reste la sauvegarde minimale. Les tables métier normalisées viendront plus tard.
+- Une première connexion nécessite un accès réseau à Supabase.
+- La synchronisation multi-appareils repose encore principalement sur un snapshot global de cave.
+- Les photos en dataURL peuvent atteindre les limites de stockage du navigateur malgré la compression.
+- La détection d’installation PWA varie selon le navigateur ; le parcours permet donc de continuer après consultation des instructions.
+- La suppression complète d’un compte nécessite encore une procédure opérateur côté Supabase.
+- Les coordonnées légales doivent être complétées avant l’ouverture publique.
 
-## Prochaines étapes techniques
+## Prochaines étapes
 
-1. Stabiliser la reprise de session hors ligne et la synchronisation multi-appareils.
-2. Mesurer les coûts, la latence et la qualité des outils IA avant ouverture large.
-3. Déplacer les photos vers IndexedDB ou Supabase Storage.
-4. Normaliser progressivement les données cloud : `wines`, `tasting_notes`, `wishlist_items`, `cellar_layouts`, `cellar_slots`, `wine_photos`, `sync_events`.
-5. Activer un vrai parcours paiement uniquement côté backend sécurisé.
+1. Tester l’isolation des données avec deux comptes et plusieurs navigateurs.
+2. Vérifier et appliquer RLS dans le projet Supabase de production.
+3. Stabiliser les conflits de synchronisation multi-appareils.
+4. Déplacer les photos vers IndexedDB ou Supabase Storage.
+5. Normaliser progressivement `wines`, `tasting_notes`, `wishlist_items`, `cellar_layouts`, `cellar_slots`, `wine_photos` et `sync_events`.
+6. Mesurer coûts, latence et qualité des fonctions IA avant ouverture large.
+7. Mettre en place la suppression autonome du compte et compléter les pages légales.
+8. Étudier un paiement uniquement après validation du modèle commercial, via un backend sécurisé.
 
 ## Principes
 
-- Ne pas exposer de clé secrète dans le frontend.
-- Conserver les données locales existantes et l'usage hors ligne après authentification.
-- Préférer des migrations progressives au big bang.
-- Ajouter des vérifications automatisées à chaque durcissement.
+- Aucune clé secrète dans le frontend.
+- RLS obligatoire pour chaque donnée personnelle.
+- Pas de chargement de cave avant validation de la session.
+- Pas de migration silencieuse susceptible de mélanger deux utilisateurs.
+- Exports disponibles avant les opérations destructives.
+- Migrations progressives et vérifications automatisées à chaque étape.
